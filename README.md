@@ -9,7 +9,7 @@
 ```
 請瀏覽整個內容,
 請根據此次任務內容,
-重新整理 .github/copilot-instructions.md "## project-context" 區塊內容,
+重新整理 .github/copilot-instructions.md "project-context" 區塊內容,
 整理重點為輔助你之後在這個專案執行任務時, 可以快速找到相對應的功能與位置進行任務.
 ```
 
