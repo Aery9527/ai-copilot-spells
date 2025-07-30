@@ -2,8 +2,8 @@
 
 記錄我使用 AI 輔助開發時的一些常用設定與魔法小語~
 
-- gemini: 放在 gemini 啟動根目錄, 以及家目錄的 .gemini 目錄下
-- github-copilot: 放在 .github 裡, 全局看設定位置
+- gemini: gemini 啟動時會在當前目錄讀取 GEMINI.md, 以及家目錄的 .gemini 目錄下的 GEMINI.md
+- github-copilot: .github 目錄結構即是擺放位置
 
 ---
 
@@ -11,15 +11,15 @@
 
 ```
 請瀏覽整個專案內容,
-將重點整理寫進 .github/copilot-instructions.md "project-context" 區塊內容,
+將重點整理寫進 .github/instructions/project-context.instructions.md 裡,
 整理重點為輔助你之後在這個專案執行任務時, 可以快速找到相對應的功能與位置進行任務.
 ```
 
 ```
 請根據此次修改內容,
-將新增或修改的地方在 .github/copilot-instructions.md "project-context" 區塊內修正,
-請抱持原有的格式與風格,
-且整理的重點仍然為輔助你之後在這個專案執行任務時, 可以快速找到相對應的功能與位置進行任務.
+將新增或修改的地方在 .github/instructions/project-context.instructions.md 內修正,
+請保持原有的格式與風格,
+且整理的重點仍為輔助你之後在這個專案執行任務時, 可以快速找到相對應的功能與位置進行任務.
 ```
 
 ```
