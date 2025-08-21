@@ -1,3 +1,7 @@
+---
+applyTo: "**/*.java"
+---
+
 # project-context
 
 這裡是關於專案的背景資訊與上下文說明,

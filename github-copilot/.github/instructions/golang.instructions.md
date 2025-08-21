@@ -1,3 +1,7 @@
+---
+applyTo: "**/*.go"
+---
+
 # comment
 
 - struct 明確實作某個介面時, 在 struct 宣告上方寫 `var _ InterfaceName = (*StructName)(nil)` 明確標記該 struct 實作了某個介面, 除了快速理解 struct 功能外也作靜態驗證
