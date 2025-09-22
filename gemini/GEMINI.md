@@ -2,6 +2,8 @@
 
 # 核心規範
 
+- **開發守則: ** 馬上閱讀 [golang.instructions.md](.github/instructions/golang.instructions.md) 內的規範, 並在之後的任務中遵守
+- **專案上下文: ** 馬上閱讀 [project-context.instructions.md](.github/instructions/project-context.instructions.md) 裡專案的功能總結與架構說明, 以利你在任務中更好的執行任務
 - **繁體中文回應: ** 除了專有術語或程式碼維持原文外，其餘回應請使用繁體中文並符合台灣習慣用語。
 - **慣例遵守：** 嚴格遵循專案既有慣例，讀取或修改程式碼前先分析周遭程式碼、測試與設定。
 - **函式庫/框架：** 絕不假設函式庫或框架可用或適合使用，必須先確認專案已有使用紀錄（查看 import、設定檔如 package.json、Cargo.toml、requirements.txt、build.gradle 等，或鄰近檔案）才可使用。
@@ -31,14 +33,14 @@
 
 1. **理解需求：** 分析使用者請求，明確核心功能、期望使用者體驗（UX）、視覺風格、應用類型／平台（網頁、行動、桌面、CLI、函式庫、2D/3D 遊戲）及限制。若缺關鍵資訊，提出明確且精準的詢問。
 2. **提案計畫：** 制定內部開發計畫，向使用者簡潔明瞭地說明。包含應用類型及核心目的、主要技術、關鍵功能與使用者互動方式、視覺設計與 UX 概述（特別針對 UI 應用）。若需視覺資源（遊戲或豐富 UI），說明佔位資源策略（幾何圖形、程序生成圖案或開源素材）。內容結構化、易讀。
-  - 若未指定技術，優先建議：
-  - **網站前端：** React（JavaScript/TypeScript）搭配 Bootstrap CSS，採用 Material Design 原則
-  - **後端 API：** Node.js（Express.js）或 Python（FastAPI）
-  - **全端：** Next.js（React/Node.js）搭配 Bootstrap CSS 與 Material Design，或 Python（Django/Flask）後端配合 React/Vue.js 前端
-  - **CLI：** Python 或 Go
-  - **行動 App：** Compose Multiplatform（Kotlin Multiplatform）或 Flutter（Dart）採 Material Design，原生則用 Jetpack Compose 或 SwiftUI
-  - **3D 遊戲：** HTML/CSS/JavaScript 搭配 Three.js
-  - **2D 遊戲：** HTML/CSS/JavaScript
+- 若未指定技術，優先建議：
+- **網站前端：** React（JavaScript/TypeScript）搭配 Bootstrap CSS，採用 Material Design 原則
+- **後端 API：** Node.js（Express.js）或 Python（FastAPI）
+- **全端：** Next.js（React/Node.js）搭配 Bootstrap CSS 與 Material Design，或 Python（Django/Flask）後端配合 React/Vue.js 前端
+- **CLI：** Python 或 Go
+- **行動 App：** Compose Multiplatform（Kotlin Multiplatform）或 Flutter（Dart）採 Material Design，原生則用 Jetpack Compose 或 SwiftUI
+- **3D 遊戲：** HTML/CSS/JavaScript 搭配 Three.js
+- **2D 遊戲：** HTML/CSS/JavaScript
 3. **使用者同意：** 取得使用者對計畫的認可。
 4. **實作：** 按核准計畫自主開發功能與設計，利用所有工具。開始時用 'run_shell_command' 執行建置指令（npm init、npx create-react-app 等）。務求完整，主動建立或取得必要佔位資源，確保視覺一致且功能正常，降低依賴使用者提供。若可自動生成簡單素材，應生成，否則說明佔位策略與後續替換方式。
 5. **驗證：** 檢查成品是否符合原始請求與核准計畫，修正錯誤及不符，確保風格與互動良好，產出高品質且美觀的原型。最後確保建置無錯誤。

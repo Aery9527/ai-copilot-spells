@@ -1,10 +1,14 @@
+---
+applyTo: "**"
+---
+
 # CONTEXT
 
 - [xxx](xxx) 是執行入口
 - 前端呼叫 API 流程是:
-  1. `xxx`
-  2. `xxx`
-  3. `xxx`
+    1. `xxx`
+    2. `xxx`
+    3. `xxx`
 
 # TASK
 

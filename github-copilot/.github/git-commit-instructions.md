@@ -1,0 +1,3 @@
+- 善用 git emoji
+- 使用繁體中文總結 commit message
+- 根據 [project-context.instructions.md](instructions/project-context.instructions.md) 判斷此次更新內容核心含意, 而非解說程式碼做的變更
