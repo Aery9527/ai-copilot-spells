@@ -1,5 +1,7 @@
 # GitHub Copilot CLI
 
+- 安裝與更新 `npm install -g @github/copilot@latest`
+
 ---
 
 ## CLI 參數總覽
@@ -42,9 +44,3 @@ copilot/
 * Agent 的核心價值在於 **鎖定行為風格與 scope**, 不是讓 Copilot 變聰明
 * 若任務已明確（重構 / 修 bug / 補測試）, 應優先使用 `--agent`
 * Prompt 與 agent 設定可視為「可版控的工程資產」, 適合納入 repo 管理
-
----
-
-## 如何使用
-
-- 安裝與更新 `npm install -g @github/copilot@latest`

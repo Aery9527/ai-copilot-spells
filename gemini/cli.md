@@ -1,5 +1,10 @@
 # Gemini CLI
 
+- 安裝與更新 `npm install -g @google/gemini-cli@latest`
+- API key
+    - macOS / Linux `export GEMINI_API_KEY="你的_API_KEY"`
+    - Windows `setx GEMINI_API_KEY "你的_API_KEY"`
+
 ---
 
 ## CLI 參數總覽
@@ -37,12 +42,3 @@
 * Sandbox 與 Extensions、YOLO 為一組安全模型，需一併考量
 * Telemetry 主要用於企業治理、稽核與成本控管
 * CLI 升版即同時升版內建能力，無 extension 版本地獄
-
----
-
-## 如何使用
-
-- 安裝與更新 `npm install -g @google/gemini-cli@latest`
-- API key
-   - macOS / Linux `export GEMINI_API_KEY="你的_API_KEY"`
-   - Windows `setx GEMINI_API_KEY "你的_API_KEY"`
