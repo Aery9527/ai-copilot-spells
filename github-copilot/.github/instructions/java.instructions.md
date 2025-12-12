@@ -13,4 +13,4 @@ applyTo: "**/*.java"
 
 # log
 
-- 一律使用 `org.slf4j.Logger`, 禁止使用 `system.out.println` 等輸出
+- 一律使用 `org.slf4j.Logger`, 禁止使用 `system.out.println` 等輸出, 就算是測試也是一樣遵守這個規範
