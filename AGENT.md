@@ -41,6 +41,8 @@
 | 操作 Word 文件（.docx 創建、編輯、讀取） | **docx** |
 | 操作 PowerPoint 簡報（.pptx 創建、編輯、讀取） | **pptx** |
 | 操作 Excel 電子表格（.xlsx 創建、編輯、分析） | **xlsx** |
+| 為 Office 文件生成情境配圖（設計風格、海報圖、裝飾圖） | **canvas-design** |
+| 為 Office 文件生成生成式藝術圖（流場、粒子、幾何） | **algorithmic-art** |
 
 ### ✍️ 文字寫作
 
@@ -195,6 +197,19 @@
 .docx / Word → docx skill
 .pptx / PowerPoint / 投影片 → pptx skill
 .xlsx / Excel / 電子表格 → xlsx skill
+```
+
+**文件內需要配圖？**
+
+```
+需要什麼風格的圖？
+├─ 設計感海報／封面／裝飾圖（靜態 PNG/PDF）
+│   └─ canvas-design（Python 畫布，高工藝標準）
+└─ 生成式幾何藝術／流場／粒子（互動 HTML 或截圖用）
+    └─ algorithmic-art（p5.js，100+ seed 變體）
+
+注意：以上兩者均為「程式碼繪圖」，非 AI 寫實圖片生成。
+輸出圖片後再交給 Office skill 嵌入文件。
 ```
 
 ### 「我要建 AI 應用」
