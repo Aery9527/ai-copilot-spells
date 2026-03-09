@@ -31,6 +31,7 @@
 | 用 Claude API 或 Anthropic SDK 建構應用 | **claude-api** |
 | 建構 MCP server 讓 LLM 連接外部服務 | **mcp-builder** |
 | 創建、改善或評估 AI Skill | **skill-creator** |
+| 同步 / 更新 anthropic-skills 上游 skill 變更 | **anthropic-skills-sync** |
 
 ### 📄 Office 文件
 
@@ -121,6 +122,11 @@
 - **做什麼**：創建、改善、評估和優化 AI Skill 的完整方法論
 - **核心能力**：量化評估（evals）、描述優化器、eval-viewer 視覺化報告
 - **詳細說明**：`.claude/skills/skill-creator/SUMMARY.md`（SKILL.md 是完整功能 skill）
+
+#### anthropic-skills-sync
+- **做什麼**：檢查 `anthropic-skills/` 上游 repo 是否有更新，並自動同步 `.claude/skills/` 中的摘要（skill-creator 則完整同步所有檔案），完成後 commit & push
+- **核心能力**：git fetch/diff/pull、robocopy 全量同步、摘要重新生成、AGENT.md 自動擴充
+- **詳細說明**：`.claude/skills/anthropic-skills-sync/SKILL.md`
 
 ---
 
