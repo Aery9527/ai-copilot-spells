@@ -58,17 +58,17 @@
 #### algorithmic-art
 - **做什麼**：生成藝術（p5.js）— 粒子系統、流場、噪聲場的互動 HTML artifact
 - **核心能力**：seeded randomness、seed 導航（100+ 變體）、Anthropic UI 樣式
-- **詳細說明**：`.claude/skills/algorithmic-art/SKILL.md`
+- **詳細說明**：[`.claude/skills/algorithmic-art/SKILL.md`](.claude/skills/algorithmic-art/SKILL.md)
 
 #### canvas-design
 - **做什麼**：靜態視覺藝術（海報、設計作品）→ PDF/PNG 輸出
 - **核心能力**：設計哲學宣言 + Python 畫布實作，博物館級工藝標準
-- **詳細說明**：`.claude/skills/canvas-design/SKILL.md`
+- **詳細說明**：[`.claude/skills/canvas-design/SKILL.md`](.claude/skills/canvas-design/SKILL.md)
 
 #### slack-gif-creator
 - **做什麼**：創作符合 Slack 規格的動態 GIF（emoji 128×128 或 message 480×480）
 - **核心能力**：GIFBuilder、Validators、Easing 函數、PIL 繪圖
-- **詳細說明**：`.claude/skills/slack-gif-creator/SKILL.md`
+- **詳細說明**：[`.claude/skills/slack-gif-creator/SKILL.md`](.claude/skills/slack-gif-creator/SKILL.md)
 
 ---
 
@@ -77,12 +77,12 @@
 #### brand-guidelines
 - **做什麼**：提供 Anthropic 品牌色彩（#d97757 橘、#6a9bcc 藍等）和字體（Poppins/Lora）規格
 - **核心能力**：精確 RGB/Hex 值、字體退回機制
-- **詳細說明**：`.claude/skills/brand-guidelines/SKILL.md`
+- **詳細說明**：[`.claude/skills/brand-guidelines/SKILL.md`](.claude/skills/brand-guidelines/SKILL.md)
 
 #### theme-factory
 - **做什麼**：為任何 artifact 套用 10 種預設主題（Ocean Depths、Midnight Galaxy 等）或生成自訂主題
 - **核心能力**：視覺化主題選擇（theme-showcase.pdf）、色彩+字體一體套用
-- **詳細說明**：`.claude/skills/theme-factory/SKILL.md`
+- **詳細說明**：[`.claude/skills/theme-factory/SKILL.md`](.claude/skills/theme-factory/SKILL.md)
 
 ---
 
@@ -91,17 +91,17 @@
 #### frontend-design
 - **做什麼**：創作具強烈美學觀點的生產級前端 UI（HTML/CSS/JS、React、Vue）
 - **核心能力**：對抗 AI 爛設計、獨特排版、動畫微互動、非對稱佈局
-- **詳細說明**：`.claude/skills/frontend-design/SKILL.md`
+- **詳細說明**：[`.claude/skills/frontend-design/SKILL.md`](.claude/skills/frontend-design/SKILL.md)
 
 #### web-artifacts-builder
 - **做什麼**：建構複雜多組件 Claude.ai artifact（React + Tailwind + shadcn/ui 打包成單一 HTML）
 - **核心能力**：init/bundle 腳本、40+ shadcn/ui 組件、路徑別名
-- **詳細說明**：`.claude/skills/web-artifacts-builder/SKILL.md`
+- **詳細說明**：[`.claude/skills/web-artifacts-builder/SKILL.md`](.claude/skills/web-artifacts-builder/SKILL.md)
 
 #### webapp-testing
 - **做什麼**：用 Playwright 自動化測試本地 Web 應用、截圖、捕獲 logs
 - **核心能力**：with_server.py（多伺服器管理）、偵察後行動模式
-- **詳細說明**：`.claude/skills/webapp-testing/SKILL.md`
+- **詳細說明**：[`.claude/skills/webapp-testing/SKILL.md`](.claude/skills/webapp-testing/SKILL.md)
 
 ---
 
@@ -111,22 +111,22 @@
 - **做什麼**：用 Claude API / Anthropic SDK 建構應用（單次調用到完整 Agent）
 - **核心能力**：多語言支援（Python/TS/Java/Go/Ruby/C#/PHP）、tool use、streaming、Agent SDK
 - **當前模型**：claude-opus-4-6（預設）、claude-sonnet-4-6、claude-haiku-4-5
-- **詳細說明**：`.claude/skills/claude-api/SKILL.md`
+- **詳細說明**：[`.claude/skills/claude-api/SKILL.md`](.claude/skills/claude-api/SKILL.md)
 
 #### mcp-builder
 - **做什麼**：設計和建構 MCP server 讓 LLM 能操作外部 API/服務
 - **核心能力**：4 階段流程（研究→實作→測試→評估）、TypeScript/Python 雙語言、工具設計原則
-- **詳細說明**：`.claude/skills/mcp-builder/SKILL.md`
+- **詳細說明**：[`.claude/skills/mcp-builder/SKILL.md`](.claude/skills/mcp-builder/SKILL.md)
 
 #### skill-creator
 - **做什麼**：創建、改善、評估和優化 AI Skill 的完整方法論
 - **核心能力**：量化評估（evals）、描述優化器、eval-viewer 視覺化報告
-- **詳細說明**：`.claude/skills/skill-creator/SUMMARY.md`（SKILL.md 是完整功能 skill）
+- **詳細說明**：[`.claude/skills/skill-creator/SUMMARY.md`](.claude/skills/skill-creator/SUMMARY.md)（[SKILL.md](.claude/skills/skill-creator/SKILL.md) 是完整功能 skill）
 
 #### anthropic-skills-sync
 - **做什麼**：檢查 `anthropic-skills/` 上游 repo 是否有更新，並自動同步 `.claude/skills/` 中的摘要（skill-creator 則完整同步所有檔案），完成後 commit & push
 - **核心能力**：git fetch/diff/pull、robocopy 全量同步、摘要重新生成、AGENT.md 自動擴充
-- **詳細說明**：`.claude/skills/anthropic-skills-sync/SKILL.md`
+- **詳細說明**：[`.claude/skills/anthropic-skills-sync/SKILL.md`](.claude/skills/anthropic-skills-sync/SKILL.md)
 
 ---
 
@@ -135,22 +135,22 @@
 #### pdf
 - **做什麼**：完整 PDF 操作（合併、分割、旋轉、OCR、建立、加密、填表、浮水印）
 - **核心能力**：pypdf、pdfplumber、reportlab、pytesseract、qpdf
-- **詳細說明**：`.claude/skills/pdf/SKILL.md`
+- **詳細說明**：[`.claude/skills/pdf/SKILL.md`](.claude/skills/pdf/SKILL.md)
 
 #### docx
 - **做什麼**：Word 文件操作（創建、讀取、編輯 .docx）
 - **核心能力**：docx-js（建立）、pandoc（讀取）、XML 直接操作（精確編輯）
-- **詳細說明**：`.claude/skills/docx/SKILL.md`
+- **詳細說明**：[`.claude/skills/docx/SKILL.md`](.claude/skills/docx/SKILL.md)
 
 #### pptx
 - **做什麼**：PowerPoint 操作（創建、讀取、編輯 .pptx）
 - **核心能力**：markitdown（讀取）、pptxgenjs（從零建立）、嚴格設計規範 + QA 流程
-- **詳細說明**：`.claude/skills/pptx/SKILL.md`
+- **詳細說明**：[`.claude/skills/pptx/SKILL.md`](.claude/skills/pptx/SKILL.md)
 
 #### xlsx
 - **做什麼**：Excel/電子表格操作（創建、讀取、編輯、財務模型）
 - **核心能力**：pandas（分析）、openpyxl（格式+公式）、recalc.py（公式重算）
-- **詳細說明**：`.claude/skills/xlsx/SKILL.md`
+- **詳細說明**：[`.claude/skills/xlsx/SKILL.md`](.claude/skills/xlsx/SKILL.md)
 
 ---
 
@@ -159,12 +159,12 @@
 #### doc-coauthoring
 - **做什麼**：3 階段文件共同創作（情境蒐集→精練→讀者測試）
 - **核心能力**：sub-agent 讀者測試、結構化腦力激盪、`str_replace` 精確編輯
-- **詳細說明**：`.claude/skills/doc-coauthoring/SKILL.md`
+- **詳細說明**：[`.claude/skills/doc-coauthoring/SKILL.md`](.claude/skills/doc-coauthoring/SKILL.md)
 
 #### internal-comms
 - **做什麼**：按公司格式撰寫內部溝通（3P 更新、電子報、事故報告等）
 - **核心能力**：`examples/` 目錄下的格式範本（3p-updates.md、company-newsletter.md 等）
-- **詳細說明**：`.claude/skills/internal-comms/SKILL.md`
+- **詳細說明**：[`.claude/skills/internal-comms/SKILL.md`](.claude/skills/internal-comms/SKILL.md)
 
 ---
 
