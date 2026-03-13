@@ -226,6 +226,24 @@
 
 ## Skill 位置
 
-- **原始 Skills**：`anthropic-skills/skills/<name>/SKILL.md`
-- **精華摘要**：`.claude/skills/<name>/SKILL.md`（或 `SUMMARY.md`）
-- **此導覽文件**：`AGENT.md`（專案根目錄）
+| 目錄 | 來源 | 說明 |
+|------|------|------|
+| `anthropic-skills/` | Anthropic 上游 | 原始 skill 定義（上游 repo，勿直接修改） |
+| `.claude/skills/` | 本地摘要（從 anthropic-skills 同步） | 針對 `anthropic-skills` 的**進階解說版**，供 AI 在使用者詢問功能時，快速判斷並組合合適的 skill |
+| `.agents/skills/` | **個人自製 skills** | 工作上實際遇到的問題與踩坑經驗而沉澱的 skill，與 anthropic-skills 無關 |
+| `AGENT.md` | 本文件 | Skills 導覽索引（專案根目錄） |
+
+### `.agents/` 自製 Skills 清單
+
+這些 skill 是個人在工作中遇到具體問題後自行撰寫的，記錄常見陷阱、開發守則與實戰決策邏輯：
+
+| Skill | 解決什麼問題 | 路徑 |
+|-------|------------|------|
+| **mongo** | MongoDB 查詢、aggregation pipeline、Go mongo-go-driver、JS shell 型別陷阱 | `.agents/skills/mongo/SKILL.md` |
+| **windows-script** | Windows .bat/.cmd/.ps1 語法陷阱、errorlevel、delayed expansion、PowerShell 錯誤處理 | `.agents/skills/windows-script/SKILL.md` |
+| **write-md** | Markdown 文件撰寫/編輯，含 Mermaid 圖表決策規則 | `.agents/skills/write-md/SKILL.md` |
+
+### `.claude/` Skills 的用途
+
+`.claude/skills/` 內的每個 SKILL.md 是對應 `anthropic-skills` 原始 skill 的**精華摘要與進階解說**。  
+當使用者描述一個功能需求時，AI 可藉此快速理解各 skill 的能力邊界，做出「單 skill」或「多 skill 組合」的最佳決策。
