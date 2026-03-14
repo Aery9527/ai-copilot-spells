@@ -5,12 +5,13 @@ description: Writing or editing markdown documents. Use when the user asks to wr
 
 # Write MD
 
-撰寫與編輯 Markdown 文件。選擇性地嵌入 Mermaid 圖表——**僅在視覺化能明顯降低理解難度時才使用**，而非預設插圖。
+撰寫與編輯 Markdown 文件。選擇性地嵌入 Mermaid 圖表——**僅在視覺化能明顯降低理解難度時才使用**，而非使用文字單純描述。
 
 ## 語言規範
 
 - 文件正文、標題、表格說明、圖表註解與一般敘述，**一律預設使用繁體中文**。
 - 專有術語維持原文，例如產品名、服務名、library 名稱、API 名稱、command 名稱、CLI flags、environment variables、檔名、路徑與程式語言關鍵字。
+- 說明此專案內的檔案、目錄或參考文件時，**預設使用 Markdown link**，讓讀者可以直接跳轉；只有在純 code snippet、純路徑列舉或需要強調字面值時，才使用反引號路徑。
 
 ## 工作流程
 
