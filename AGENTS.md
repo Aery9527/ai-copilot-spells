@@ -1,4 +1,4 @@
-# AGENT.md — 專案 Skills 導覽
+# AGENTS.md — 專案 Skills 導覽
 
 > 當使用者遇到問題時，Rion 可以查閱此文件判斷應該使用哪些 skill，並進入對應的 `.claude/skills/<name>/SKILL.md` 獲取詳細使用說明。
 

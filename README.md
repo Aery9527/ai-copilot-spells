@@ -28,4 +28,4 @@
 
 `.claude/skills/` 內的每個 SKILL.md 是對應 `anthropic-skills` 的精華摘要。  
 當使用者描述功能需求時，AI 可快速判斷各 skill 能力邊界，決定單 skill 或組合方案。  
-完整 skills 導覽見 [`AGENT.md`](AGENT.md)。
+完整 skills 導覽見 [`AGENTS.md`](AGENTS.md)。
