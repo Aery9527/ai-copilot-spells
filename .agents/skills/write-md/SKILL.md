@@ -7,6 +7,11 @@ description: Writing or editing markdown documents. Use when the user asks to wr
 
 撰寫與編輯 Markdown 文件。選擇性地嵌入 Mermaid 圖表——**僅在視覺化能明顯降低理解難度時才使用**，而非預設插圖。
 
+## 語言規範
+
+- 文件正文、標題、表格說明、圖表註解與一般敘述，**一律預設使用繁體中文**。
+- 專有術語維持原文，例如產品名、服務名、library 名稱、API 名稱、command 名稱、CLI flags、environment variables、檔名、路徑與程式語言關鍵字。
+
 ## 工作流程
 
 1. 釐清文件範圍：記錄什麼內容、目標讀者是誰
