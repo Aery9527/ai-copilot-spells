@@ -36,7 +36,7 @@ Skills 是讓 AI 在特定領域表現更佳的提示工程模組。本專案維
 
 ### Skills Symlink 設定
 
-Claude Code 只載入 `.claude/skills/` 下的 skills。執行以下腳本可將 `.agents/skills/` 中的自製 skills 以 symlink 方式掛載進去：
+Claude Code 只載入 `.claude/skills/` 下的 skills。執行以下腳本可將 `.agents/skills/` 中的自製 skills 掛載進去：
 
 ```bash
 # Linux / macOS / Git Bash
@@ -46,8 +46,15 @@ bash link-agent-skills.sh
 ./link-agent-skills.ps1
 ```
 
-- 可從任意目錄執行，腳本自動定位 repo root
-- 重複執行安全（已存在的 symlink 會 skip）
+腳本執行時會以繁體中文互動選單詢問連結模式：
+
+| 選項 | 說明 |
+|------|------|
+| **0** | 取消 |
+| **1** | 將整個 `.claude/skills` 替換為指向 `.agents/skills` 的單一 symlink／junction |
+| **2** | 逐一將 `.agents/skills` 底下每個 skill 連結至 `.claude/skills`（可重複執行：新增的 skill 會建立連結，已從 `.agents/skills` 移除的 skill 會同步清除連結與 `.gitignore` 條目） |
+
+兩種模式都會自動將建立的連結路徑加入 `.gitignore`（已存在的條目不重複寫入）。腳本可從任意目錄執行，自動定位 repo root。
 
 ---
 

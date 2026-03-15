@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebSearch",
+      "WebFetch(domain:deepwiki.com)",
+      "Bash(powershell:*)"
+    ]
+  }
+}

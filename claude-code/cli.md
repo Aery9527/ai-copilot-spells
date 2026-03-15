@@ -6,6 +6,7 @@
   - <https://docs.anthropic.com/en/docs/claude-code/cli-reference>
   - <https://docs.anthropic.com/en/docs/claude-code/slash-commands>
 - 在 prompt 中加入 `ultrathink`（或 `think`、`think hard`、`think harder`）可觸發不同深度的推理模式。也可使用 `Alt+T` 直接切換。
+- 普遍 allow 的 tool 啟動指令 `claude --allowedTools "Bash(find:*)" "Bash(cd:*)" "Bash(powershell:*)"`
 
 ---
 
@@ -50,7 +51,7 @@
 | flag | example | 說明 | scope / risk | notes |
 |---|---|---|---|---|
 | `--tools=LIST` | `claude --tools "Bash,Edit,Read"` | 限制可用的內建 tools。`""` 停用全部，`"default"` 開啟全部。 | 高 | 精確控制工具範圍。 |
-| `--allowedTools=LIST` | `--allowedTools "Bash(git log *)"` | 指定可自動執行（不逐次詢問）的 tools。 | 高 | 支援 permission rule 語法。日常作業推薦：`--allowedTools "Bash(git *),Edit,Write,Read,Glob,Grep"`（比 `--dangerously-skip-permissions` 更安全，Bash 非 git 指令仍會詢問）。 |
+| `--allowedTools=LIST` | `--allowedTools "Bash(git log *)"` | 指定可自動執行（不逐次詢問）的 tools。 | 高 | 支援 permission rule 語法。 |
 | `--disallowedTools=LIST` | `--disallowedTools "Edit"` | 從 model context 完全移除指定 tools。 | 中 | 建立安全護欄。 |
 | `--permission-mode=MODE` | `claude --permission-mode plan` | 以指定 permission mode 啟動（例如 `plan`）。 | 中 | 可搭配 `--allow-dangerously-skip-permissions`。 |
 | `--dangerously-skip-permissions` | `claude --dangerously-skip-permissions` | 跳過所有權限提示。 | **極高** | 極度謹慎使用。 |
