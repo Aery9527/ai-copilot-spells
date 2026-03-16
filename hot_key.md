@@ -49,8 +49,8 @@ Claude Claude_pzs8sxrjxfjjc!Claude
         Run "shell:AppsFolder\Claude_pzs8sxrjxfjjc!Claude"
     } else {
         if WinActive("ahk_exe " appExe) {
-            ; 已經是 focus 狀態 → 最小化
-            WinMinimize "ahk_exe " appExe
+            ; 已經是 focus 狀態 → 關閉視窗（等同按右上角叉叉）
+            WinClose "ahk_exe " appExe
         } else {
             ; 有視窗但沒 focus → 叫出來
             WinRestore "ahk_exe " appExe
@@ -78,7 +78,7 @@ Claude Claude_pzs8sxrjxfjjc!Claude
 |------|------|
 | Claude Desktop 未啟動 | 自動啟動 Claude Desktop |
 | Claude Desktop 已開啟但未 focus | 將視窗叫到前景並 focus |
-| Claude Desktop 已經是 focus | 最小化視窗 |
+| Claude Desktop 已經是 focus | 關閉視窗（等同按右上角叉叉） |
 
 ---
 
