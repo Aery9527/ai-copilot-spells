@@ -133,13 +133,74 @@ PowerShell 7+ 預設 UTF-8，通常不需要手動設定。
 
 ---
 
+### 7. CWD 保護 ── 禁止污染呼叫端目錄
+
+腳本頂層直接呼叫 `Set-Location` 會**永久改變呼叫端（termial）的工作目錄**，用完腳本後 CWD 已不是原始位置，使用者需要手動 `cd` 回去。
+
+**正確做法**：在腳本最頂層先儲存原始位置，用 `try/finally` 確保還原：
+
+```powershell
+$originalLocation = Get-Location
+Set-Location (Join-Path $PSScriptRoot "..")
+try {
+    # ... 腳本主體 ...
+} finally {
+    Set-Location $originalLocation
+}
+```
+
+> `exit` 在 `try` 塊內仍會執行 `finally`，所以這個模式在任何退出路徑下都安全。
+
+**❌ 不要用 `Push-Location` / `Pop-Location`**：腳本內部若有針對子模組的 `Push-Location $sub`，一旦遇到 `exit`、`return` 或錯誤提前退出，這些 inner push 不會被 pop，導致 `finally` 中的 `Pop-Location` 彈出的是 inner push 而非原始位置，CWD 仍然被污染。`$originalLocation` 方法完全不依賴 location stack，任何執行路徑都正確。
+
+---
+
+### 8. 彩色輸出 ── 所有互動式腳本必須使用
+
+**凡是使用者會在 terminal 直接執行的腳本，都必須使用 `-ForegroundColor` 讓輸出可讀**。純後台 / CI 腳本例外。
+
+**色彩使用標準（必須遵循）：**
+
+| 場景 | 色彩 | 範例 |
+|------|------|------|
+| 大標題 / Banner | `Cyan` | `=== Switch Branch ===` |
+| 小節標題 | `Blue` | `--- Summary ---` |
+| 成功 `[OK]` | `Green` | `[OK] Switched to develop` |
+| 錯誤 `[X] ERROR` | `Red` | `[X] ERROR: checkout failed` |
+| 警告 `[!]` / 取消 | `Yellow` | `[!] Cancelled` |
+| Repo / 資源名稱列 | `Cyan` | `  game-go-common` |
+| 選單項目數字 `[1]` | `Green` | `[1] develop` |
+| 選單特殊選項 `[e]` | `Cyan` | `[e] enter branch name` |
+| Summary 成功計數 | `Green` | `Success: 6` |
+| Summary 失敗計數 | `Red` | `Failed: 1` |
+
+```powershell
+Write-Host "=== Switch Branch ===" -ForegroundColor Cyan
+Write-Host "  [OK] Switched to $branch" -ForegroundColor Green
+Write-Host "  [X] ERROR: checkout failed" -ForegroundColor Red
+Write-Host "  [!] Cancelled by user" -ForegroundColor Yellow
+Write-Host "--- Summary ---" -ForegroundColor Blue
+Write-Host "Success: $successCount" -ForegroundColor Green
+Write-Host "Failed:  $failCount"  -ForegroundColor Red
+```
+
+---
+
 ## 腳本開頭 Checklist
 
 ```powershell
 $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $OutputEncoding          = [System.Text.Encoding]::UTF8
-Set-Location (Join-Path $PSScriptRoot "..")   # 切換到專案根目錄（如有需要）
+
+# CWD 保護：必須用 $originalLocation + try/finally，禁止裸 Set-Location
+$originalLocation = Get-Location
+Set-Location (Join-Path $PSScriptRoot "..")
+try {
+    # ... 腳本主體 ...
+} finally {
+    Set-Location $originalLocation
+}
 ```
 
 ### 路徑分隔符
