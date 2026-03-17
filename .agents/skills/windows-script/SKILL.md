@@ -4,7 +4,8 @@ description: >-
   Windows 批次腳本（.bat/.cmd）與 PowerShell（.ps1）的開發守則與陷阱防範。
   任何涉及撰寫、修改、review .bat、.cmd 或 .ps1 檔案的任務都應使用此 skill。
   涵蓋：cmd 巢狀 if...else 語法錯誤、delayed expansion 失效、errorlevel 語義陷阱、
-  PowerShell 錯誤處理、exit code 傳遞、字串引號規則等高頻踩坑點。
+  PowerShell 錯誤處理、exit code 傳遞、字串引號規則、
+  .bat 檔案必須以系統 code page（CP950）儲存等高頻踩坑點。
   修改任何 Windows 腳本前務必先讀完此 skill。
 ---
 
@@ -179,6 +180,54 @@ popd
 set /a COUNT+=1          ✅
 set /a COUNT=!COUNT!+1   ← 多此一舉，但不會出錯
 ```
+
+---
+
+### 8. .bat 檔案編碼 ── 必須用系統 Code Page，不能用 UTF-8
+
+**問題**：`.bat` 檔案以 UTF-8 儲存，在繁體中文 Windows（cmd.exe code page **CP950**）執行時，
+中文注釋（REM）的 UTF-8 multibyte byte 序列會被 cmd.exe 以 CP950 誤解析，
+某些 byte 組合意外形成可執行指令，觸發 `系統找不到指定的檔案。` 吐到 **stderr**，
+且出現在腳本自身第一行輸出之前（令人困惑）。
+
+**症狀**：
+- 腳本功能完全正常，但每次執行都有一行不明 stderr 錯誤
+- 錯誤訊息為 `系統找不到指定的檔案。`（CP950）或 `The system cannot find the file specified.`（切換 code page 後）
+- 錯誤在 banner / 第一個 `echo` 之前出現
+
+**根本原因**：
+cmd.exe 用**系統 code page**（CP950）讀取並解析整個 .bat 檔案。
+UTF-8 中文字元的 byte 序列（如 `E4 B8 80`）被 CP950 誤讀後，可能碰巧形成一個
+「嘗試執行不存在的檔案」的隱形指令。
+
+**解法：將 .bat 檔案以 CP950 儲存**
+
+```powershell
+# PowerShell：批次轉換所有 .bat 為 CP950
+$cp950  = [System.Text.Encoding]::GetEncoding(950)
+$utf8   = [System.Text.Encoding]::UTF8
+Get-ChildItem scripts\*.bat | ForEach-Object {
+    $content = [System.IO.File]::ReadAllText($_.FullName, $utf8)
+    [System.IO.File]::WriteAllText($_.FullName, $content, $cp950)
+}
+```
+
+**常見誤解：`chcp 65001` 可以修復** → ❌ 無效
+
+`chcp 65001` 只改變 console 的 **I/O 輸出 encoding**，不影響 cmd.exe **讀取與解析
+.bat 檔案**的方式。腳本開始執行時 cmd.exe 早已用 CP950 掃描過整份檔案了。
+
+```batch
+@echo off
+chcp 65001 >nul     ← ❌ 來不及，UTF-8 bytes 已經被 CP950 誤讀
+```
+
+**額外陷阱：UTF-8 BOM 破壞第一行**
+
+若 .bat 以 UTF-8 **with BOM**（`EF BB BF`）儲存，BOM bytes 在 CP950 下被讀成亂碼，
+會破壞 `@echo off`，導致 echo 未關閉且第一行顯示亂碼命令。
+
+**規則**：含中文注釋的 `.bat` → 存 **CP950**；若改用純英文注釋 → ASCII/UTF-8 皆可。
 
 ---
 
