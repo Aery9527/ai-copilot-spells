@@ -63,7 +63,7 @@ Mode 1 / Mode 2 會自動將建立的 `.agents/skills` 路徑加入 `.gitignore`
 
 ### AutoHotkey 快捷鍵（Windows）
 
-[`hot_key.md`](hot_key.md) — 用 AutoHotkey v2 設定 `Alt + 空白鍵` 叫出 / 最小化 Claude Desktop。
+[`hot_key.md`](tool/claude_desktop_hot_key.md) — 用 AutoHotkey v2 設定 `Alt + 空白鍵` 叫出 / 最小化 Claude Desktop。
 
 ---
 

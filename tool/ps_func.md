@@ -9,7 +9,7 @@
 function gcc { # Golang Claude Code
 	$env:GO_HOME="C:\Users\User\sdk\go1.26.0\bin"
     $env:PATH="$env:GO_HOME;$env:PATH"
-    claude --allowedTools "Bash(find:*)" "Bash(cd:*)" "Bash(powershell:*)" $args
+    claude --allowedTools "Bash(find:*)" "Bash(cd:*)" "Bash(powershell:*)" @args
 }
 
 # github copilot shortcuts
@@ -17,7 +17,7 @@ function gcc { # Golang Claude Code
 function ggc { # Golang Github Copilot
 	$env:GO_HOME="C:\Users\User\sdk\go1.26.0\bin"
     $env:PATH="$env:GO_HOME;$env:PATH"
-    copilot --allow-all-tools $args
+    copilot --allow-all-tools @args
 }
 
 # workspace shortcuts
