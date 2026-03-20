@@ -7,15 +7,15 @@
 # claude code shortcuts
 
 function gcc { # Golang Claude Code
-	$env:GO_HOME="C:\Users\User\sdk\go1.26.0\bin"
+    $env:GO_HOME="C:\Users\User\sdk\go1.26.0\bin"
     $env:PATH="$env:GO_HOME;$env:PATH"
-    claude --allowedTools "Bash(find:*)" "Bash(cd:*)" "Bash(powershell:*)" @args
+    claude --allowedTools "Bash(*)" @args
 }
 
 # github copilot shortcuts
 
 function ggc { # Golang Github Copilot
-	$env:GO_HOME="C:\Users\User\sdk\go1.26.0\bin"
+    $env:GO_HOME="C:\Users\User\sdk\go1.26.0\bin"
     $env:PATH="$env:GO_HOME;$env:PATH"
     copilot --allow-all-tools @args
 }
@@ -24,10 +24,6 @@ function ggc { # Golang Github Copilot
 
 function gws { # golang workspace: GolandProjects
 	cd C:\Users\User\GolandProjects
-}
-
-function jws { # java workspace: IdeaProjects
-	cd C:\Users\User\IdeaProjects
 }
 
 ```

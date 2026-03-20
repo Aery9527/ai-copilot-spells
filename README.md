@@ -8,9 +8,9 @@
 
 | 工具 | 目錄 | 說明 |
 |------|------|------|
-| **Claude Code** | [`claude-code/`](claude-code/) | CLI 參數、slash commands、快捷鍵 |
-| **GitHub Copilot** | [`github-copilot/`](github-copilot/) | CLI 參數、slash commands、custom instructions |
-| **Gemini** | [`gemini/`](gemini/) | CLI 參數、GEMINI.md 設定、語言別 instructions |
+| **Claude Code** | [`claude-code/cli.md`](claude-code/cli.md) | CLI 參數、slash commands、快捷鍵 |
+| **GitHub Copilot** | [`github-copilot/cli.md`](github-copilot/cli.md) | CLI 參數、slash commands、custom instructions |
+| **Gemini** | [`gemini/cli.md`](gemini/cli.md) | CLI 參數、GEMINI.md 設定、語言別 instructions |
 
 ---
 
@@ -36,26 +36,7 @@ Skills 是讓 AI 在特定領域表現更佳的提示工程模組。本專案維
 
 ### Skills Link 設定
 
-目前這兩支腳本會以 `.claude/skills/` 作為真實來源，將 `.agents/skills/` 建成對應的 symlink／junction；適合在保留 `.agents/skills/` 路徑習慣的同時，讓實際內容對齊 `.claude/skills/`。
-
-```bash
-# Linux / macOS / Git Bash
-bash ./script/link-agent-skills.sh
-
-# Windows PowerShell
-.\script\link-agent-skills.ps1
-```
-
-腳本執行時會以繁體中文互動選單詢問連結模式：
-
-| 選項 | 說明 |
-|------|------|
-| **0** | 取消 |
-| **1** | 將整個 `.agents/skills` 連結至 `.claude/skills`（bash 建立單一 symlink；PowerShell 建立單一 junction） |
-| **2** | 逐一將 `.claude/skills` 底下每個 skill 連結至 `.agents/skills`（可重複執行：`.claude/skills` 新增的 skill 會補建連結；來源已移除時會同步清掉失效連結與 `.gitignore` 條目） |
-| **3** | 取消連結（移除 `.agents/skills` 本體連結，或逐一移除指向 `.claude/skills` 的 skill 連結，並同步清理 `.gitignore`） |
-
-Mode 1 / Mode 2 會自動將建立的 `.agents/skills` 路徑加入 `.gitignore`（已存在的條目不重複寫入）；Mode 3 會移除對應條目。腳本可從任意目錄執行，並會自動定位 repo root。
+Skills link 腳本的詳細說明、執行方式與模式差異，請見 [`scripts/README.md`](scripts/README.md)。
 
 ---
 
@@ -80,7 +61,7 @@ ai-copilot-spells/
 ├── .agents/skills/       # 個人自製 skills
 ├── AGENTS.md             # Skills 導覽索引
 ├── hot_key.md            # AutoHotkey 快捷鍵設定
-└── script/
+└── scripts/
     ├── link-agent-skills.sh   # Skills link 腳本（bash）
     └── link-agent-skills.ps1  # Skills link 腳本（PowerShell）
 ```
