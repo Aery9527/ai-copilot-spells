@@ -42,9 +42,11 @@ Skills link 腳本的詳細說明、執行方式與模式差異，請見 [`scrip
 
 ## 其他設定
 
+[`tool/README.md`](tool/README.md) — Windows / WSL / PowerShell / Claude Desktop 等工具型操作文件索引。
+
 ### AutoHotkey 快捷鍵（Windows）
 
-[`hot_key.md`](tool/claude_desktop_hot_key.md) — 用 AutoHotkey v2 設定 `Alt + 空白鍵` 叫出 / 最小化 Claude Desktop。
+[`tool/claude_desktop_hot_key.md`](tool/claude_desktop_hot_key.md) — 用 AutoHotkey v2 設定 `Alt + 空白鍵` 叫出 / 最小化 Claude Desktop。
 
 ---
 
@@ -60,8 +62,13 @@ ai-copilot-spells/
 ├── .claude/skills/       # anthropic-skills 精華摘要（AI 使用）
 ├── .agents/skills/       # 個人自製 skills
 ├── AGENTS.md             # Skills 導覽索引
-├── hot_key.md            # AutoHotkey 快捷鍵設定
+├── tool/                 # 工具型操作文件與設定筆記
+│   ├── README.md
+│   ├── claude_desktop_hot_key.md
+│   ├── ps_func.md
+│   └── wsl-claude-code-python-setup.md
 └── scripts/
-    ├── link-agent-skills.sh   # Skills link 腳本（bash）
-    └── link-agent-skills.ps1  # Skills link 腳本（PowerShell）
+    ├── README.md
+    ├── link-agent-skills.sh
+    └── link-agent-skills.ps1
 ```
