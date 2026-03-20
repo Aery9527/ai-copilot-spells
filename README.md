@@ -66,7 +66,7 @@ ai-copilot-spells/
 │   ├── README.md
 │   ├── claude_desktop_hot_key.md
 │   ├── ps_func.md
-│   └── wsl-claude-code-python-setup.md
+│   └── wsl-claude-code-env-setup.md
 └── scripts/
     ├── README.md
     ├── link-agent-skills.sh

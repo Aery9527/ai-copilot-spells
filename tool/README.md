@@ -8,7 +8,7 @@
 
 | 文件 | 說明 |
 |------|------|
-| [`wsl-claude-code-python-setup.md`](wsl-claude-code-python-setup.md) | 從零開始在 Windows 安裝 WSL、在 WSL 內安裝 Claude Code、補齊 sandbox 依賴，以及安裝 Python 的流程 |
+| [`wsl-claude-code-env-setup.md`](wsl-claude-code-env-setup.md) | 從零開始在 Windows 安裝 WSL、設定 GitHub SSH 與 `.ssh/config`、在 WSL 內安裝 Claude Code、補齊 sandbox 依賴，並加入 Python、Golang 與 Bash 自訂快捷指令流程 |
 | [`claude_desktop_hot_key.md`](claude_desktop_hot_key.md) | 用 AutoHotkey v2 設定快捷鍵叫出 / 關閉 Claude Desktop |
 | [`ps_func.md`](ps_func.md) | 在 Windows PowerShell profile 中加入常用函數與命令捷徑 |
 
