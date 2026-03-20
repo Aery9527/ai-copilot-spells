@@ -266,6 +266,78 @@ Host github.com
 - `IdentitiesOnly yes`：避免 SSH 自動亂試其他 key，降低多把金鑰時的混亂
 - `AddKeysToAgent yes`：讓 SSH agent 幫你管理這把 key
 
+### 進階版本：同一台 WSL 使用多個 GitHub 帳號
+
+如果你同時有：
+
+- 個人 GitHub 帳號
+- 公司 / 工作 GitHub 帳號
+
+建議不要把兩把 key 都綁在同一個 `Host github.com` 上，而是改用 **alias host** 分開管理。
+
+### 先建立兩把 key
+
+```bash
+ssh-keygen -t ed25519 -C "your_personal_email@example.com" -f ~/.ssh/github_personal_ed25519
+ssh-keygen -t ed25519 -C "your_work_email@company.com" -f ~/.ssh/github_work_ed25519
+```
+
+再把兩把 key 都加進 agent：
+
+```bash
+ssh-add ~/.ssh/github_personal_ed25519
+ssh-add ~/.ssh/github_work_ed25519
+```
+
+### `~/.ssh/config` 的多帳號範例
+
+```sshconfig
+Host github-personal
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/github_personal_ed25519
+    IdentitiesOnly yes
+    AddKeysToAgent yes
+
+Host github-work
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/github_work_ed25519
+    IdentitiesOnly yes
+    AddKeysToAgent yes
+```
+
+### 這種寫法的重點
+
+- `github-personal` 與 `github-work` 是你自訂的 alias
+- `HostName` 仍然是 GitHub 真正的主機：`github.com`
+- 真正決定用哪把 key 的，是你 clone / push 時用的 host alias
+
+### 驗證兩個帳號是否都能連上
+
+```bash
+ssh -T git@github-personal
+ssh -T git@github-work
+```
+
+如果設定正確，兩條命令應該會各自顯示對應帳號的名稱。
+
+### 多帳號時的 clone 寫法
+
+個人帳號 repo：
+
+```bash
+git clone git@github-personal:your-user/your-repo.git
+```
+
+公司帳號 repo：
+
+```bash
+git clone git@github-work:your-org/your-repo.git
+```
+
+> 重點：如果你 `.ssh/config` 用的是 `github-personal` / `github-work`，那 remote URL 也必須用這兩個 alias，不能偷換回 `git@github.com:...`，不然 SSH 不會套用你指定的那把 key。
+
 ### 驗證 GitHub SSH 是否成功
 
 ```bash
@@ -600,6 +672,13 @@ ls -la ~/.ssh
 ssh -T git@github.com
 ```
 
+如果你使用的是多帳號進階版本，再補驗證：
+
+```bash
+ssh -T git@github-personal
+ssh -T git@github-work
+```
+
 ### 在 WSL 驗證 sandbox 依賴
 
 ```bash
@@ -758,7 +837,34 @@ chmod 644 ~/.ssh/github_ed25519.pub
 git clone git@github.com:owner/repo.git
 ```
 
-### 7. Go 裝好了，但版本不是最新
+如果你用的是多帳號進階版本，就要改成對應 alias：
+
+```bash
+git clone git@github-personal:your-user/your-repo.git
+git clone git@github-work:your-org/your-repo.git
+```
+
+### 7. `.ssh/config` 明明設了 `github-personal` / `github-work`，但 repo 還是吃錯帳號
+
+這通常是因為 remote URL 還在用：
+
+```bash
+git@github.com:owner/repo.git
+```
+
+而不是你設定的 alias host。請改成：
+
+```bash
+git@github-personal:your-user/your-repo.git
+```
+
+或：
+
+```bash
+git@github-work:your-org/your-repo.git
+```
+
+### 8. Go 裝好了，但版本不是最新
 
 如果你是用：
 
@@ -768,7 +874,7 @@ sudo apt install -y golang-go
 
 那麼你拿到的是 Ubuntu 套件庫版本，不一定是 Go 官方最新版本。這是這份文件刻意採用的保守路線；想要最新版時，再改走 Go 官方安裝方式即可。
 
-### 8. `~/.bashrc` 已經改了，但快捷指令不能用
+### 9. `~/.bashrc` 已經改了，但快捷指令不能用
 
 通常是因為目前 shell 還沒重新載入設定。先執行：
 
