@@ -2,6 +2,7 @@
 
 - PS5 放在 `~\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1`
 - PS7 放在 `~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1`
+- update powershell `winget upgrade Microsoft.PowerShell`
 
 ```
 # claude code shortcuts

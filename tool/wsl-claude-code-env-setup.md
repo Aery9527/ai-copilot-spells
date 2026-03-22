@@ -25,21 +25,6 @@
 
 ---
 
-## 這份文件會做什麼
-
-1. 在 Windows 啟用並安裝 WSL
-2. 確保 Linux 發行版跑在 **WSL 2**
-3. 在 Ubuntu 內更新基礎套件
-4. 設定 GitHub SSH key 與 `~/.ssh/config`
-5. 安裝 Claude Code
-6. 安裝 Claude Code **sandbox 模式**所需套件
-7. 安裝 Python、`pip`、`venv`
-8. 安裝 Golang
-9. 在 WSL 內建立自訂快速指令
-10. 驗證整套環境是否可用
-
----
-
 ## 前置條件
 
 ### Windows 需求
@@ -77,9 +62,15 @@ wsl --install
 - 啟用 WSL 與 Virtual Machine Platform
 - 安裝最新 Linux kernel
 - 將新安裝的 Linux 發行版預設為 WSL 2
-- 預設安裝 Ubuntu
+- 預設安裝一個 Linux 發行版；這份文件的目標是 Ubuntu
 
 執行完成後，**重新開機**。
+
+如果你電腦上已經有 Docker Desktop 或其他 WSL 發行版，預設 distro 可能不是 Ubuntu。重開機後請再執行一次下面這條，確保之後直接進 Ubuntu：
+
+```powershell
+wsl --set-default Ubuntu
+```
 
 ### 如果 `wsl --install` 沒有直接安裝成功
 
@@ -100,6 +91,28 @@ wsl --install -d Ubuntu
 ```powershell
 wsl --install --web-download -d Ubuntu
 ```
+
+### 如果 WSL 本體需要更新
+
+如果你已經裝好 WSL，但想先把 WSL runtime / kernel 更新到最新版本，請在 **Windows PowerShell（系統管理員）** 內執行：
+
+```powershell
+wsl --update
+```
+
+更新完成後，建議把目前的 WSL 實例關掉再重新開啟，確保新版本真的載入：
+
+```powershell
+wsl --shutdown
+```
+
+如果你想先確認目前狀態，也可以先看：
+
+```powershell
+wsl --status
+```
+
+> 補充：如果 `wsl --update` 因網路或商店來源出問題而失敗，再考慮改用 `wsl --update --web-download`。
 
 ---
 
@@ -153,6 +166,32 @@ wsl --set-version Ubuntu 2
 ### 更新 Ubuntu 套件並安裝基礎工具
 
 以下命令請在 **WSL / Ubuntu** 內執行，不是在 PowerShell。
+
+如果你希望目前這個 Linux account 執行 `sudo` 時**不需要輸入密碼**，建議用 `visudo` 走獨立 sudoers 檔，避免直接改壞主檔：
+
+```bash
+sudo visudo -f /etc/sudoers.d/99-nopasswd-$USER
+```
+
+加入下面這一行，把 `<your-user>` 換成你的 Ubuntu 使用者名稱：
+
+```text
+<your-user> ALL=(ALL) NOPASSWD: ALL
+```
+
+存檔後，確認檔案權限是 `440`：
+
+```bash
+sudo chmod 440 /etc/sudoers.d/99-nopasswd-$USER
+```
+
+如果你想讓**整個 `sudo` 群組**都免密碼，也可以改成：
+
+```text
+%sudo ALL=(ALL) NOPASSWD: ALL
+```
+
+但這個範圍比較大，除非你很清楚自己在做什麼，否則建議只放行單一帳號。
 
 先更新套件索引與已安裝套件：
 
