@@ -1,25 +1,67 @@
 ---
 name: write-md
-description: Writing or editing markdown documents. Use when the user asks to write, create, update, or organize any markdown file — including feature docs, module docs, architecture overviews, READMEs, or technical specifications. When the content involves architecture, module dependencies, data flows, state transitions, or component relationships that would be significantly easier to understand as a diagram, embed Mermaid diagrams. Do NOT use Mermaid for content that can be clearly expressed with lists, tables, or prose — only use it when visualization genuinely reduces comprehension difficulty.
+description: Writing or editing markdown documents. Use when the user asks to write, create, update, or organize any markdown file — including feature docs, module docs, architecture overviews, READMEs, or technical specifications. Ensure the produced Markdown includes a quick-navigation section with Markdown links to major headings, and add a back-to-top link in each major section so readers can jump quickly. When the content involves architecture, module dependencies, data flows, state transitions, or component relationships that would be significantly easier to understand as a diagram, embed Mermaid diagrams. Do NOT use Mermaid for content that can be clearly expressed with lists, tables, or prose — only use it when visualization genuinely reduces comprehension difficulty.
 ---
 
 # Write MD
 
-撰寫與編輯 Markdown 文件。選擇性地嵌入 Mermaid 圖表——**僅在視覺化能明顯降低理解難度時才使用**，而非預設插圖。
+撰寫與編輯 Markdown 文件。所有輸出的 Markdown 都要提供可快速跳轉的章節連結，且每個主要章節都要能一鍵回到開頭；並在必要時選擇性嵌入 Mermaid 圖表——**僅在視覺化能明顯降低理解難度時才使用**，而非預設插圖。
 
 ## 語言規範
 
 - 文件正文、標題、表格說明、圖表註解與一般敘述，**一律預設使用繁體中文**。
 - 專有術語維持原文，例如產品名、服務名、library 名稱、API 名稱、command 名稱、CLI flags、environment variables、檔名、路徑與程式語言關鍵字。
 - 說明此專案內的檔案、目錄或參考文件時，**一律使用 Markdown link**，讓讀者可以直接跳轉；只有在純 code snippet、純路徑列舉或需要強調字面值時，才使用反引號路徑。
+- 所有輸出的 Markdown 文件都必須包含章節連結，且每個主要章節都必須提供可回到開頭的 Markdown link。
 
 ## 工作流程
 
 1. 釐清文件範圍：記錄什麼內容、目標讀者是誰
 2. 起草 Markdown 結構（章節、段落、表格/清單）
-3. 對每個章節套用「Mermaid 判斷關卡」（見下方），再決定是否加圖
-4. 只在通過判斷關卡的章節嵌入 Mermaid 圖表
-5. 圖表必須補充文字，而非重複文字已說清楚的內容
+3. 先規劃「快速導覽 / 目錄」區塊，為主要章節建立 Markdown link，並安排各章節的回到開頭 link
+4. 對每個章節套用「Mermaid 判斷關卡」（見下方），再決定是否加圖
+5. 只在通過判斷關卡的章節嵌入 Mermaid 圖表
+6. 圖表必須補充文字，而非重複文字已說清楚的內容
+
+## 快速導覽 / 章節連結規範
+
+### 核心要求
+
+- 每一份 Markdown 在主標題 `#` 之後，都必須提供 `## 快速導覽` 或 `## 目錄` 章節。
+- 快速導覽必須使用 Markdown link，指向文件內的主要章節。
+- 預設至少列出所有主要 `##` 章節；當文件很長或結構複雜時，可進一步補到重要的 `###`。
+- 每個主要章節都必須提供一個回到開頭的 link；預設用 `[返回開頭](#快速導覽)`。
+- 若文件使用的是 `## 目錄` 而非 `## 快速導覽`，則回頂 link 改成 `[返回開頭](#目錄)`。
+- 若你調整了標題名稱或章節順序，必須同步更新快速導覽與回頂 link，避免死連結或名稱不一致。
+- 這是固定輸出規格，不是可選建議。
+
+### 實作原則
+
+- 連結目標以「讀者會直接跳去看的段落」為主，不要只放裝飾性標題。
+- 極短文件也要保留快速導覽；至少列出核心章節，避免例外規則讓輸出變得不一致。
+- 若文件同時包含 Mermaid 圖與文字說明，快速導覽應覆蓋有助於定位這些內容的章節。
+- 預設把回頂 link 放在每個主要章節內容結尾，讓讀者看完即可往上跳。
+- 若章節內有多個子段落，至少該章節的收尾要保留一個回頂 link，不要漏掉。
+
+### 範例
+
+```markdown
+# API Versioning 方案
+
+## 快速導覽
+
+- [問題](#問題)
+- [方案比較](#方案比較)
+- [資料模型](#資料模型)
+- [測試與驗收標準](#測試與驗收標準)
+- [風險與待確認事項](#風險與待確認事項)
+
+## 問題
+
+...
+
+[返回開頭](#快速導覽)
+```
 
 ## Mermaid 判斷關卡
 
@@ -64,25 +106,43 @@ description: Writing or editing markdown documents. Use when the user asks to wr
 ```markdown
 # {功能 / 模組名稱}
 
+## 快速導覽
+
+- [概覽](#概覽)
+- [架構](#架構)
+- [流程](#流程)
+- [核心元件](#核心元件)
+- [注意事項](#注意事項)
+
 ## 概覽
 
 目的、範圍、關鍵設計決策（純文字）。
 
-## 架構 / 結構
+[返回開頭](#快速導覽)
+
+## 架構
 
 [Mermaid：僅在元件關係複雜到難以用文字表達時使用]
+
+[返回開頭](#快速導覽)
 
 ## 流程
 
 [Mermaid：僅在時序或資料流順序難以用文字追蹤時使用]
 
+[返回開頭](#快速導覽)
+
 ## 核心元件
 
 各元件說明。只在型別層級確實需要時才加 classDiagram。
 
+[返回開頭](#快速導覽)
+
 ## 注意事項
 
 邊界條件、設計限制、待解決問題。
+
+[返回開頭](#快速導覽)
 ```
 
 不適用的章節直接省略，依需求增加領域專屬章節。
@@ -96,6 +156,8 @@ description: Writing or editing markdown documents. Use when the user asks to wr
 - 節點 ≥6 個時用 `subgraph` 分群
 - sequence diagram 用 `activate`/`deactivate` 與 `note` 標示關鍵行為
 - 直接相依用 `-->` 實線，可選/間接關係用 `-.->` 虛線
+- 若文件含多張圖，快速導覽應讓讀者能快速跳到各圖所在章節
+- 圖所在章節在收尾時仍要保留回頂 link，不因為有 Mermaid 就省略
 
 ## 範例
 

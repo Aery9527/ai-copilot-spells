@@ -1,0 +1,29 @@
+{
+  "skill_name": "plan-extension",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/plan 幫我規劃後台設定熱更新能力，先不要開始實作。",
+      "expected_output": "建立或更新 docs-plan 下的正式 plan 文件，先使用 write-md，並在內容中包含明確的測試與驗收標準，最後向使用者確認驗收條件。",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "先幫我做 request retry flow refactor 的 implementation plan，整理成 repo 內可追蹤的文件。",
+      "expected_output": "即使使用者沒有明講 /plan，也會觸發 plan-extension，將正式規劃寫進 docs-plan\\retry-flow-refactor-plan.md 類型的文件，先使用 write-md，並補上可執行的測試與驗收標準。",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "/plan 我要規劃統計欄位拆分，重點是舊查詢不能壞，請先提計畫給我確認。",
+      "expected_output": "plan 會寫進 docs-plan，包含 backward compatibility 驗收項，並要求使用者確認測試與驗收標準是否足夠。",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "先不要改 code，先幫我把 API 層、service 層、storage adapter 之間的互動整理成 plan，我想先看架構跟驗收。",
+      "expected_output": "會因為明顯是規劃意圖而觸發此 skill，使用 write-md 建立 docs-plan 內的 plan，並在互動關係複雜時考慮使用 Mermaid 視覺化。",
+      "files": []
+    }
+  ]
+}
