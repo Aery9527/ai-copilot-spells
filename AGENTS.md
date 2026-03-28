@@ -10,35 +10,32 @@
 
 | Plugin | 包含 Skills | 適用場景 |
 |--------|------------|---------|
-| **document-skills** | `xlsx` `docx` `pptx` `pdf` | 各類 Office 文件與 PDF 的建立、讀取、編輯、轉換 |
-| **example-skills** | `algorithmic-art` `brand-guidelines` `canvas-design` `doc-coauthoring` `frontend-design` `internal-comms` `mcp-builder` `skill-creator` `slack-gif-creator` `theme-factory` `web-artifacts-builder` `webapp-testing` | 創意設計、前端工程、AI 工程、文字寫作等通用能力 |
-| **claude-api** | `claude-api` | 以 Claude API / Anthropic SDK 建構 LLM 應用 |
+| **document-skills** | [`xlsx`](#xlsx) [`docx`](#docx) [`pptx`](#pptx) [`pdf`](#pdf) | 各類 Office 文件與 PDF 的建立、讀取、編輯、轉換 |
+| **example-skills** | [`algorithmic-art`](#algorithmic-art) [`brand-guidelines`](#brand-guidelines) [`canvas-design`](#canvas-design) [`doc-coauthoring`](#doc-coauthoring) [`frontend-design`](#frontend-design) [`internal-comms`](#internal-comms) [`mcp-builder`](#mcp-builder) [`skill-creator`](#skill-creator) [`slack-gif-creator`](#slack-gif-creator) [`theme-factory`](#theme-factory) [`web-artifacts-builder`](#web-artifacts-builder) [`webapp-testing`](#webapp-testing) | 創意設計、前端工程、AI 工程、文字寫作等通用能力 |
+| **claude-api** | [`claude-api`](#claude-api) | 以 Claude API / Anthropic SDK 建構 LLM 應用 |
 
 > 詳細安裝設定見 [`anthropic-skills/.claude-plugin/marketplace.json`](anthropic-skills/.claude-plugin/marketplace.json)。
 
 ### 安裝方式
 
+指令語法：`/plugin install <plugin-name>@<marketplace-name>`，`@` 後接的是 `marketplace.json` 頂層的 `name` 欄位（即 `anthropic-agent-skills`），非 GitHub repo 路徑。
+
 **安裝整個 plugin（含 plugin 內所有 skills）：**
 
 ```
 /plugin marketplace add anthropics/skills
-/plugin install example-skills@anthropics/skills
+/plugin install example-skills@anthropic-agent-skills
 ```
 
 **只安裝單一 skill：**
 
-本地 `marketplace.json` 將多個 skills 打包成同一個 plugin，**無法個別安裝**。若要只裝某個 skill（如 `skill-creator`），須改用上游 marketplace — 上游每個 skill 是獨立 plugin entry：
-
-```
-/plugin marketplace add anthropics/skills
-/plugin install skill-creator@anthropics/skills
-```
+`anthropic-agent-skills` 這個 marketplace 只有三個可安裝單位（`document-skills`、`example-skills`、`claude-api`），沒有以單一 skill 為單位的 plugin entry。**無法只安裝 `skill-creator`**，只能裝整包 `example-skills`。
 
 ### 重複安裝的行為
 
-若同時以個別方式安裝 `skill-creator`，又透過 `example-skills` plugin 安裝同一個 skill，兩者會因 namespace 不同而共存：
+若同時將 `skill-creator` 放在 `.claude/skills/`，又透過 `example-skills` plugin 安裝同一個 skill，兩者會因 namespace 不同而共存：
 
-- 個別安裝 → `/skill-creator`
+- `.claude/skills/` 直接放置 → `/skill-creator`
 - plugin 安裝 → `/example-skills:skill-creator`
 
 **設計上不會衝突，但目前有已知 bug**：skill 會在 context 和 system prompt 中重複出現，造成 token 浪費與 slash command picker 出現重複項目。官方建議裝了 plugin 版本後，將 `.claude/skills/` 裡的原始檔移除。
