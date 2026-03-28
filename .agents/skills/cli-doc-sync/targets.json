@@ -1,0 +1,28 @@
+{
+  "claude-code": {
+    "md_path": "claude-code/cc-cli.md",
+    "sources": [
+      {
+        "url": "https://docs.anthropic.com/en/docs/claude-code/cli-reference",
+        "label": "CLI 參數、CLI 內建指令"
+      },
+      {
+        "url": "https://docs.anthropic.com/en/docs/claude-code/slash-commands",
+        "label": "互動式 slash commands、內建 Skills、鍵盤快捷鍵"
+      }
+    ]
+  },
+  "github-copilot": {
+    "md_path": "github-copilot/gc-cli.md",
+    "sources": [
+      {
+        "url": "https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference",
+        "label": "CLI 參數、CLI 內建指令"
+      },
+      {
+        "url": "https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli",
+        "label": "互動式 slash commands"
+      }
+    ]
+  }
+}

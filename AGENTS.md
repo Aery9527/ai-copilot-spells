@@ -236,6 +236,7 @@
 | **mongo** | MongoDB 查詢、aggregation pipeline、Go mongo-go-driver、JS shell 型別陷阱 | `.agents/skills/mongo/SKILL.md` |
 | **windows-script** | Windows .bat/.cmd/.ps1 語法陷阱、errorlevel、delayed expansion、PowerShell 錯誤處理 | `.agents/skills/windows-script/SKILL.md` |
 | **write-md** | Markdown 文件撰寫/編輯，含 Mermaid 圖表決策規則 | `.agents/skills/write-md/SKILL.md` |
+| **cli-doc-sync** | CLI 參考文件與官方文件同步：Python 抓取、差異比對、缺補多刪 | `.agents/skills/cli-doc-sync/SKILL.md` |
 
 ### `.claude/` Skills 的用途
 
