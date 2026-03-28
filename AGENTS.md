@@ -16,6 +16,36 @@
 
 > 詳細安裝設定見 [`anthropic-skills/.claude-plugin/marketplace.json`](anthropic-skills/.claude-plugin/marketplace.json)。
 
+### 安裝方式
+
+**安裝整個 plugin（含 plugin 內所有 skills）：**
+
+```
+/plugin marketplace add anthropics/skills
+/plugin install example-skills@anthropics/skills
+```
+
+**只安裝單一 skill：**
+
+本地 `marketplace.json` 將多個 skills 打包成同一個 plugin，**無法個別安裝**。若要只裝某個 skill（如 `skill-creator`），須改用上游 marketplace — 上游每個 skill 是獨立 plugin entry：
+
+```
+/plugin marketplace add anthropics/skills
+/plugin install skill-creator@anthropics/skills
+```
+
+### 重複安裝的行為
+
+若同時以個別方式安裝 `skill-creator`，又透過 `example-skills` plugin 安裝同一個 skill，兩者會因 namespace 不同而共存：
+
+- 個別安裝 → `/skill-creator`
+- plugin 安裝 → `/example-skills:skill-creator`
+
+**設計上不會衝突，但目前有已知 bug**：skill 會在 context 和 system prompt 中重複出現，造成 token 浪費與 slash command picker 出現重複項目。官方建議裝了 plugin 版本後，將 `.claude/skills/` 裡的原始檔移除。
+
+> 來源：[Claude Code 官方文件 — Create plugins](https://docs.anthropic.com/en/docs/claude-code/plugins)
+> 相關 issue：[anthropics/claude-code#29520](https://github.com/anthropics/claude-code/issues/29520)、[anthropics/skills#189](https://github.com/anthropics/skills/issues/189)
+
 ---
 
 ## 快速查詢：問題 → Skill
