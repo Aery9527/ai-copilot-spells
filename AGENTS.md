@@ -4,6 +4,20 @@
 
 ---
 
+## Anthropic Skills Plugins
+
+`anthropic-skills` 以 plugin 為單位組織，目前共三個 plugin，可依需求選擇性安裝：
+
+| Plugin | 包含 Skills | 適用場景 |
+|--------|------------|---------|
+| **document-skills** | `xlsx` `docx` `pptx` `pdf` | 各類 Office 文件與 PDF 的建立、讀取、編輯、轉換 |
+| **example-skills** | `algorithmic-art` `brand-guidelines` `canvas-design` `doc-coauthoring` `frontend-design` `internal-comms` `mcp-builder` `skill-creator` `slack-gif-creator` `theme-factory` `web-artifacts-builder` `webapp-testing` | 創意設計、前端工程、AI 工程、文字寫作等通用能力 |
+| **claude-api** | `claude-api` | 以 Claude API / Anthropic SDK 建構 LLM 應用 |
+
+> 詳細安裝設定見 [`anthropic-skills/.claude-plugin/marketplace.json`](anthropic-skills/.claude-plugin/marketplace.json)。
+
+---
+
 ## 快速查詢：問題 → Skill
 
 ### 🎨 創意設計
@@ -227,19 +241,6 @@
 | `.agents/skills/` | **個人自製 skills** | 工作上實際遇到的問題與踩坑經驗而沉澱的 skill，與 anthropic-skills 無關 |
 | `AGENT.md` | 本文件 | Skills 導覽索引（專案根目錄） |
 
-### `.agents/` 自製 Skills 清單
-
-這些 skill 是個人在工作中遇到具體問題後自行撰寫的，記錄常見陷阱、開發守則與實戰決策邏輯：
-
-| Skill | 解決什麼問題 | 路徑 |
-|-------|------------|------|
-| **mongo** | MongoDB 查詢、aggregation pipeline、Go mongo-go-driver、JS shell 型別陷阱 | `.agents/skills/mongo/SKILL.md` |
-| **windows-script** | Windows .bat/.cmd/.ps1 語法陷阱、errorlevel、delayed expansion、PowerShell 錯誤處理 | `.agents/skills/windows-script/SKILL.md` |
-| **write-md** | Markdown 文件撰寫/編輯，含 Mermaid 圖表決策規則 | `.agents/skills/write-md/SKILL.md` |
-| **cli-doc-sync** | CLI 參考文件與官方文件同步：Python 抓取、差異比對、缺補多刪 | `.agents/skills/cli-doc-sync/SKILL.md` |
-
 ### `.claude/` Skills 的用途
 
-`.claude/skills/` 內的每個 SKILL.md 是對應 `anthropic-skills` 原始 skill 的**精華摘要與進階解說**。  
-本文件僅整理這些與 `anthropic-skills` 上游內容一一對應的 skill，不納入本地維護／同步用途的輔助 skill。  
-當使用者描述一個功能需求時，AI 可藉此快速理解各 skill 的能力邊界，做出「單 skill」或「多 skill 組合」的最佳決策。
+`.claude/skills/` 內的每個 SKILL.md 是對應 `anthropic-skills` 原始 skill 的**精華摘要與進階解說**，供 AI 在使用者詢問功能時，快速理解各 skill 的能力邊界，做出「單 skill」或「多 skill 組合」的最佳決策。
