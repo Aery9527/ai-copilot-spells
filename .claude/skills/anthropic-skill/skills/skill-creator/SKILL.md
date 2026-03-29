@@ -2,7 +2,7 @@
 name: skill-creator
 description: Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.
 source: anthropic-skills/skills/skill-creator/SKILL.md
-note: This is a SUMMARY file. The full functional skill is in SKILL.md (already installed here in .claude/skills/skill-creator/).
+note: This summary is intentionally normalized to the same sync format as every other Anthropic skill and no longer keeps a dedicated full-sync exception.
 ---
 
 ## 概述

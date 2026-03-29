@@ -5,26 +5,34 @@ description: Use this skill when the user asks to sync, update, refresh, or chec
 
 # Anthropic Skills Sync
 
-Synchronizes local `.claude/skills/` summaries with the upstream `anthropic-skills/` repo (`https://github.com/anthropics/skills.git`).
+Synchronizes the local Anthropic router package at [`.claude/skills/anthropic-skill/`](../anthropic-skill/) with the upstream `anthropic-skills/` repo (`https://github.com/anthropics/skills.git`).
 
 ## Repository Layout
 
 ```
-ai-copilot-spells/           ← project root (main git repo)
-├── anthropic-skills/        ← upstream clone (its own .git, tracks origin/main)
+ai-research/
+├── anthropic-skills/
 │   └── skills/
-│       └── <name>/          ← one directory per skill
-│           └── SKILL.md     ← upstream skill definition
+│       └── <name>/
+│           └── SKILL.md        ← upstream source of truth
 └── .claude/skills/
-    ├── <name>/              ← one directory per skill
-    │   └── SKILL.md         ← concise summary (Traditional Chinese, our own format)
-    └── skill-creator/       ← SPECIAL: contains all upstream files, not just a summary
-        ├── SKILL.md         ← real functional skill (DO NOT overwrite with summary)
-        ├── SUMMARY.md       ← our custom summary (PRESERVE this)
-        ├── agents/
-        ├── scripts/
-        └── ...
+    ├── anthropic-skill/
+    │   ├── SKILL.md            ← first-layer router
+    │   ├── categories/
+    │   │   └── *.md            ← category guides
+    │   └── skills/
+    │       └── <name>/
+    │           └── SKILL.md    ← normalized local summary for each upstream skill
+    └── anthropic-skills-sync/
+        └── SKILL.md            ← this maintenance skill
 ```
+
+All Anthropic skills, including `skill-creator`, follow the same local sync rule:
+
+- Read upstream `anthropic-skills/skills/<name>/SKILL.md`
+- Regenerate local `.claude/skills/anthropic-skill/skills/<name>/SKILL.md`
+- Do **not** create top-level `.claude/skills/<name>/` entries for Anthropic skills
+- Do **not** keep any dedicated full-sync or `SUMMARY.md` exception for `skill-creator`
 
 ## Sync Workflow
 
@@ -68,40 +76,19 @@ Note the new HEAD commit hash for the commit message.
 
 Iterate `CHANGED_SKILLS`:
 
-#### 4a. All skills EXCEPT `skill-creator`
-
 1. Read `anthropic-skills/skills/<name>/SKILL.md` (upstream source of truth)
-2. Regenerate `.claude/skills/<name>/SKILL.md` using the **Summary Format** below
-3. If this is a NEW skill (in `NEW_SKILLS`): `mkdir .claude/skills/<name>/` first
+2. Regenerate `.claude/skills/anthropic-skill/skills/<name>/SKILL.md` using the **Summary Format** below
+3. If this is a NEW skill (in `NEW_SKILLS`): create `.claude/skills/anthropic-skill/skills/<name>/` first
+4. Apply the same rule to `skill-creator`; it is **not** a privileged case
 
-#### 4b. `skill-creator` (special full-sync)
+### Step 5 — Update router and category docs when needed
 
-Copy ALL files from upstream into the installed skill directory, **preserving `SUMMARY.md`**:
+If `NEW_SKILLS` is non-empty, or if a changed skill should move categories:
 
-```powershell
-# Windows (from project root)
-robocopy "anthropic-skills\skills\skill-creator" ".claude\skills\skill-creator" /E /XF SUMMARY.md
-
-# Cross-platform alternative (PowerShell)
-$src = "anthropic-skills/skills/skill-creator"
-$dst = ".claude/skills/skill-creator"
-Get-ChildItem -Path $src -Recurse -File | ForEach-Object {
-    $rel = $_.FullName.Substring((Resolve-Path $src).Path.Length + 1)
-    if ($rel -ne "SUMMARY.md") {
-        $target = Join-Path $dst $rel
-        $targetDir = Split-Path $target -Parent
-        if (-not (Test-Path $targetDir)) { New-Item -ItemType Directory -Path $targetDir -Force | Out-Null }
-        Copy-Item $_.FullName -Destination $target -Force
-    }
-}
-```
-
-### Step 5 — Update AGENT.md for new skills
-
-If `NEW_SKILLS` is non-empty:
-- Read `AGENT.md` at project root
-- Add each new skill to the appropriate category section and lookup table
-- Use the upstream SKILL.md description to determine which category it belongs to
+- Read [`.claude/skills/anthropic-skill/SKILL.md`](../anthropic-skill/SKILL.md)
+- Read the relevant file under [`.claude/skills/anthropic-skill/categories/`](../anthropic-skill/categories/)
+- Update [AGENTS.md](../../../AGENTS.md) and [README.md](../../../README.md) so links and routing docs stay aligned
+- Use the upstream `description` to determine which category the skill belongs to
 
 ### Step 6 — Commit and push
 
@@ -110,7 +97,7 @@ If `NEW_SKILLS` is non-empty:
 $newHead = git -C anthropic-skills rev-parse --short HEAD
 $skillList = ($changedSkills -join ", ")
 git add -A
-git commit -m "sync: update skill summaries from anthropic-skills upstream
+git commit -m "sync: update anthropic-skill summaries from anthropic-skills upstream
 
 Synced from anthropic-skills @ $newHead
 Updated skills: $skillList
@@ -123,7 +110,7 @@ git push
 
 ## Summary Format for SKILL.md
 
-Use this exact structure when creating or regenerating `.claude/skills/<name>/SKILL.md`:
+Use this exact structure when creating or regenerating `.claude/skills/anthropic-skill/skills/<name>/SKILL.md`:
 
 ```markdown
 ---
@@ -163,11 +150,12 @@ source: anthropic-skills/skills/<name>/SKILL.md
 
 | Scenario | Action |
 |----------|--------|
-| Skill deleted upstream | Notify user, ask for confirmation before removing `.claude/skills/<name>/` |
-| `skill-creator` changed | Full file sync (Step 4b), NOT just regenerating SKILL.md |
-| New skill has no SKILL.md | Log warning, skip summary generation, still copy files |
+| Skill deleted upstream | Notify user, ask for confirmation before removing `.claude/skills/anthropic-skill/skills/<name>/` and its category references |
+| New skill has no `SKILL.md` | Log warning, skip summary generation |
+| Skill changed categories | Update the relevant file under `categories/`, plus `AGENTS.md` if the public routing table changed |
+| `skill-creator` changed | Regenerate its normalized summary using the same rule as every other skill |
 | git push requires auth | Browser-based auth will appear; wait for it to complete |
-| anthropic-skills not a git repo | Error out early: `git -C anthropic-skills status` must succeed |
+| `anthropic-skills` not a git repo | Error out early: `git -C anthropic-skills status` must succeed |
 
 ---
 
@@ -176,6 +164,10 @@ source: anthropic-skills/skills/<name>/SKILL.md
 After syncing, confirm:
 
 ```powershell
+# Verify top-level Anthropic router structure
+Get-ChildItem -LiteralPath '.claude\skills' -Directory
+Get-ChildItem -LiteralPath '.claude\skills\anthropic-skill\skills' -Directory
+
 # Verify no uncommitted changes remain
 git --no-pager status
 

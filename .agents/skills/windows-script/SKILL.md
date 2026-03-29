@@ -10,19 +10,9 @@ description: >-
 
 > **這不是建議，是強制規範。**
 
-`.bat` / `.cmd` 是 1980 年代的技術遺產，充滿無法修復的設計缺陷：
+`.bat` / `.cmd` 是過時的技術遺產，不值得再投資維護成本。遇到需要修改、擴充、除錯或 review 的 batch script，預設策略不是修補，而是直接改寫成 `.ps1`。
 
-| 地雷 | 說明 |
-|------|------|
-| **Self-modification race condition** | cmd.exe 逐行讀取磁碟上的 .bat 檔；若腳本執行期間 `git checkout` 替換了該檔案（例如切換到不同 encoding 的分支），cmd.exe 從舊 byte offset 繼續讀新檔案，跳到完全錯誤的程式碼路徑，產生難以除錯的靜默錯誤 |
-| **CP950 編碼地獄** | cmd.exe 以系統 code page（CP950）解析整份 .bat；UTF-8 中文注釋的 bytes 被 CP950 誤讀後可能形成隱形指令，在第一行輸出之前就噴出 `系統找不到指定的檔案。` |
-| **Delayed expansion 陷阱** | `%VAR%` 是 parse-time 展開；for/if 塊內改過的變數在同一塊內讀取永遠是舊值，需要 `!VAR!` + `setlocal enabledelayedexpansion`，極易遺漏 |
-| **巢狀 if/else 報錯** | else 分支內含另一個 if/else 會讓 parser 報錯「這個時候不應有 else」，需要 call :subroutine 繞過 |
-| **Errorlevel 語義陷阱** | `if errorlevel 1` 的語義是 `>= 1`，不是 `== 1`，高 exit code 會誤觸 |
-| **無原生陣列** | 只能用 `VAR_1`, `VAR_2`, `VAR_N` 模擬陣列，脆弱且難維護 |
-| **無結構化錯誤處理** | 沒有 try/catch/finally，清理路徑（popd、還原狀態）容易在 goto 迷宮中遺漏 |
-
-**PowerShell 從根本解決以上所有問題**：整個 .ps1 在執行前一次性 parse 進記憶體；native UTF-8；原生陣列；`try/finally`；`$LASTEXITCODE`；無 delayed expansion 陷阱。
+**PowerShell 是預設替代方案**：語法與錯誤處理較一致、UTF-8 友善、可讀性與可維護性都明顯較好，也更適合現代 CLI、CI 與自動化工作流。
 
 **遇到現有 .bat 需要修改時 → 直接改寫成 .ps1，不要修補 .bat。**
 

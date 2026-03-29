@@ -10,6 +10,15 @@ description: >-
 
 從官方文件抓取最新 CLI 參考資訊，與本地 Markdown 做結構化差異比對，補缺刪多。
 
+## 快速導覽
+
+- [觸發條件](#觸發條件)
+- [工具呼叫](#工具呼叫)
+- [工作流程](#工作流程)
+- [更新規則](#更新規則)
+- [目標配置](#目標配置)
+- [品質 Checklist](#品質-checklist)
+
 ## 觸發條件
 
 以下關鍵詞或意圖應觸發此 skill：
@@ -19,25 +28,27 @@ description: >-
 - 「看看官方文件有沒有新的 flag / command / shortcut」
 - 明確指定要更新某個工具的 CLI 參考文件
 
+[返回開頭](#快速導覽)
+
 ## 工具呼叫
 
 ### fetch_docs.py
 
-位置：`.agents/skills/cli-doc-sync/fetch_docs.py`
+位置：[`.claude/skills/cli-doc-sync/fetch_docs.py`](fetch_docs.py)
 
 ```bash
 # 安裝依賴（首次使用）
 pip install requests markdownify
 
 # 列出可用目標
-python .agents/skills/cli-doc-sync/fetch_docs.py --list
+python .claude/skills/cli-doc-sync/fetch_docs.py --list
 
 # 抓取指定目標
-python .agents/skills/cli-doc-sync/fetch_docs.py claude-code
-python .agents/skills/cli-doc-sync/fetch_docs.py github-copilot
+python .claude/skills/cli-doc-sync/fetch_docs.py claude-code
+python .claude/skills/cli-doc-sync/fetch_docs.py github-copilot
 
 # 抓取單一 URL
-python .agents/skills/cli-doc-sync/fetch_docs.py --url "https://..."
+python .claude/skills/cli-doc-sync/fetch_docs.py --url "https://..."
 ```
 
 ### JSON 輸出結構
@@ -58,6 +69,8 @@ python .agents/skills/cli-doc-sync/fetch_docs.py --url "https://..."
 ```
 
 每個 source 的 `content_md` 是官方頁面轉換後的 Markdown。若抓取失敗，會有 `error` 欄位而非 `content_md`。
+
+[返回開頭](#快速導覽)
 
 ## 工作流程
 
@@ -129,6 +142,8 @@ python .agents/skills/cli-doc-sync/fetch_docs.py --url "https://..."
 
 **等待使用者確認**後才執行變更。更新時遵循下方「更新規則」。
 
+[返回開頭](#快速導覽)
+
 ## 更新規則
 
 ### 新增項目
@@ -163,9 +178,11 @@ python .agents/skills/cli-doc-sync/fetch_docs.py --url "https://..."
 - 維持既有表格欄位名稱和欄序
 - 不重新格式化未變更的內容
 
+[返回開頭](#快速導覽)
+
 ## 目標配置
 
-工具清單定義在 `targets.json`（與本 SKILL.md 同目錄）。新增工具只需在 JSON 加一筆 entry。
+工具清單定義在 [`targets.json`](targets.json)（與本 SKILL.md 同目錄）。新增工具只需在 JSON 加一筆 entry。
 
 目前支援的目標：
 
@@ -173,6 +190,8 @@ python .agents/skills/cli-doc-sync/fetch_docs.py --url "https://..."
 |------|---------|---------|
 | `claude-code` | `claude-code/cc-cli.md` | 2 個 URL |
 | `github-copilot` | `github-copilot/gc-cli.md` | 2 個 URL |
+
+[返回開頭](#快速導覽)
 
 ## 品質 Checklist
 
@@ -183,3 +202,5 @@ python .agents/skills/cli-doc-sync/fetch_docs.py --url "https://..."
 - [ ] 沒有動到使用者自訂的備註或額外內容
 - [ ] H2/H3 結構與原文件一致
 - [ ] 告知使用者官方文件可能遺漏的項目（如 beta flag、實驗功能）
+
+[返回開頭](#快速導覽)
