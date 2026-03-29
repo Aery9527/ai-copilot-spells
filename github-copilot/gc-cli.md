@@ -2,6 +2,7 @@
 
 ## 快速導覽
 
+- [更新時間與差異總結](#更新時間與差異總結)
 - [常用 CLI 參數](#常用-cli-參數)
 - [CLI 內建指令](#cli-內建指令)
 - [互動式 slash commands](#互動式-slash-commands)
@@ -14,6 +15,17 @@
   - <https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli>
 
 ---
+
+## 更新時間與差異總結
+
+- 更新時間：`2026-03-29 12:14 UTC`
+- 比較基準：上一版本地文件（本次同步前）
+- 差異摘要：
+  - 新增官方目前已公開的高影響 flags，例如 `--allow-all-paths`、`--allow-all-urls`、`--allow-url`、`--available-tools`、`--additional-mcp-config`、`--autopilot`、`--no-ask-user`、`--no-custom-instructions`。
+  - 補上官方 command reference 額外列出的互動式快捷操作與鍵盤快捷鍵，例如 `@ FILENAME`、`! COMMAND`、`Ctrl+X` 後 `/`、timeline / navigation shortcuts。
+  - 移除官方目前 slash-command 清單未列出的舊項目，例如 `/pr`、`/research`、`/copy`、`/restart`、`/instructions`、`/streamer-mode`、`/update`、`/version`、`/changelog`，避免把歷史功能誤當現況。
+
+[返回開頭](#快速導覽)
 
 ## 常用 CLI 參數
 

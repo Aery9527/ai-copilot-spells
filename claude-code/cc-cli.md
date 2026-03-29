@@ -2,6 +2,7 @@
 
 ## 快速導覽
 
+- [更新時間與差異總結](#更新時間與差異總結)
 - [常用 CLI 參數](#常用-cli-參數)
 - [CLI 內建指令](#cli-內建指令)
 - [互動式 slash commands](#互動式-slash-commands)
@@ -19,6 +20,18 @@
 - 普遍 allow 的 tool 啟動指令 `claude --allowedTools "Bash(find:*)" "Bash(cd:*)" "Bash(powershell:*)"`
 
 ---
+
+## 更新時間與差異總結
+
+- 更新時間：`2026-03-29 12:14 UTC`
+- 比較基準：上一版本地文件（本次同步前）
+- 差異摘要：
+  - 新增目前官方已列出的高影響 CLI commands / flags，例如 `claude plugin`、`claude remote-control`、`claude auto-mode defaults`、`--bare`、`--chrome`、`--enable-auto-mode`、`--remote`、`--teleport`、`--session-id`、`--teammate-mode`、`--tmux`。
+  - 補上目前 commands / interactive docs 已列出的 slash commands 與互動能力，例如 `/btw`、`/chrome`、`/desktop`、`/install-slack-app`、`/mobile`、`/remote-control`、`/schedule`、`/voice`，以及內建 skill `/claude-api`。
+  - 修正已過時的對照內容，例如把 `/fork` 改標成官方主指令 `/branch`（保留 alias 說明）、把背景 agents 終止快捷鍵改為 `Ctrl+X Ctrl+K`、補上 `Option+O` / `Alt+O` 的 fast mode shortcut。
+  - 同步來源改為 `code.claude.com` 的 `cli-reference`、`commands`、`interactive-mode`、`skills` 四頁，避免沿用已不再提供指令表的舊網址。
+
+[返回開頭](#快速導覽)
 
 ## 常用 CLI 參數
 
