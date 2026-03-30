@@ -35,6 +35,8 @@ flowchart LR
 ## 快速導覽
 
 - [Skills 系統](#skills-系統)
+  - [anthropic-skills](#anthropic-skills)
+  - [superpowers](#superpowers)
 - [AI 工具文件](#ai-工具文件)
 - [個人自製 Skills](#個人自製-skills)
 - [目錄結構](#目錄結構)
@@ -62,9 +64,15 @@ flowchart LR
 
 [`.claude/skills/_shared/upstream-sync-protocol.md`](.claude/skills/_shared/upstream-sync-protocol.md) — 各 upstream sync skill 共用的通用 sync 流程協議。新增第三、四個 submodule 時，sync skill 只需引用這份文件 + 填入庫設定。
 
-### Plugin 安裝
+### anthropic-skills
 
-**anthropic-skills** 以 plugin 為單位組織，目前共三個 plugin，可依需求選擇性安裝：
+```
+/plugin marketplace add anthropics/skills
+/plugin install example-skills@anthropic-agent-skills
+/plugin install document-skills@anthropic-agent-skills
+```
+
+以 plugin 為單位組織，目前共三個 plugin，可依需求選擇性安裝：
 
 | Plugin | 包含 Skills | 適用場景 |
 |--------|------------|---------|
@@ -74,13 +82,20 @@ flowchart LR
 
 詳細設定見 [`anthropic-skills/.claude-plugin/marketplace.json`](anthropic-skills/.claude-plugin/marketplace.json)。
 
+> **已知 bug**：若同一批 skills 同時由 project top-level entries 與 plugin namespace 暴露，context 與 slash command picker 仍可能重複。當前結構設計就是為了避免這個情況。相關 issue：[anthropics/claude-code#29520](https://github.com/anthropics/claude-code/issues/29520)、[anthropics/skills#189](https://github.com/anthropics/skills/issues/189)
+
+### superpowers
+
 ```
-/plugin marketplace add anthropics/skills
-/plugin install example-skills@anthropic-agent-skills
-/plugin install document-skills@anthropic-agent-skills
+# 官方 marketplace（推薦）
+/plugin install superpowers@claude-plugins-official
+
+# 或透過 obra's marketplace
+/plugin marketplace add obra/superpowers-marketplace
+/plugin install superpowers@superpowers-marketplace
 ```
 
-**superpowers** 為單一 plugin，涵蓋開發流程全套 skills：
+為單一 plugin，涵蓋開發流程全套 skills：
 
 | Plugin | 包含 Skills | 適用場景 |
 |--------|------------|---------|
@@ -120,17 +135,6 @@ flowchart TD
 
     ws["writing-skills"]
 ```
-
-```
-# 官方 marketplace（推薦）
-/plugin install superpowers@claude-plugins-official
-
-# 或透過 obra's marketplace
-/plugin marketplace add obra/superpowers-marketplace
-/plugin install superpowers@superpowers-marketplace
-```
-
-> **已知 bug**：若同一批 skills 同時由 project top-level entries 與 plugin namespace 暴露，context 與 slash command picker 仍可能重複。當前結構設計就是為了避免這個情況。相關 issue：[anthropics/claude-code#29520](https://github.com/anthropics/claude-code/issues/29520)、[anthropics/skills#189](https://github.com/anthropics/skills/issues/189)
 
 ---
 
