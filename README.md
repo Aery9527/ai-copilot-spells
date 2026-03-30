@@ -66,6 +66,8 @@ flowchart LR
 
 ### anthropic-skills
 
+**安裝方法：**
+
 ```
 /plugin marketplace add anthropics/skills
 /plugin install example-skills@anthropic-agent-skills
@@ -85,6 +87,8 @@ flowchart LR
 > **已知 bug**：若同一批 skills 同時由 project top-level entries 與 plugin namespace 暴露，context 與 slash command picker 仍可能重複。當前結構設計就是為了避免這個情況。相關 issue：[anthropics/claude-code#29520](https://github.com/anthropics/claude-code/issues/29520)、[anthropics/skills#189](https://github.com/anthropics/skills/issues/189)
 
 ### superpowers
+
+**安裝方法：**
 
 ```
 # 官方 marketplace（推薦）
