@@ -4,25 +4,31 @@
     {
       "id": 1,
       "prompt": "/plan 幫我規劃後台設定熱更新能力，先不要開始實作。",
-      "expected_output": "建立或更新 docs-plan 下的正式 plan 文件，先使用 write-md，並在內容中包含明確的測試與驗收標準，最後向使用者確認驗收條件。",
+      "expected_output": "建立 docs-plan 下的正式 plan 文件與獨立的 plan-test 文件，先使用 write-md。test 文件包含具體 test case（函式名稱、場景、輸入、預期輸出）與驗收標準表格。plan 文件的分階段實作引用 test case 編號，每個 Phase 第一步是寫測試。向使用者確認測試設計與驗收條件。",
       "files": []
     },
     {
       "id": 2,
       "prompt": "先幫我做 request retry flow refactor 的 implementation plan，整理成 repo 內可追蹤的文件。",
-      "expected_output": "即使使用者沒有明講 /plan，也會觸發 plan-extension，將正式規劃寫進 docs-plan\\retry-flow-refactor-plan.md 類型的文件，先使用 write-md，並補上可執行的測試與驗收標準。",
+      "expected_output": "觸發 plan-extension，建立 docs-plan\\retry-flow-refactor-plan.md 與 docs-plan\\retry-flow-refactor-plan-test.md。test 文件列出 retry 成功、次數耗盡、timeout、concurrent retry 等 test case。plan 文件分階段實作嚴格 TDD（Red → Green → Refactor），引用 test 文件的 test case。",
       "files": []
     },
     {
       "id": 3,
       "prompt": "/plan 我要規劃統計欄位拆分，重點是舊查詢不能壞，請先提計畫給我確認。",
-      "expected_output": "plan 會寫進 docs-plan，包含 backward compatibility 驗收項，並要求使用者確認測試與驗收標準是否足夠。",
+      "expected_output": "建立 plan 文件與 test 文件。test 文件涵蓋新 schema 讀寫 happy path、舊資料相容性、空值邊界、下游模組讀取整合。測試內容不混在 plan 本體中。驗收標準表格含對應 Phase 與執行指令。向使用者確認測試設計是否涵蓋所有回歸風險。",
       "files": []
     },
     {
       "id": 4,
       "prompt": "先不要改 code，先幫我把 API 層、service 層、storage adapter 之間的互動整理成 plan，我想先看架構跟驗收。",
-      "expected_output": "會因為明顯是規劃意圖而觸發此 skill，使用 write-md 建立 docs-plan 內的 plan，並在互動關係複雜時考慮使用 Mermaid 視覺化。",
+      "expected_output": "觸發 plan-extension，建立 plan 文件與獨立 test 文件。test 文件針對各層介面列出 test case：API handler mock service、service mock storage、error propagation。plan 文件互動關係複雜時使用 Mermaid。每個 Phase 遵循 TDD 循環，引用 test 文件。",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "/plan 幫我規劃 cost=0 時不應阻擋流程的修復方案。",
+      "expected_output": "test 文件明確列出 TestZeroCostBypass、TestNonZeroCostBlock、TestNormalDeduction 等 test case，每個含場景、前置條件、操作、預期結果。plan 文件 Phase 1 引用 test case 走 TDD（先寫測試看到 FAIL，再實作讓測試通過）。測試內容完全在 test 文件中，plan 只引用 test case 編號。",
       "files": []
     }
   ]
