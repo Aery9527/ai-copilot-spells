@@ -100,7 +100,7 @@ Skills link 腳本的詳細行為、執行方式與模式差異，請見 [`scrip
 
 ### AutoHotkey 快捷鍵（Windows）
 
-[`tool/claude_desktop_hot_key.md`](tool/claude_desktop_hot_key.md) — 用 AutoHotkey v2 設定 `Alt + 空白鍵` 叫出 / 最小化 Claude Desktop。
+[`tool/claude_desktop_hot_key.md`](tool/claude_desktop_ahk.md) — 用 AutoHotkey v2 設定 `Alt + 空白鍵` 叫出 / 最小化 Claude Desktop。
 
 [返回開頭](#快速導覽)
 
