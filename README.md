@@ -114,7 +114,9 @@ ai-research/
 ├── superpowers/              # superpowers 上游 skills submodule
 ├── claude-code/              # Claude Code CLI 參考
 ├── github-copilot/           # GitHub Copilot CLI + custom instructions
-│   └── .github/              # instructions 擺放位置
+│   └── .copilot/             # copilot-instructions.md 擺放位置
+├── other/                    # 其他語言 / 框架指引
+│   └── java-guidelines.md
 ├── .claude/skills/           # Claude Code project skills
 │   ├── _shared/              # 共用協議（upstream-sync-protocol）
 │   ├── anthropic-skill/      # Anthropic router（categories + skills）
@@ -128,9 +130,10 @@ ai-research/
 │   ├── windows-script/
 │   └── write-md/
 ├── AGENTS.md                 # Skill 組合查表（任務導向）
+├── CLAUDE.md                 # Claude Code project instructions
 ├── tool/                     # 工具操作文件
 │   ├── README.md
-│   ├── claude_desktop_hot_key.md
+│   ├── claude_desktop_ahk.md
 │   ├── ps_func.md
 │   └── wsl-claude-code-env-setup.md
 └── docs/
