@@ -89,21 +89,34 @@ flowchart LR
 典型開發流程：
 
 ```mermaid
-flowchart LR
-    A(["💡 新功能"]) --> B["brainstorming\n設計 + 規格"]
-    B --> C["writing-plans\n實作計畫"]
-    C --> D["subagent-driven-development\n逐 task 派遣子 agent"]
-    D --> E(["finishing-a-development-branch\n收尾 / PR"])
-
-    F(["🐛 Bug"]) --> G["systematic-debugging\n系統性排查"]
-    G --> H(["verification-before-completion\n完成確認"])
-
-    subgraph per_task ["每個 task 內部"]
-        direction TB
-        T["test-driven-development\nTDD 實作"] --> R["requesting-code-review\nspec + quality 審查"]
+flowchart TD
+    subgraph feature ["新功能開發"]
+        direction LR
+        wgw["using-git-worktrees"] --> bs["brainstorming"]
+        bs --> wp["writing-plans"]
+        wp --> sad["subagent-driven-development"]
+        wp --> ep["executing-plans"]
+        sad --> fdb["finishing-a-development-branch"]
+        ep --> fdb
     end
 
-    D -.-> per_task
+    subgraph per_task ["每個 task 內（subagent 執行）"]
+        direction LR
+        tdd["test-driven-development"] --> rcr["requesting-code-review"]
+    end
+    sad -.->|"逐 task"| per_task
+
+    dpa["dispatching-parallel-agents"] -.->|"獨立子任務"| sad
+
+    subgraph fix ["Bug Fix / Review 收到"]
+        direction LR
+        sd["systematic-debugging"]
+        rcvr["receiving-code-review"]
+    end
+    sd --> vbc["verification-before-completion"]
+    rcvr --> vbc
+
+    ws["writing-skills"]
 ```
 
 ```
