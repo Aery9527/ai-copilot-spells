@@ -15,6 +15,7 @@
 | `SUBMODULE_PATH` | git submodule 相對路徑 | `anthropic-skills/` | `superpowers/` |
 | `LOCAL_ROUTER_PATH` | 本地 router 目錄 | `.claude/skills/anthropic-skill/` | `.claude/skills/superpowers-skill/` |
 | `SKILL_SOURCE_PATTERN` | skill 來源路徑模式 | `skills/<name>/SKILL.md` | `skills/<name>/SKILL.md` |
+| `CO_AUTHOR` | commit の Co-Authored-By 值 | `Claude Sonnet 4.6 <noreply@anthropic.com>` | `Claude Sonnet 4.6 <noreply@anthropic.com>` |
 
 ---
 
@@ -23,19 +24,19 @@
 ### Step 1 — 確認 submodule 狀態
 
 ```bash
-git -C <SUBMODULE_PATH> status
+git -C {{SUBMODULE_PATH}} status
 ```
 
 若失敗（非 git repo）：停止，通知使用者先初始化 submodule：
 ```bash
-git submodule update --init <SUBMODULE_PATH>
+git submodule update --init {{SUBMODULE_PATH}}
 ```
 
 ### Step 2 — 檢查上游更新
 
 ```bash
-git -C <SUBMODULE_PATH> fetch origin
-git -C <SUBMODULE_PATH> log HEAD..origin/main --oneline
+git -C {{SUBMODULE_PATH}} fetch origin
+git -C {{SUBMODULE_PATH}} log HEAD..origin/main --oneline
 ```
 
 - 若輸出**為空** → 無更新，告知使用者並停止。
@@ -45,10 +46,10 @@ git -C <SUBMODULE_PATH> log HEAD..origin/main --oneline
 
 ```bash
 # 所有異動的檔案
-git -C <SUBMODULE_PATH> diff HEAD..origin/main --name-only
+git -C {{SUBMODULE_PATH}} diff HEAD..origin/main --name-only
 
 # 只看新增的 skill
-git -C <SUBMODULE_PATH> diff HEAD..origin/main --name-only --diff-filter=A
+git -C {{SUBMODULE_PATH}} diff HEAD..origin/main --name-only --diff-filter=A
 ```
 
 從輸出解析 skill 名稱，模式為 `skills/<name>/...`：
@@ -58,53 +59,53 @@ git -C <SUBMODULE_PATH> diff HEAD..origin/main --name-only --diff-filter=A
 ### Step 4 — Pull 更新
 
 ```bash
-git -C <SUBMODULE_PATH> pull origin main
+git -C {{SUBMODULE_PATH}} pull origin main
 ```
 
 記錄新的 HEAD hash（供 commit message 使用）：
 ```bash
-NEW_HEAD=$(git -C <SUBMODULE_PATH> rev-parse --short HEAD)
+NEW_HEAD=$(git -C {{SUBMODULE_PATH}} rev-parse --short HEAD)
 ```
 
 ### Step 5 — Regenerate 每個異動 skill 的摘要
 
 對 `CHANGED_SKILLS` 中的每個 skill：
 
-1. 讀取 `<SUBMODULE_PATH>/skills/<name>/SKILL.md`（上游原文）
-2. 按照下方「**SKILL.md 摘要格式**」重新生成 `<LOCAL_ROUTER_PATH>/skills/<name>/SKILL.md`
-3. 若為新 skill（在 `NEW_SKILLS` 中）：先建立 `<LOCAL_ROUTER_PATH>/skills/<name>/` 目錄
+1. 讀取 `{{SUBMODULE_PATH}}/skills/<name>/SKILL.md`（上游原文）
+2. 按照下方「**SKILL.md 摘要格式**」重新生成 `{{LOCAL_ROUTER_PATH}}/skills/<name>/SKILL.md`
+3. 若為新 skill（在 `NEW_SKILLS` 中）：先建立 `{{LOCAL_ROUTER_PATH}}/skills/<name>/` 目錄
 
 ### Step 6 — 更新 router 與 category 文件（視情況）
 
 若 `NEW_SKILLS` 非空，或有 skill 需要移動 category：
 
-1. 更新 `<LOCAL_ROUTER_PATH>/SKILL.md`（第一層 router 查詢表）
-2. 更新對應的 `<LOCAL_ROUTER_PATH>/categories/*.md`
+1. 更新 `{{LOCAL_ROUTER_PATH}}/SKILL.md`（第一層 router 查詢表）
+2. 更新對應的 `{{LOCAL_ROUTER_PATH}}/categories/*.md`
 3. 更新 `AGENTS.md` 的任務查詢表（若新 skill 影響任務導向路由）
 
 ### Step 7 — Commit
 
 ```bash
 git add -A
-git commit -m "sync: update <LIBRARY_NAME> skill summaries
+git commit -m "sync: update {{LIBRARY_NAME}} skill summaries
 
-Synced from <LIBRARY_NAME> @ $NEW_HEAD
+Synced from {{LIBRARY_NAME}} @ $NEW_HEAD
 Updated skills: <CHANGED_SKILLS 以逗號分隔>
 
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
+Co-Authored-By: {{CO_AUTHOR}}"
 ```
 
 ---
 
 ## SKILL.md 摘要格式
 
-生成 `<LOCAL_ROUTER_PATH>/skills/<name>/SKILL.md` 時使用此格式：
+生成 `{{LOCAL_ROUTER_PATH}}/skills/<name>/SKILL.md` 時使用此格式：
 
 ```markdown
 ---
 name: <skill-name>
 description: <原文 description，來自上游 SKILL.md frontmatter，保持英文>
-source: <SUBMODULE_PATH>/skills/<name>/SKILL.md
+source: {{SUBMODULE_PATH}}/skills/<name>/SKILL.md
 ---
 
 ## 概述
@@ -153,7 +154,7 @@ Sync 完成後執行：
 
 ```bash
 # 確認 router 結構完整（每個 skill 都有對應目錄）
-ls <LOCAL_ROUTER_PATH>/skills/
+ls {{LOCAL_ROUTER_PATH}}/skills/
 
 # 確認無未提交異動
 git status
