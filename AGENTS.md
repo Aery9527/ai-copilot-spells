@@ -1,94 +1,122 @@
-# AGENTS.md — 專案 Skills 導覽
+# AGENTS.md — Skill 組合查表
 
-> 當使用者遇到 Anthropic 官方 skills 範圍內的問題時，Rion 先查閱 [`.claude/skills/anthropic-skill/SKILL.md`](.claude/skills/anthropic-skill/SKILL.md) 做第一層分類，再按需進入其內部的 [`.claude/skills/anthropic-skill/categories/`](.claude/skills/anthropic-skill/categories/) 與 `skills/<name>/SKILL.md` 獲取詳細使用說明。
->
-> 這份文件只保留 repo 層級的導覽、plugin 安裝與結構說明；各 Anthropic skill 的細項能力、決策樹與「問題 → Skill」對照，已集中到 [`.claude/skills/anthropic-skill/SKILL.md`](.claude/skills/anthropic-skill/SKILL.md) 作為單一真相來源。
+本文件的用途：**你有任務要做時，快速找到需要哪些 skill 組合**。Skill 名稱點進去才展開細節，這裡只保留第一層。
 
 ## 快速導覽
 
-- [Anthropic Skills Plugins](#anthropic-skills-plugins)
-- [Anthropic Skill Router](#anthropic-skill-router)
-- [Project Claude Skills](#project-claude-skills)
+- [任務 → Skill 組合](#任務--skill-組合)
+- [第一層 Router 入口](#第一層-router-入口)
+- [Plugin 安裝](#plugin-安裝)
 - [Skill Locations](#skill-locations)
 
-## Anthropic Skills Plugins
+---
+
+## 任務 → Skill 組合
+
+### 🔄 開發流程
+
+| 我想要... | 使用 Skills（依序） |
+|----------|-------------------|
+| 開發新功能（完整流程） | `brainstorming` → `writing-plans` → `test-driven-development` → `subagent-driven-development` → `requesting-code-review` |
+| Debug 一個 bug | `systematic-debugging` |
+| 宣告完成 / 準備 commit / PR 前 | `verification-before-completion` |
+| 在新 session 執行計畫 | `executing-plans` |
+| 在當前 session 執行計畫（subagent 逐 task） | `subagent-driven-development` |
+| 多個獨立子任務並行 | `dispatching-parallel-agents` |
+| 開始工作前需要隔離 workspace | `using-git-worktrees` |
+
+### 👀 Review 與收尾
+
+| 我想要... | 使用 Skills |
+|----------|------------|
+| 收到 code review 意見，技術評估後再實作 | `receiving-code-review` |
+| 完成功能需要 review | `requesting-code-review` |
+| 所有 task 完成，選擇收尾方式 | `finishing-a-development-branch` |
+
+### 🎨 創意・前端・文件
+
+| 我想要... | 使用 Skills |
+|----------|------------|
+| 建 Web UI / landing page | `brainstorming` → `frontend-design` |
+| 建複雜 Claude artifact（React + shadcn） | `web-artifacts-builder` |
+| 測試本地 Web 應用（Playwright） | `webapp-testing` |
+| 生成海報 / 靜態視覺（PNG/PDF） | `canvas-design` |
+| 生成算法藝術（流場、粒子、幾何） | `algorithmic-art` |
+| 為 artifact 套主題 | `theme-factory` |
+| 套用 Anthropic 品牌色彩 | `brand-guidelines` |
+| 做 Slack 動態 GIF | `slack-gif-creator` |
+
+### ⚙️ AI 工程・文件操作・寫作
+
+| 我想要... | 使用 Skills |
+|----------|------------|
+| 建 Claude API 應用 / Anthropic SDK | `brainstorming` → `claude-api` |
+| 建 MCP server | `brainstorming` → `mcp-builder` |
+| 操作 PDF | `pdf` |
+| 操作 Word 文件 | `docx` |
+| 操作 Excel | `xlsx` |
+| 操作 PowerPoint | `pptx` |
+| 撰寫技術規格 / 設計文件 | `doc-coauthoring` |
+| 撰寫內部溝通（3P 更新、事故報告） | `internal-comms` |
+
+### 🛠 Skill 維護
+
+| 我想要... | 使用 Skills |
+|----------|------------|
+| 創建或改善 AI Skill | `brainstorming` → `writing-skills` |
+| 同步 Anthropic skills 上游 | `anthropic-skills-sync` |
+| 同步 superpowers 上游 | `superpowers-skills-sync` |
+| 同步 CLI 文件（Claude Code / Copilot） | `cli-doc-sync` |
+
+---
+
+## 第一層 Router 入口
+
+按需進入，不要一次展開全部：
+
+| 涵蓋範疇 | Router |
+|---------|--------|
+| 創意設計・前端工程・AI 工程・Office 文件・技術寫作 | [anthropic-skill](.claude/skills/anthropic-skill/SKILL.md) |
+| 開發流程・Code Review・並行協作・Git 工作流・維運 | [superpowers-skill](.claude/skills/superpowers-skill/SKILL.md) |
+
+---
+
+## Plugin 安裝
 
 `anthropic-skills` 以 plugin 為單位組織，目前共三個 plugin，可依需求選擇性安裝：
 
 | Plugin | 包含 Skills | 適用場景 |
 |--------|------------|---------|
-| **document-skills** | `xlsx`, `docx`, `pptx`, `pdf` | 各類 Office 文件與 PDF 的建立、讀取、編輯、轉換 |
-| **example-skills** | `algorithmic-art`, `brand-guidelines`, `canvas-design`, `doc-coauthoring`, `frontend-design`, `internal-comms`, `mcp-builder`, `skill-creator`, `slack-gif-creator`, `theme-factory`, `web-artifacts-builder`, `webapp-testing` | 創意設計、前端工程、AI 工程、文字寫作等通用能力 |
-| **claude-api** | `claude-api` | 以 Claude API / Anthropic SDK 建構 LLM 應用 |
+| **document-skills** | `xlsx`, `docx`, `pptx`, `pdf` | 各類 Office 文件與 PDF |
+| **example-skills** | `algorithmic-art`, `brand-guidelines`, `canvas-design`, `doc-coauthoring`, `frontend-design`, `internal-comms`, `mcp-builder`, `skill-creator`, `slack-gif-creator`, `theme-factory`, `web-artifacts-builder`, `webapp-testing` | 創意設計、前端工程、AI 工程、文字寫作 |
+| **claude-api** | `claude-api` | Claude API / Anthropic SDK 應用 |
 
-> 詳細安裝設定見 [`anthropic-skills/.claude-plugin/marketplace.json`](anthropic-skills/.claude-plugin/marketplace.json)。
+詳細安裝設定見 [`anthropic-skills/.claude-plugin/marketplace.json`](anthropic-skills/.claude-plugin/marketplace.json)。
 
-### 安裝方式
-
-指令語法：`/plugin install <plugin-name>@<marketplace-name>`，`@` 後接的是 `marketplace.json` 頂層的 `name` 欄位（即 `anthropic-agent-skills`），非 GitHub repo 路徑。
-
-**安裝整個 plugin（含 plugin 內所有 skills）：**
+**安裝指令：**
 
 ```
 /plugin marketplace add anthropics/skills
 /plugin install example-skills@anthropic-agent-skills
+/plugin install document-skills@anthropic-agent-skills
 ```
 
-**只安裝單一 skill：**
+`superpowers` skills 透過 superpowers plugin marketplace 安裝（`superpowers:` prefix）。
 
-`anthropic-agent-skills` 這個 marketplace 只有三個可安裝單位（`document-skills`、`example-skills`、`claude-api`），沒有以單一 skill 為單位的 plugin entry。**無法只安裝 `skill-creator`**，只能裝整包 `example-skills`。
+> **已知 bug**：若同一批 skills 同時由 project top-level entries 與 plugin namespace 暴露，context 與 slash command picker 仍可能重複。當前結構設計就是為了避免這個情況。相關 issue：[anthropics/claude-code#29520](https://github.com/anthropics/claude-code/issues/29520)、[anthropics/skills#189](https://github.com/anthropics/skills/issues/189)
 
-### 已知 bug：重複載入
-
-**已知 bug 仍然存在**：若同一批 skills 同時由 project top-level entries 與 plugin namespace 暴露，context 與 slash command picker 仍可能重複。當前結構就是為了避免本 repo 預設落入這個情況。
-
-> 來源：[Claude Code 官方文件 — Create plugins](https://docs.anthropic.com/en/docs/claude-code/plugins)
-> 相關 issue：[anthropics/claude-code#29520](https://github.com/anthropics/claude-code/issues/29520)、[anthropics/skills#189](https://github.com/anthropics/skills/issues/189)
-
-[返回開頭](#快速導覽)
-
-## Anthropic Skill Router
-
-Anthropic 每個細項 skill 的摘要、能力邊界與決策樹，現在都統一收斂到 [`.claude/skills/anthropic-skill/SKILL.md`](.claude/skills/anthropic-skill/SKILL.md) 與其內部分類檔。若要判斷「現在該讀哪個 skill」，優先從這裡開始，不再以 `AGENTS.md` 維護第二份平行說明。
-
-| 需求類型 | 先讀文件 | 說明 |
-|---------|---------|------|
-| Creative & Styling | [`.claude/skills/anthropic-skill/categories/creative-and-styling.md`](.claude/skills/anthropic-skill/categories/creative-and-styling.md) | 生成藝術、靜態視覺、品牌規範、主題風格、Slack GIF |
-| Frontend Engineering | [`.claude/skills/anthropic-skill/categories/frontend-engineering.md`](.claude/skills/anthropic-skill/categories/frontend-engineering.md) | UI 設計、artifact builder、Web app 測試 |
-| AI Engineering | [`.claude/skills/anthropic-skill/categories/ai-engineering.md`](.claude/skills/anthropic-skill/categories/ai-engineering.md) | Claude API、Anthropic SDK、MCP server、skill engineering |
-| Office Documents | [`.claude/skills/anthropic-skill/categories/office-documents.md`](.claude/skills/anthropic-skill/categories/office-documents.md) | PDF、Word、PowerPoint、Excel 與文件配圖 |
-| Writing | [`.claude/skills/anthropic-skill/categories/writing.md`](.claude/skills/anthropic-skill/categories/writing.md) | 技術文件與內部溝通 |
-
-若分類檔還不足以回答，再按需進入 `skills/<name>/SKILL.md` 的第二層摘要；不要再從 `AGENTS.md` 複製一份 skill 細節，避免內容漂移。
-
-[返回開頭](#快速導覽)
-
-## Project Claude Skills
-
-[`.claude/skills/`](.claude/skills/) 除了 `anthropic-skill` 這個 Anthropic router 之外，也放置少數會被直接當成 project skill 使用的本地技能：
-
-| Skill | 路徑 | 用途 |
-|------|------|------|
-| `cli-doc-sync` | [`.claude/skills/cli-doc-sync/SKILL.md`](.claude/skills/cli-doc-sync/SKILL.md) | 同步 CLI 參考文件與官方文件，並用 `fetch_docs.py` 做結構化差異比對 |
-| `anthropic-skills-sync` | [`.claude/skills/anthropic-skills-sync/SKILL.md`](.claude/skills/anthropic-skills-sync/SKILL.md) | 將本地 Anthropic router 套件與上游 `anthropic-skills/` 對齊 |
-
-這兩個 skill 都是 top-level `.claude/skills/<name>/SKILL.md` 入口，不屬於 `anthropic-skill` 的第二層內容。
-
-[返回開頭](#快速導覽)
+---
 
 ## Skill Locations
 
 | 目錄 | 來源 | 說明 |
 |------|------|------|
-| `anthropic-skills/` | Anthropic 上游 | 原始 skill 定義（上游 repo，勿直接修改） |
-| `.claude/skills/` | Claude Code project skills | 包含 `anthropic-skill` router 套件，以及 `cli-doc-sync`、`anthropic-skills-sync` 等 standalone project skills |
-| `.agents/skills/` | **個人自製 skills** | 其餘 repo-local skills，如 `mongo`、`plan-extension`、`windows-script`、`write-md` |
-| `AGENTS.md` | 本文件 | repo 層級的 skills 索引、plugin 安裝與結構說明 |
-
-### `.claude/` Skills 的用途
-
-[`.claude/skills/anthropic-skill/SKILL.md`](.claude/skills/anthropic-skill/SKILL.md) 是第一層 Anthropic router；它內部的 `categories/` 先做分類與決策，接著再按需讀取 `skills/<name>/SKILL.md` 的第二層摘要。這樣能避免一開始就把所有 Anthropic skills 平鋪進第一層 context。
-
-`cli-doc-sync` 與 `anthropic-skills-sync` 則是獨立的 top-level project skills，分別位於 [`.claude/skills/cli-doc-sync/SKILL.md`](.claude/skills/cli-doc-sync/SKILL.md) 與 [`.claude/skills/anthropic-skills-sync/SKILL.md`](.claude/skills/anthropic-skills-sync/SKILL.md)，不屬於 router 的第二層技能內容。
-
-[返回開頭](#快速導覽)
+| `anthropic-skills/` | Anthropic 上游 | 原始 skill 定義（勿直接修改） |
+| `superpowers/` | superpowers 上游 | 原始 skill 定義（勿直接修改） |
+| `.claude/skills/anthropic-skill/` | 本地 router | Anthropic skills 第一層分類入口 |
+| `.claude/skills/superpowers-skill/` | 本地 router | Superpowers skills 第一層分類入口 |
+| `.claude/skills/_shared/` | 共用協議 | `upstream-sync-protocol.md` 供各 sync skill 引用 |
+| `.claude/skills/anthropic-skills-sync/` | 維運 skill | 同步 Anthropic skills 上游 |
+| `.claude/skills/superpowers-skills-sync/` | 維運 skill | 同步 superpowers 上游 |
+| `.claude/skills/cli-doc-sync/` | 維運 skill | CLI 文件同步（Claude Code、GitHub Copilot） |
+| `.agents/skills/` | 個人自製 | mongo、plan-extension、windows-script、write-md |
