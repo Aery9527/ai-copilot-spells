@@ -113,6 +113,7 @@ ai-research/
 ├── anthropic-skills/         # Anthropic 上游 skills submodule
 ├── superpowers/              # superpowers 上游 skills submodule
 ├── claude-code/              # Claude Code CLI 參考
+│   └── .claude/CLAUDE.md     # 子目錄級別 project instructions（進入此目錄時自動載入）
 ├── github-copilot/           # GitHub Copilot CLI + custom instructions
 │   └── .copilot/             # copilot-instructions.md 擺放位置
 ├── other/                    # 其他語言 / 框架指引
