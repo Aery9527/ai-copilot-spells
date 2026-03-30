@@ -64,21 +64,38 @@ flowchart LR
 
 ### Plugin 安裝
 
-```bash
-# Anthropic skills（需先加 marketplace）
+**anthropic-skills** 以 plugin 為單位組織，目前共三個 plugin，可依需求選擇性安裝：
+
+| Plugin | 包含 Skills | 適用場景 |
+|--------|------------|---------|
+| **document-skills** | `xlsx`, `docx`, `pptx`, `pdf` | 各類 Office 文件與 PDF |
+| **example-skills** | `algorithmic-art`, `brand-guidelines`, `canvas-design`, `doc-coauthoring`, `frontend-design`, `internal-comms`, `mcp-builder`, `skill-creator`, `slack-gif-creator`, `theme-factory`, `web-artifacts-builder`, `webapp-testing` | 創意設計、前端工程、AI 工程、文字寫作 |
+| **claude-api** | `claude-api` | Claude API / Anthropic SDK 應用 |
+
+詳細設定見 [`anthropic-skills/.claude-plugin/marketplace.json`](anthropic-skills/.claude-plugin/marketplace.json)。
+
+```
 /plugin marketplace add anthropics/skills
 /plugin install example-skills@anthropic-agent-skills
 /plugin install document-skills@anthropic-agent-skills
+```
 
-# superpowers skills — 官方 marketplace（推薦）
+**superpowers** 為單一 plugin，涵蓋開發流程全套 skills：
+
+| Plugin | 包含 Skills | 適用場景 |
+|--------|------------|---------|
+| **superpowers** | `brainstorming`, `writing-plans`, `subagent-driven-development`, `executing-plans`, `test-driven-development`, `systematic-debugging`, `requesting-code-review`, `receiving-code-review`, `finishing-a-development-branch`, `using-git-worktrees`, `dispatching-parallel-agents`, `verification-before-completion`, `writing-skills`, `using-superpowers` | 開發流程、Code Review、並行協作、Git 工作流、維運 |
+
+```
+# 官方 marketplace（推薦）
 /plugin install superpowers@claude-plugins-official
 
-# superpowers skills — 或透過 obra's marketplace
+# 或透過 obra's marketplace
 /plugin marketplace add obra/superpowers-marketplace
 /plugin install superpowers@superpowers-marketplace
 ```
 
-詳細安裝說明見 [AGENTS.md](AGENTS.md#plugin-安裝)。
+> **已知 bug**：若同一批 skills 同時由 project top-level entries 與 plugin namespace 暴露，context 與 slash command picker 仍可能重複。當前結構設計就是為了避免這個情況。相關 issue：[anthropics/claude-code#29520](https://github.com/anthropics/claude-code/issues/29520)、[anthropics/skills#189](https://github.com/anthropics/skills/issues/189)
 
 ---
 
@@ -113,7 +130,7 @@ ai-research/
 ├── anthropic-skills/         # Anthropic 上游 skills submodule
 ├── superpowers/              # superpowers 上游 skills submodule
 ├── claude-code/              # Claude Code CLI 參考
-│   └── .claude/CLAUDE.md     # 使用者級別設定範本（複製到 ~/.claude/ 生效）
+│   └── .claude/              # 使用者級別設定範本（複製到 ~/.claude/ 生效）
 ├── github-copilot/           # GitHub Copilot CLI + custom instructions
 │   └── .copilot/             # 使用者級別設定範本（複製到 ~/.copilot/ 生效）
 ├── other/                    # 其他語言 / 框架指引

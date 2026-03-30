@@ -6,7 +6,6 @@
 
 - [任務 → Skill 組合](#任務--skill-組合)
 - [第一層 Router 入口](#第一層-router-入口)
-- [Plugin 安裝](#plugin-安裝)
 - [Skill Locations](#skill-locations)
 
 ---
@@ -78,41 +77,6 @@
 |---------|--------|
 | 創意設計・前端工程・AI 工程・Office 文件・技術寫作 | [anthropic-skill](.claude/skills/anthropic-skill/SKILL.md) |
 | 開發流程・Code Review・並行協作・Git 工作流・維運 | [superpowers-skill](.claude/skills/superpowers-skill/SKILL.md) |
-
----
-
-## Plugin 安裝
-
-`anthropic-skills` 以 plugin 為單位組織，目前共三個 plugin，可依需求選擇性安裝：
-
-| Plugin | 包含 Skills | 適用場景 |
-|--------|------------|---------|
-| **document-skills** | `xlsx`, `docx`, `pptx`, `pdf` | 各類 Office 文件與 PDF |
-| **example-skills** | `algorithmic-art`, `brand-guidelines`, `canvas-design`, `doc-coauthoring`, `frontend-design`, `internal-comms`, `mcp-builder`, `skill-creator`, `slack-gif-creator`, `theme-factory`, `web-artifacts-builder`, `webapp-testing` | 創意設計、前端工程、AI 工程、文字寫作 |
-| **claude-api** | `claude-api` | Claude API / Anthropic SDK 應用 |
-
-詳細安裝設定見 [`anthropic-skills/.claude-plugin/marketplace.json`](anthropic-skills/.claude-plugin/marketplace.json)。
-
-**安裝指令：**
-
-```
-/plugin marketplace add anthropics/skills
-/plugin install example-skills@anthropic-agent-skills
-/plugin install document-skills@anthropic-agent-skills
-```
-
-**superpowers skills 安裝（`superpowers:` prefix）：**
-
-```
-# 官方 marketplace（推薦）
-/plugin install superpowers@claude-plugins-official
-
-# 或透過 obra's marketplace
-/plugin marketplace add obra/superpowers-marketplace
-/plugin install superpowers@superpowers-marketplace
-```
-
-> **已知 bug**：若同一批 skills 同時由 project top-level entries 與 plugin namespace 暴露，context 與 slash command picker 仍可能重複。當前結構設計就是為了避免這個情況。相關 issue：[anthropics/claude-code#29520](https://github.com/anthropics/claude-code/issues/29520)、[anthropics/skills#189](https://github.com/anthropics/skills/issues/189)
 
 ---
 
