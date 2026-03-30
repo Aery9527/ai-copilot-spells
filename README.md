@@ -86,6 +86,26 @@ flowchart LR
 |--------|------------|---------|
 | **superpowers** | `brainstorming`, `writing-plans`, `subagent-driven-development`, `executing-plans`, `test-driven-development`, `systematic-debugging`, `requesting-code-review`, `receiving-code-review`, `finishing-a-development-branch`, `using-git-worktrees`, `dispatching-parallel-agents`, `verification-before-completion`, `writing-skills`, `using-superpowers` | 開發流程、Code Review、並行協作、Git 工作流、維運 |
 
+典型開發流程：
+
+```mermaid
+flowchart LR
+    A(["💡 新功能"]) --> B["brainstorming\n設計 + 規格"]
+    B --> C["writing-plans\n實作計畫"]
+    C --> D["subagent-driven-development\n逐 task 派遣子 agent"]
+    D --> E(["finishing-a-development-branch\n收尾 / PR"])
+
+    F(["🐛 Bug"]) --> G["systematic-debugging\n系統性排查"]
+    G --> H(["verification-before-completion\n完成確認"])
+
+    subgraph per_task ["每個 task 內部"]
+        direction TB
+        T["test-driven-development\nTDD 實作"] --> R["requesting-code-review\nspec + quality 審查"]
+    end
+
+    D -.-> per_task
+```
+
 ```
 # 官方 marketplace（推薦）
 /plugin install superpowers@claude-plugins-official
