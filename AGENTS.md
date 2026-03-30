@@ -101,7 +101,16 @@
 /plugin install document-skills@anthropic-agent-skills
 ```
 
-`superpowers` skills 透過 superpowers plugin marketplace 安裝（`superpowers:` prefix）。
+**superpowers skills 安裝（`superpowers:` prefix）：**
+
+```
+# 官方 marketplace（推薦）
+/plugin install superpowers@claude-plugins-official
+
+# 或透過 obra's marketplace
+/plugin marketplace add obra/superpowers-marketplace
+/plugin install superpowers@superpowers-marketplace
+```
 
 > **已知 bug**：若同一批 skills 同時由 project top-level entries 與 plugin namespace 暴露，context 與 slash command picker 仍可能重複。當前結構設計就是為了避免這個情況。相關 issue：[anthropics/claude-code#29520](https://github.com/anthropics/claude-code/issues/29520)、[anthropics/skills#189](https://github.com/anthropics/skills/issues/189)
 

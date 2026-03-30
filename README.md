@@ -70,7 +70,12 @@ flowchart LR
 /plugin install example-skills@anthropic-agent-skills
 /plugin install document-skills@anthropic-agent-skills
 
-# superpowers skills（需先加 superpowers marketplace）
+# superpowers skills — 官方 marketplace（推薦）
+/plugin install superpowers@claude-plugins-official
+
+# superpowers skills — 或透過 obra's marketplace
+/plugin marketplace add obra/superpowers-marketplace
+/plugin install superpowers@superpowers-marketplace
 ```
 
 詳細安裝說明見 [AGENTS.md](AGENTS.md#plugin-安裝)。
