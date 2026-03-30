@@ -280,28 +280,34 @@ variation of keeping superpowers local descriptions in sync with the upstream re
 **結構：**
 
 1. **一行標語**：「AI 工具研究 × Skills 知識庫」
-2. **Mermaid 架構圖**（全域視圖）：
+2. **Mermaid 架構圖**（三層穩定結構，不隨 submodule 數量成長而變形）：
 ```mermaid
-flowchart TD
-    subgraph upstream ["📦 Upstream Submodules"]
-        A["🤖 anthropic-skills"]
-        B["⚡ superpowers"]
+flowchart LR
+    U(["👤 使用者"])
+
+    subgraph nav ["導覽層"]
+        A["📋 AGENTS.md\n任務 → Skill 組合"]
+        B["📖 README.md\n快速定位"]
     end
-    subgraph routers ["🗂 Local Skill Routers"]
-        C["anthropic-skill\n創意・前端・AI工程・文件・寫作"]
-        D["superpowers-skill\n開發流程・Review・並行・維運"]
+
+    subgraph routers ["Skill Router 層 (.claude/skills/)"]
+        direction TB
+        R1["🎨 創意・前端・文件・AI 工程"]
+        R2["⚡ 開發流程・Review・並行・維運"]
+        R3["… 未來更多 …"]
     end
-    subgraph sync ["🔄 Sync Skills"]
-        E["anthropic-skills-sync"]
-        F["superpowers-skills-sync"]
-        G["_shared/upstream-sync-protocol"]
+
+    subgraph upstream ["上游來源層 (N 個 submodule)"]
+        S["📦 anthropic-skills\n📦 superpowers\n📦 …"]
+        P["🔄 _shared/upstream-sync-protocol"]
     end
-    A -->|submodule| C
-    B -->|submodule| D
-    A --> E
-    B --> F
-    E & F -->|共用協議| G
+
+    U --> nav --> routers
+    S -->|"sync"| routers
+    P -.->|"協議"| S
 ```
+
+圖的節點固定對應三個穩定層次；新增 submodule 只需更新 `S` 節點的文字，圖形狀不變。
 3. **工具覆蓋一覽**（Claude Code CLI、GitHub Copilot）
 4. **個人自製 Skills 簡介**（.agents/skills/）
 5. **快速開始**（如何安裝 plugin、如何使用 skill）
