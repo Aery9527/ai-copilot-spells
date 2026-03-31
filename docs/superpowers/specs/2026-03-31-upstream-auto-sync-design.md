@@ -36,19 +36,24 @@
 
 ## 架構總覽
 
-```
-GitHub (Dependabot)                    Local (使用者)
-──────────────────────────────         ───────────────────────────────────────
-.github/dependabot.yml                 .claude/skills/sync-all/SKILL.md
-  │                                      │
-  │ 偵測 submodule SHA 變化               │ 1. gh pr list (Dependabot PRs)
-  │ 開 PR: dependabot/submodules/*        │ 2. 解析 branch → submodule name
-  │                                      │ 3. 掃描 .claude/skills/*/SKILL.md
-  ▼                                      │    讀 frontmatter submodule-path
-使用者收到 email 通知                     │    動態建立映射表（runtime）
-  │                                      │ 4. invoke 對應 *-sync skill
-  └─ 執行 sync-all ──────────────────────┘ 5. sync skill: pull + AI 摘要 + commit + push
-                                         6. gh pr close <PR_NUMBER>
+```mermaid
+flowchart LR
+    subgraph GH["☁️ GitHub (Dependabot)"]
+        DY[".github/dependabot.yml"]
+        PR["PR: dependabot/submodules/*"]
+        EMAIL["📧 email 通知"]
+        DY -- "偵測 SHA 變化" --> PR --> EMAIL
+    end
+
+    subgraph Local["💻 Local (使用者)"]
+        SA["sync-all skill"]
+        DISC["掃描 .claude/skills/*/SKILL.md\nauto-discover 對應 sync skill"]
+        SYNC["*-sync skill\npull → AI 摘要 → commit → push"]
+        CLOSE["gh pr close"]
+        SA --> DISC --> SYNC --> CLOSE
+    end
+
+    EMAIL -- "invoke sync-all" --> SA
 ```
 
 ---
@@ -182,23 +187,22 @@ sync 邏輯本身（Step 1–7 in `_shared/upstream-sync-protocol.md`）**不改
 
 ## 資料流
 
-```
-Dependabot 每日檢查 submodule SHA
-  ↓ 發現上游有新 commit
-  ↓ 開 PR: dependabot/submodules/anthropic-skills
-  ↓ 使用者收到 email
-
-使用者 invoke sync-all skill
-  ↓ gh pr list → [PR #42: dependabot/submodules/anthropic-skills]
-  ↓ 解析 → submodule: anthropic-skills
-  ↓ 掃描 .claude/skills/*/SKILL.md → 找到 anthropic-skills-sync
-  ↓ invoke anthropic-skills-sync
-      ↓ git fetch anthropic-skills/
-      ↓ git pull → 取得新版 SKILL.md
-      ↓ AI 生成繁中摘要
-      ↓ git commit + push to main
-  ↓ gh pr close #42
-  ↓ 完成
+```mermaid
+flowchart TD
+    A["🔍 Dependabot 每日檢查 submodule SHA"]
+    --> B["發現上游有新 commit"]
+    --> C["開 PR: dependabot/submodules/anthropic-skills"]
+    --> D["📧 使用者收到 email"]
+    --> E["invoke sync-all skill"]
+    --> F["gh pr list\n→ PR #42: dependabot/submodules/anthropic-skills"]
+    --> G["解析 branch → submodule: anthropic-skills"]
+    --> H["掃描 .claude/skills/*/SKILL.md\n→ 找到 anthropic-skills-sync"]
+    --> I["invoke anthropic-skills-sync"]
+    --> J["git pull → 取得新版 SKILL.md"]
+    --> K["AI 生成繁中摘要"]
+    --> L["git commit + push to main"]
+    --> M["gh pr close #42"]
+    --> N["✅ 完成"]
 ```
 
 ---
