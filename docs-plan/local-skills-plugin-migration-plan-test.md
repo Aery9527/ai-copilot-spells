@@ -8,7 +8,7 @@
 
 ## 測試總覽
 
-本文件定義將 [`.agents/skills/`](../.agents/skills) 直接重構為單一 shared plugin root 的測試設計。目標是讓四個既有 skills 改以同一份來源內容，同時服務 Claude Code 與 GitHub Copilot 的 plugin 安裝流程。
+本文件定義將四個既有 skills 重構到 [`aery-marketplace/`](../aery-marketplace) 這個自包含 plugin / marketplace root 的測試設計。目標是讓四個既有 skills 改以同一份來源內容，同時服務 Claude Code 與 GitHub Copilot 的 plugin 安裝流程。
 
 測試設計分為三個 Phase：
 
@@ -26,10 +26,10 @@
 
 #### Test Case 1-1: `test_plugin_manifest_exposes_shared_skills_directory`
 
-- **場景**：建立新的 shared plugin root 後，root manifest 正確指向共用 `skills/` 目錄。
-- **前置條件**：repo 中已建立新的 plugin root 與 `skills/` 目錄骨架。
+- **場景**：建立新的 shared plugin root 後，root manifest 正確指向共用 `aery-skills/` 目錄。
+- **前置條件**：repo 中已建立新的 plugin root 與 `aery-skills/` 目錄骨架。
 - **操作**：檢查 GitHub Copilot 的 `plugin.json` 與 Claude Code 對應 metadata 檔是否都引用同一組 skills 路徑。
-- **預期結果**：兩套 metadata 都能解析到相同的四個 skills，且沒有引用舊的 `.agents/skills/<skill>` 結構。
+- **預期結果**：兩套 metadata 都能解析到相同的四個 skills，且沒有引用舊的 `.agents/skills/` plugin-root 結構。
 - **分類**：happy path
 
 #### Test Case 1-2: `test_plugin_manifest_rejects_missing_skill_entry`
@@ -53,7 +53,7 @@
 #### Test Case 2-1: `test_skill_content_moved_without_frontmatter_loss`
 
 - **場景**：搬遷 skill 目錄後，`SKILL.md` frontmatter 與內容仍完整可讀。
-- **前置條件**：四個 skills 已移到新的 shared plugin `skills/` 目錄。
+- **前置條件**：四個 skills 已移到新的 shared plugin `aery-skills/` 目錄。
 - **操作**：逐一比對搬遷前後的 skill 名稱、description 與正文主段落。
 - **預期結果**：frontmatter 關鍵欄位與正文內容保留，僅允許必要的路徑更新。
 - **分類**：happy path

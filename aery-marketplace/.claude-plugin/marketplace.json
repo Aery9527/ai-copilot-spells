@@ -1,0 +1,16 @@
+{
+  "name": "aery-plugins",
+  "owner": {
+    "name": "Aery Lin"
+  },
+  "metadata": {
+    "description": "Local marketplace for the aery-skills plugin",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "aery-skills",
+      "source": "./"
+    }
+  ]
+}

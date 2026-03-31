@@ -64,7 +64,7 @@ git submodule update --init --recursive
 |------|------|------|
 | `anthropic-skills/` | [Anthropic 上游](https://github.com/anthropics/skills) | 創意設計、前端工程、AI 工程、Office 文件、技術寫作 |
 | `superpowers/` | [superpowers 上游](https://github.com/obra/superpowers) | 開發流程、Code Review、並行協作、Git 工作流、維運 |
-| `.agents/skills/` | 本地自製 plugin | `ai-research-skills`：工作踩坑實戰邏輯，可安裝的 shared plugin root（[README](.agents/skills/README.md)） |
+| `aery-marketplace/` | 本地自製 plugin | `aery-skills`：工作踩坑實戰邏輯，可安裝的 self-contained plugin / marketplace root（[README](aery-marketplace/README.md)） |
 
 ### Skill Routers（第一層入口）
 
@@ -172,26 +172,26 @@ flowchart TD
 
 ## 個人自製 Skills
 
-[`.agents/skills/`](./.agents/skills/README.md) 是一個可安裝的本地 shared plugin root，打包為 **`ai-research-skills`** plugin，供 GitHub Copilot 與 Claude Code 共用。詳細安裝說明見 [`.agents/skills/README.md`](.agents/skills/README.md)。
+[`aery-marketplace/`](./aery-marketplace/README.md) 是一個可安裝的本地 self-contained plugin / marketplace root，打包為 **`aery-skills`** plugin，供 GitHub Copilot 與 Claude Code 共用。詳細安裝說明見 [`aery-marketplace/README.md`](aery-marketplace/README.md)。
 
 **GitHub Copilot 安裝：**
 
 ```bash
 # 本地路徑
-copilot plugin install ./.agents/skills
+copilot plugin install ./aery-marketplace
 
 # 從 GitHub repo subdirectory
-copilot plugin install OWNER/REPO:.agents/skills
+copilot plugin install OWNER/REPO:aery-marketplace
 ```
 
 **Claude Code 安裝：**
 
 ```
-/plugin marketplace add ./.agents/skills
-/plugin install ai-research-skills@ai-research-plugins
+/plugin marketplace add ./aery-marketplace
+/plugin install aery-skills@aery-plugins
 ```
 
-> **注意**：`./.agents/skills` 採本地路徑安裝，clone 此 repo 後即可直接使用。Claude Code 目前不支援 `owner/repo:subdir` 格式的遠端 marketplace add，無法直接從遠端子目錄安裝。
+> **注意**：`./aery-marketplace` 採本地路徑安裝，clone 此 repo 後即可直接使用。Claude Code 目前不支援 `owner/repo:subdir` 格式的遠端 marketplace add，無法直接從遠端子目錄安裝 marketplace。
 
 包含 Skills：
 
@@ -228,13 +228,11 @@ ai-research/
 │   └── sync-all/             # 統一 orchestrator：Dependabot PR → invoke 各 sync skill
 ├── .github/
 │   └── dependabot.yml        # 每日自動偵測所有 submodule 上游變更
-├── .agents/skills/           # ai-research-skills 本地 plugin root
+├── aery-marketplace/         # aery-skills plugin / local marketplace root
 │   ├── plugin.json           # GitHub Copilot plugin manifest
 │   ├── .claude-plugin/       # Claude Code plugin / marketplace metadata
-│   ├── skills/               # skill 定義目錄（mongo, plan-extension, windows-script, write-md）
-│   ├── validate-phase1.ps1   # plugin 結構驗證
-│   ├── validate-phase2.ps1   # 文件驗證
-│   └── validate-phase3.ps1   # 真實安裝驗證
+│   ├── aery-skills/          # skill 定義目錄（mongo, plan-extension, windows-script, write-md）
+│   └── README.md             # 安裝與維護說明
 ├── AGENTS.md                 # Skill 組合查表（任務導向）
 ├── CLAUDE.md                 # Claude Code project instructions
 ├── tool/                     # 工具操作文件

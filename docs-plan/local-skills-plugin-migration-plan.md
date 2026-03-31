@@ -12,14 +12,14 @@
 
 ## 問題與目標
 
-目前本 repo 的本地 skills 直接放在 [`.agents/skills/`](../.agents/skills)，適合本機或手動掛載，但不適合用單一 plugin 形式同時提供給 Claude Code 與 GitHub Copilot 安裝。
+目前本 repo 的本地 skills 需求已收斂為一個自包含 plugin / marketplace package，目標結構是以 [`aery-marketplace/`](../aery-marketplace) 作為 root，供 Claude Code 與 GitHub Copilot 共用安裝。
 
 這次目標是把四個既有 skills 重構成**單一 shared plugin root**：
 
 1. 四個 skills 只保留一份來源內容。
 2. Claude Code 與 GitHub Copilot 都能從同一個 repo 來源安裝。
 3. 安裝方式以 **local path / git repository** 為主，不把 marketplace 當前置條件。
-4. 不保留舊 `.agents/skills/<skill>` 相容結構，正式文件全面切到新結構。
+4. 不保留舊 `.agents/skills/` plugin-root 結構，正式文件全面切到新結構。
 
 [返回開頭](#快速導覽)
 
@@ -27,7 +27,7 @@
 
 ### In Scope
 
-- 建立單一 plugin root 與共用 `skills/` 目錄。
+- 建立單一 plugin root 與共用 `aery-skills/` 目錄。
 - 搬遷 `mongo`、`plan-extension`、`windows-script`、`write-md` 四個 skills。
 - 補齊 GitHub Copilot 與 Claude Code 所需的 plugin metadata。
 - 更新 repo 文件、router 與安裝說明。
@@ -44,7 +44,7 @@
 
 ## 方案概述
 
-採用 **單一 shared plugin root** 作為新的 source of truth，將四個既有 skills 集中於同一個 `skills/` 目錄，並在同一棵目錄下放置：
+採用 **單一 shared plugin root** 作為新的 source of truth，將四個既有 skills 集中於同一個 `aery-skills/` 目錄，並在同一棵目錄下放置：
 
 - GitHub Copilot 使用的 root `plugin.json`
 - Claude Code 使用的 metadata / marketplace 定義
@@ -56,9 +56,9 @@
 
 ```mermaid
 flowchart TD
-    Root["shared-plugin-root/"] --> Copilot["plugin.json<br/>GitHub Copilot plugin manifest"]
+    Root["aery-marketplace/"] --> Copilot["plugin.json<br/>GitHub Copilot plugin manifest"]
     Root --> Claude[".claude-plugin/<br/>Claude metadata / marketplace"]
-    Root --> Skills["skills/"]
+    Root --> Skills["aery-skills/"]
     Root --> Docs["README / install docs"]
 
     Skills --> Mongo["mongo/"]
@@ -79,9 +79,9 @@ flowchart TD
 建議實作時收斂成以下型態：
 
 ```text
-{shared-plugin-root}/
+aery-marketplace/
 ├── plugin.json
-├── skills/
+├── aery-skills/
 │   ├── mongo/
 │   ├── plan-extension/
 │   ├── windows-script/
@@ -95,7 +95,7 @@ flowchart TD
 命名不必死守，但原則要固定：
 
 1. `plugin.json` 作為 GitHub Copilot 的安裝入口。
-2. `skills/` 成為唯一技能內容來源。
+2. `aery-skills/` 成為唯一技能內容來源。
 3. Claude Code 的平台專屬檔案收進 [`.claude-plugin/`](../superpowers/.claude-plugin) 這類集中位置。
 4. 安裝文件需同時說明 Claude Code 與 GitHub Copilot 的 local path / git install 流程。
 
@@ -117,7 +117,7 @@ flowchart TD
 
 **Step 2 — 最少實作（Green）**
 
-建立新的 plugin root、`skills/` 目錄、GitHub Copilot 的 root `plugin.json`，以及 Claude Code 對應 metadata。先滿足單一 bundle 與四個 skills 可被引用，不急著處理文件。
+建立新的 plugin root、`aery-skills/` 目錄、GitHub Copilot 的 root `plugin.json`，以及 Claude Code 對應 metadata。先滿足單一 bundle 與四個 skills 可被引用，不急著處理文件。
 
 **Step 3 — 重構（Refactor）**
 
@@ -137,7 +137,7 @@ flowchart TD
 
 **Step 2 — 最少實作（Green）**
 
-把四個 skills 移入新的 `skills/`，更新 README、AGENTS、必要 router 或說明文件，讓 repo 正式敘述以新結構為準。
+把四個 skills 移入新的 `aery-marketplace/aery-skills/`，更新 README、AGENTS、必要 router 或說明文件，讓 repo 正式敘述以新結構為準。
 
 **Step 3 — 重構（Refactor）**
 
@@ -171,7 +171,7 @@ flowchart TD
 
 | 類型 | 代表路徑 | 影響 |
 |------|---------|------|
-| Skills 內容 | [`.agents/skills/`](../.agents/skills) 或其重構後位置 | 四個 skills 需要搬遷為共用 `skills/` 結構 |
+| Skills 內容 | [`aery-marketplace/aery-skills/`](../aery-marketplace/aery-skills) | 四個 skills 需要搬遷為共用 `aery-skills/` 結構 |
 | Claude plugin metadata | [`superpowers/.claude-plugin/`](../superpowers/.claude-plugin) 可作為參考 | 新增或調整 Claude Code 的 plugin / marketplace metadata |
 | Copilot plugin metadata | 新 plugin root `plugin.json` | 定義 GitHub Copilot 安裝入口 |
 | 文件 | [README.md](../README.md)、[AGENTS.md](../AGENTS.md)、[`github-copilot/gc-cli.md`](../github-copilot/gc-cli.md) | 更新安裝方式與本地 skills 架構描述 |
