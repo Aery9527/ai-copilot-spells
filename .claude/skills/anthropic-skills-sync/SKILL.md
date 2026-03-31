@@ -1,5 +1,6 @@
 ---
 name: anthropic-skills-sync
+submodule-path: anthropic-skills
 description: Use this skill when the user asks to sync, update, refresh, or check for updates to the anthropic-skills library. Triggers when user says "sync skills", "update skills", "check for upstream changes", "pull latest skills from Anthropic", "refresh skill summaries", or any variation of wanting to keep local skills in sync with the upstream Anthropic repository.
 ---
 

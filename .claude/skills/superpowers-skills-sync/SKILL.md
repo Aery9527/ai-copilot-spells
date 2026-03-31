@@ -1,5 +1,6 @@
 ---
 name: superpowers-skills-sync
+submodule-path: superpowers
 description: Use this skill when the user asks to sync, update, refresh, or check for updates to the superpowers skills library. Triggers when user says "sync superpowers", "update superpowers skills", "check superpowers upstream", "pull latest superpowers", or any variation of keeping superpowers local descriptions in sync with the upstream repo.
 ---
 
