@@ -66,6 +66,7 @@
 | 同步 Anthropic skills 上游 | `anthropic-skills-sync` |
 | 同步 superpowers 上游 | `superpowers-skills-sync` |
 | 同步 CLI 文件（Claude Code / Copilot） | `cli-doc-sync` |
+| 一鍵同步所有上游變更（Dependabot PR 觸發） | `sync-all` |
 
 ---
 
@@ -92,4 +93,5 @@
 | `.claude/skills/anthropic-skills-sync/` | 維運 skill | 同步 Anthropic skills 上游 |
 | `.claude/skills/superpowers-skills-sync/` | 維運 skill | 同步 superpowers 上游 |
 | `.claude/skills/cli-doc-sync/` | 維運 skill | CLI 文件同步（Claude Code、GitHub Copilot） |
+| `.claude/skills/sync-all/` | 本地自製 | 統一 orchestrator：偵測 Dependabot PR → invoke 各 sync skill |
 | `.agents/skills/` | 個人自製 | mongo、plan-extension、windows-script、write-md |
