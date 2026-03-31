@@ -32,8 +32,17 @@ flowchart LR
 
 同步上游更新：
 
+[GitHub Dependabot](.github/dependabot.yml) 每日自動偵測上游 submodule 變更並開 PR。收到通知 email 後，invoke 一個 skill 即完成全部同步：
+
+```
+sync-all
+```
+
+> Dependabot 開 PR → email 通知 → invoke `sync-all` → pull + AI 摘要 + commit + push + 關閉 PR
+
+首次初始化 submodule：
+
 ```powershell
-git submodule sync --recursive
 git submodule update --init --recursive
 ```
 
@@ -198,7 +207,10 @@ ai-research/
 │   ├── anthropic-skills-sync/ # Anthropic sync 維運 skill
 │   ├── superpowers-skill/    # Superpowers router（categories + skills）
 │   ├── superpowers-skills-sync/ # Superpowers sync 維運 skill
-│   └── cli-doc-sync/         # CLI 文件同步工具
+│   ├── cli-doc-sync/         # CLI 文件同步工具
+│   └── sync-all/             # 統一 orchestrator：Dependabot PR → invoke 各 sync skill
+├── .github/
+│   └── dependabot.yml        # 每日自動偵測所有 submodule 上游變更
 ├── .agents/skills/           # 個人自製 skills
 │   ├── mongo/
 │   ├── plan-extension/
