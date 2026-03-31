@@ -30,6 +30,13 @@ flowchart LR
 
 **你現在想做什麼？** → 看 [AGENTS.md](AGENTS.md) 找 skill 組合，一秒定位。
 
+同步上游更新：
+
+```powershell
+git submodule sync --recursive
+git submodule update --init --recursive
+```
+
 ---
 
 ## 快速導覽
@@ -42,6 +49,7 @@ flowchart LR
 - [目錄結構](#目錄結構)
 
 ---
+
 
 ## Skills 系統
 
@@ -140,6 +148,8 @@ flowchart TD
     ws["writing-skills"]
 ```
 
+[返回開頭](#快速導覽)
+
 ---
 
 ## AI 工具文件
@@ -151,11 +161,13 @@ flowchart TD
 
 其他工具操作文件索引：[`tool/README.md`](tool/README.md)
 
+[返回開頭](#快速導覽)
+
 ---
 
 ## 個人自製 Skills
 
-[`.agents/skills/`](.agents/skills/) 內收的是工作實際踩坑後沉澱的本地 skills：
+ [.agents/skills](./.agents/skills) 內收的是工作實際踩坑後沉澱的本地 skills：
 
 | Skill | 解決的問題 |
 |-------|-----------|
@@ -163,6 +175,8 @@ flowchart TD
 | **plan-extension** | 強制規範實作前先出 plan 文件，含驗收標準格式要求 |
 | **windows-script** | `.bat`/`.cmd`/`.ps1` 語法陷阱、errorlevel、delayed expansion |
 | **write-md** | Markdown 文件撰寫，含 Mermaid 圖表使用決策規則 |
+
+[返回開頭](#快速導覽)
 
 ---
 
@@ -202,3 +216,6 @@ ai-research/
         ├── specs/            # 設計文件
         └── plans/            # 實作計畫
 ```
+
+[返回開頭](#快速導覽)
+
