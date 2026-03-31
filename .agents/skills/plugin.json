@@ -1,0 +1,6 @@
+{
+  "name": "ai-research-skills",
+  "version": "0.1.0",
+  "description": "Local AI research skills: mongo, plan-extension, windows-script, write-md",
+  "skills": "./skills"
+}

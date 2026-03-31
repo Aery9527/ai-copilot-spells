@@ -30,21 +30,17 @@ flowchart LR
 
 **你現在想做什麼？** → 看 [AGENTS.md](AGENTS.md) 找 skill 組合，一秒定位。
 
-同步上游更新：
-
-[GitHub Dependabot](.github/dependabot.yml) 每日自動偵測上游 submodule 變更並開 PR。收到通知 email 後，invoke 一個 skill 即完成全部同步：
-
-```
-sync-all
-```
-
-> Dependabot 開 PR → email 通知 → invoke `sync-all` → pull + AI 摘要 + commit + push + 關閉 PR
-
 首次初始化 submodule：
 
 ```powershell
 git submodule update --init --recursive
 ```
+
+同步上游更新：
+
+[GitHub Dependabot](.github/dependabot.yml) 每日自動偵測上游 submodule 變更並開 PR。收到通知 email 後，`sync-all` 一個 skill 即完成全部同步：
+
+> Dependabot 開 PR → email 通知 → invoke `sync-all` → pull + AI 摘要 + commit + push + 關閉 PR
 
 ---
 
@@ -68,7 +64,7 @@ git submodule update --init --recursive
 |------|------|------|
 | `anthropic-skills/` | [Anthropic 上游](https://github.com/anthropics/skills) | 創意設計、前端工程、AI 工程、Office 文件、技術寫作 |
 | `superpowers/` | [superpowers 上游](https://github.com/obra/superpowers) | 開發流程、Code Review、並行協作、Git 工作流、維運 |
-| `.agents/skills/` | 個人自製 | 工作踩坑與實戰決策邏輯 |
+| `.agents/skills/` | 本地自製 plugin | `ai-research-skills`：工作踩坑實戰邏輯，可安裝的 shared plugin root（[README](.agents/skills/README.md)） |
 
 ### Skill Routers（第一層入口）
 
@@ -176,7 +172,28 @@ flowchart TD
 
 ## 個人自製 Skills
 
- [.agents/skills](./.agents/skills) 內收的是工作實際踩坑後沉澱的本地 skills：
+[`.agents/skills/`](./.agents/skills/README.md) 是一個可安裝的本地 shared plugin root，打包為 **`ai-research-skills`** plugin，供 GitHub Copilot 與 Claude Code 共用。詳細安裝說明見 [`.agents/skills/README.md`](.agents/skills/README.md)。
+
+**GitHub Copilot 安裝：**
+
+```bash
+# 本地路徑
+copilot plugin install ./.agents/skills
+
+# 從 GitHub repo subdirectory
+copilot plugin install OWNER/REPO:.agents/skills
+```
+
+**Claude Code 安裝：**
+
+```
+/plugin marketplace add ./.agents/skills
+/plugin install ai-research-skills@ai-research-plugins
+```
+
+> **注意**：`./.agents/skills` 採本地路徑安裝，clone 此 repo 後即可直接使用。Claude Code 目前不支援 `owner/repo:subdir` 格式的遠端 marketplace add，無法直接從遠端子目錄安裝。
+
+包含 Skills：
 
 | Skill | 解決的問題 |
 |-------|-----------|
@@ -211,11 +228,13 @@ ai-research/
 │   └── sync-all/             # 統一 orchestrator：Dependabot PR → invoke 各 sync skill
 ├── .github/
 │   └── dependabot.yml        # 每日自動偵測所有 submodule 上游變更
-├── .agents/skills/           # 個人自製 skills
-│   ├── mongo/
-│   ├── plan-extension/
-│   ├── windows-script/
-│   └── write-md/
+├── .agents/skills/           # ai-research-skills 本地 plugin root
+│   ├── plugin.json           # GitHub Copilot plugin manifest
+│   ├── .claude-plugin/       # Claude Code plugin / marketplace metadata
+│   ├── skills/               # skill 定義目錄（mongo, plan-extension, windows-script, write-md）
+│   ├── validate-phase1.ps1   # plugin 結構驗證
+│   ├── validate-phase2.ps1   # 文件驗證
+│   └── validate-phase3.ps1   # 真實安裝驗證
 ├── AGENTS.md                 # Skill 組合查表（任務導向）
 ├── CLAUDE.md                 # Claude Code project instructions
 ├── tool/                     # 工具操作文件
