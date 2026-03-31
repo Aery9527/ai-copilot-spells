@@ -23,13 +23,11 @@
 
 ## 更新時間與差異總結
 
-- 更新時間：`2026-03-29 12:14 UTC`
+- 更新時間：`2026-03-31 14:30 UTC`
 - 比較基準：上一版本地文件（本次同步前）
 - 差異摘要：
-  - 新增目前官方已列出的高影響 CLI commands / flags，例如 `claude plugin`、`claude remote-control`、`claude auto-mode defaults`、`--bare`、`--chrome`、`--enable-auto-mode`、`--remote`、`--teleport`、`--session-id`、`--teammate-mode`、`--tmux`。
-  - 補上目前 commands / interactive docs 已列出的 slash commands 與互動能力，例如 `/btw`、`/chrome`、`/desktop`、`/install-slack-app`、`/mobile`、`/remote-control`、`/schedule`、`/voice`，以及內建 skill `/claude-api`。
-  - 修正已過時的對照內容，例如把 `/fork` 改標成官方主指令 `/branch`（保留 alias 說明）、把背景 agents 終止快捷鍵改為 `Ctrl+X Ctrl+K`、補上 `Option+O` / `Alt+O` 的 fast mode shortcut。
-  - 同步來源改為 `code.claude.com` 的 `cli-reference`、`commands`、`interactive-mode`、`skills` 四頁，避免沿用已不再提供指令表的舊網址。
+  - 新增 `--betas`、`--include-partial-messages`、`--permission-prompt-tool`、`--init`、`--init-only`、`--maintenance`、`--settings`、`--setting-sources`、`--channels` 等 9 個官方 cli-reference 已列出的 CLI flags。
+  - Slash commands（`/commands` 頁）、鍵盤快捷鍵、內建 Skills 本次與官方比對後無差異，無需更新。
 
 [返回開頭](#快速導覽)
 
@@ -65,6 +63,8 @@
 | `--max-turns=N` | `claude -p --max-turns 3 "query"` | 限制 agentic turns 數量（print 模式），超過時以錯誤退出。 | 中 | 防止無限迴圈。 |
 | `--max-budget-usd=N` | `claude -p --max-budget-usd 5.00 "query"` | 設定最高 API 費用上限（print 模式）。 | 中 | 成本控管。 |
 | `--fallback-model=MODEL` | `claude -p --fallback-model sonnet "query"` | 預設模型過載時自動切換備援（print 模式）。 | 低 | 高可用場景實用。 |
+| `--betas` | `claude --betas interleaved-thinking` | 在 API 請求中加入 beta headers（僅限 API key 使用者）。 | 低 | 例如 `interleaved-thinking` 等實驗功能。 |
+| `--include-partial-messages` | `claude -p --include-partial-messages --output-format stream-json "query"` | 在 stream-json 輸出中包含部分 streaming events。 | 中 | 須配合 `--print` 與 `--output-format=stream-json`。 |
 
 ### System Prompt
 
@@ -88,6 +88,7 @@
 | `--bare` | `claude --bare -p "query"` | Minimal mode：停用 skills、hooks、plugins、MCP auto-discovery 等自動載入。 | 中 | 腳本化呼叫能更快、更乾淨。 |
 | `--disable-slash-commands` | `claude --disable-slash-commands` | 停用本次 session 的所有 slash commands 與 skills。 | 中 | 做基線測試或限制能力時實用。 |
 | `--enable-auto-mode` | `claude --enable-auto-mode` | 讓 `Shift+Tab` 可切到 auto mode。 | 中 | 需要支援方案與模型。 |
+| `--permission-prompt-tool` | `claude -p --permission-prompt-tool mcp__my-mcp__prompt "query"` | 指定一個 MCP tool 來處理非互動模式的權限提示。 | 中 | 適合全自動 pipeline 搭配自訂審核邏輯。 |
 
 ### Workspace / Browser
 
@@ -106,6 +107,9 @@
 | `--mcp-config=PATH` | `claude --mcp-config ./mcp.json` | 從 JSON 檔或字串載入 MCP servers（空白分隔可多個）。 | 低 | 快速掛載外部工具。 |
 | `--strict-mcp-config` | `claude --strict-mcp-config --mcp-config ./mcp.json` | 只使用 `--mcp-config` 指定的 MCP，忽略其他設定。 | 中 | 乾淨的隔離環境。 |
 | `--plugin-dir=PATH` | `claude --plugin-dir ./my-plugins` | 僅本次 session 從指定目錄載入 plugins。可重複使用多個路徑。 | 低 | 臨時試驗 plugin 時方便。 |
+| `--settings` | `claude --settings ./settings.json` | 從 JSON 檔或 JSON 字串載入額外設定。 | 低 | 可與既有設定合併使用。 |
+| `--setting-sources` | `claude --setting-sources user,project` | 逗號分隔的設定來源清單（`user`、`project`、`local`）。 | 低 | 限制載入哪些層級的設定。 |
+| `--channels` | `claude --channels notifications` | （Research preview）指定 Claude 應監聽的 MCP servers channel 通知。 | 中 | 尚在研究預覽階段。 |
 
 ### Remote / Automation / Other
 
@@ -121,6 +125,9 @@
 | `--tmux` | `claude -w feature-auth --tmux` | 為 worktree session 建立 tmux / panes 工作區。 | 中 |
 | `-v`, `--version` | `claude --version` | 顯示版本號。 | 低 |
 | `--help` | `claude --help` | 顯示說明。 | 低 |
+| `--init` | `claude --init` | 執行初始化 hooks 後進入互動模式。 | 低 |
+| `--init-only` | `claude --init-only` | 執行初始化 hooks 後直接退出（不啟動互動 session）。 | 低 |
+| `--maintenance` | `claude --maintenance` | 執行 maintenance hooks 後退出。 | 低 |
 
 [返回開頭](#快速導覽)
 

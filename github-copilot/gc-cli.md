@@ -18,12 +18,11 @@
 
 ## 更新時間與差異總結
 
-- 更新時間：`2026-03-29 12:14 UTC`
+- 更新時間：`2026-03-31 14:30 UTC`
 - 比較基準：上一版本地文件（本次同步前）
 - 差異摘要：
-  - 新增官方目前已公開的高影響 flags，例如 `--allow-all-paths`、`--allow-all-urls`、`--allow-url`、`--available-tools`、`--additional-mcp-config`、`--autopilot`、`--no-ask-user`、`--no-custom-instructions`。
-  - 補上官方 command reference 額外列出的互動式快捷操作與鍵盤快捷鍵，例如 `@ FILENAME`、`! COMMAND`、`Ctrl+X` 後 `/`、timeline / navigation shortcuts。
-  - 移除官方目前 slash-command 清單未列出的舊項目，例如 `/pr`、`/research`、`/copy`、`/restart`、`/instructions`、`/streamer-mode`、`/update`、`/version`、`/changelog`，避免把歷史功能誤當現況。
+  - 新增 27 個官方已列出的 CLI flags，涵蓋 MCP 管理（`--add-github-mcp-tool`、`--disable-builtin-mcps`、`--disable-mcp-server` 等）、工具/權限（`--excluded-tools`、`--deny-url`、`--yolo`、`--secret-env-vars` 等）、顯示與無障礙（`--plain-diff`、`--screen-reader`、`--no-color` 等）、自動化 logging（`--log-level`、`--log-dir`、`--max-autopilot-continues`）。
+  - Slash commands 與鍵盤快捷鍵本次與官方比對後無差異，無需更新。
 
 [返回開頭](#快速導覽)
 
@@ -42,6 +41,7 @@
 | `--continue` | `copilot --continue` | 直接續接最近一次 session。 | 低 | 不會先顯示 session 清單。 |
 | `--resume[=SESSION-ID]` | `copilot --resume` | 從既有 session 清單中選擇續接，或直接指定 `SESSION-ID`。 | 低 | 長任務與中斷續跑很實用。 |
 | `--allow-all` | `copilot --allow-all` | 一次開啟所有 tools、paths、URLs 權限。 | **高** | 等價於 `--allow-all-tools --allow-all-paths --allow-all-urls`。 |
+| `--yolo` | `copilot --yolo -p "fix failing tests"` | 一次開啟所有權限（等同 `--allow-all`）。 | **高** | `--allow-all` 的 alias；適合快速無障礙執行。 |
 | `--allow-all-tools` | `copilot --allow-all-tools` | 讓所有 tools 自動執行，不再逐次詢問。 | **高** | 程式化執行時常用，但風險高。 |
 | `--allow-all-paths` | `copilot --allow-all-paths` | 停用路徑驗證，允許存取任意檔案路徑。 | **高** | 適合受控環境；一般互動使用要保守。 |
 | `--allow-all-urls` | `copilot --allow-all-urls` | 允許存取任意 URL，不再逐次詢問。 | **高** | Web / API 導向任務才建議開啟。 |
@@ -51,12 +51,38 @@
 | `--additional-mcp-config=JSON` | `copilot --additional-mcp-config=@mcp.json` | 為本次 session 額外加入 MCP server。 | 中 | 不會永久改動既有設定。 |
 | `--autopilot` | `copilot --autopilot -p "fix failing tests"` | 在 prompt mode 啟用 autopilot continuation。 | **高** | 讓 agent 更自主地持續完成多步驟任務。 |
 | `--deny-tool=TOOL ...` | `copilot --deny-tool "shell(rm)"` | 預先禁止指定 tool。 | 低 | 適合建立安全護欄。 |
+| `--deny-url=URL ...` | `copilot --deny-url "malicious.example.com"` | 拒絕存取特定 URL 或網域，優先於 `--allow-url`。 | 中 | 可與 `--allow-url` 組合建立精細的 URL 存取控制。 |
 | `--experimental` / `--no-experimental` | `copilot --experimental` | 開啟或關閉 experimental features。 | 中 | 互動模式也可用 `/experimental` 切換。 |
 | `--share=PATH` / `--share-gist` | `copilot -p "Summarize" --share=summary.md` | 在 programmatic session 結束後輸出分享檔或 gist。 | 中 | 適合留存執行紀錄。 |
 | `--no-ask-user` | `copilot --no-ask-user -p "update dependencies"` | 停用 `ask_user` tool，改成完全自主執行。 | 中 | 批次或 unattended workflow 常用。 |
 | `--no-custom-instructions` | `copilot --no-custom-instructions` | 停用 `AGENTS.md` 等 custom instructions。 | 中 | 排查指令干擾或做乾淨基線測試時實用。 |
 | `--output-format=text|json` | `copilot -p "Summarize" --output-format=json` | 控制輸出格式。 | 中 | `json` 會輸出 JSONL。 |
 | `-s`, `--silent` | `copilot -p "Summarize" --silent` | 只輸出 agent 回應。 | 低 | 常用於 shell script。 |
+| `--add-dir=PATH` | `copilot --add-dir ./data` | 新增目錄到允許的檔案存取清單（可重複使用多次）。 | 低 | 配合 `--allow-all-paths` 使用效果更佳。 |
+| `--excluded-tools=TOOL ...` | `copilot --excluded-tools "shell,write"` | 指定不提供給 model 的 tools（quoted comma-separated list）。 | 中 | 建立精確的工具範圍限制。 |
+| `--disable-parallel-tools-execution` | `copilot --disable-parallel-tools-execution` | 停用 tools 的平行執行（LLM 仍可發出平行呼叫，但會依序執行）。 | 中 | 除錯或需嚴格序列執行時使用。 |
+| `--secret-env-vars=VAR ...` | `copilot --secret-env-vars "API_KEY,TOKEN"` | 在輸出中遮蔽指定環境變數的值。 | 低 | 防止敏感憑證洩漏到 session 輸出。 |
+| `--bash-env` | `copilot --bash-env` | 啟用 bash shells 的 `BASH_ENV` 支援。 | 低 | 需要 bash hook 時使用。 |
+| `--no-bash-env` | `copilot --no-bash-env` | 停用 bash shells 的 `BASH_ENV` 支援。 | 低 | 明確關閉 BASH_ENV hook。 |
+| `--disallow-temp-dir` | `copilot --disallow-temp-dir` | 阻止自動存取系統暫存目錄。 | 中 | 沙盒或受控環境下加強隔離。 |
+| `--add-github-mcp-tool=TOOL` | `copilot --add-github-mcp-tool create_issue` | 為 GitHub MCP server 額外啟用指定 tool（可重複使用多次）。 | 低 | 取代預設的 CLI subset，精確新增單一工具。 |
+| `--add-github-mcp-toolset=TOOLSET` | `copilot --add-github-mcp-toolset issues` | 為 GitHub MCP server 額外啟用指定 toolset（可重複使用多次）。 | 低 | 一次開啟一組相關 tools。 |
+| `--enable-all-github-mcp-tools` | `copilot --enable-all-github-mcp-tools` | 啟用 GitHub MCP server 的全部 tools（覆蓋 `--add-github-mcp-tool` / `--add-github-mcp-toolset`）。 | 中 | 適合需要完整 GitHub 操作能力的場景。 |
+| `--disable-builtin-mcps` | `copilot --disable-builtin-mcps` | 停用所有內建 MCP servers（目前：`github-mcp-server`）。 | 中 | 僅使用外部 MCP 設定時的隔離選項。 |
+| `--disable-mcp-server=SERVER-NAME` | `copilot --disable-mcp-server github-mcp-server` | 停用指定的 MCP server（可重複使用多次）。 | 中 | 精細控制哪些 MCP servers 啟用。 |
+| `--config-dir=PATH` | `copilot --config-dir ~/.copilot-work` | 設定 config 目錄（預設 `~/.copilot`）。 | 低 | 多環境或 CI 場景下切換設定集合。 |
+| `--stream=MODE` | `copilot --stream=off -p "query"` | 開啟或關閉 streaming 模式（`on` 或 `off`）。 | 低 | 非互動管道或偵錯時可能需要關閉。 |
+| `--max-autopilot-continues=COUNT` | `copilot --autopilot --max-autopilot-continues 10 -p "task"` | 限制 autopilot 模式的最大繼續輪數（預設：無限制）。 | 中 | 防止長任務無限執行。 |
+| `--no-auto-update` | `copilot --no-auto-update` | 停用自動下載 CLI 更新。 | 低 | 鎖定版本的 CI / 受控環境。 |
+| `--log-dir=DIRECTORY` | `copilot --log-dir ./logs` | 設定 log 檔目錄（預設 `~/.copilot/logs/`）。 | 低 | 集中管理多個 session 的 logs。 |
+| `--log-level=LEVEL` | `copilot --log-level debug` | 設定 log level（`none`、`error`、`warning`、`info`、`debug`、`all`、`default`）。 | 低 | 除錯時搭配 `debug` 或 `all`。 |
+| `--acp` | `copilot --acp` | 啟動 Agent Client Protocol server。 | 中 | 供外部 ACP 客戶端整合使用。 |
+| `--banner` | `copilot --banner` | 顯示啟動 banner。 | 低 | 預設行為；可用於確認版本資訊。 |
+| `--alt-screen=VALUE` | `copilot --alt-screen=off` | 控制 terminal alternate screen buffer（`on` 或 `off`）。 | 低 | 不支援 alternate screen 的 terminal 可設 off。 |
+| `--no-alt-screen` | `copilot --no-alt-screen` | 停用 terminal alternate screen buffer。 | 低 | `--alt-screen=off` 的 shorthand。 |
+| `--no-color` | `copilot --no-color` | 停用所有彩色輸出。 | 低 | CI logs 或純文字環境。 |
+| `--plain-diff` | `copilot --plain-diff` | 停用 diff 的語法高亮顯示（改用 git config 的 diff tool）。 | 低 | 純文字環境或偏好外部 diff tool 時使用。 |
+| `--screen-reader` | `copilot --screen-reader` | 啟用無障礙螢幕閱讀器最佳化。 | 低 | 搭配 NVDA、JAWS 等輔助技術。 |
 
 [返回開頭](#快速導覽)
 
