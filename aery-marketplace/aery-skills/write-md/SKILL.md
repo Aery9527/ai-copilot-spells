@@ -22,6 +22,8 @@ description: >-
 ## YAML frontmatter 注意事項
 
 - 若 Markdown 文件帶有 YAML frontmatter，而欄位值內會出現 `: `（冒號後接空白），**禁止**直接使用未加引號的 plain scalar。
+- 前面提到的中文 / 英文規則，指的是 **frontmatter value 的內容語言**；欄位 key 名稱若由規格固定（如 `name`、`description`、`title`），仍照規格本身書寫。
+- 若 frontmatter value 是給人讀的自然語言內容，除穩定識別用途或規格要求英文的資訊（如 `name`、slug、machine-readable identifier）外，**其餘預設盡量使用繁體中文**；例如 `description`、`summary`、`title` 的內容。
 - `description`、`summary`、`title` 等長句欄位，預設優先使用 `>-` block scalar；若內容很短，也可以直接用單引號或雙引號包住整段字串。
 - 否則 parser 可能把內文中的 `foo: bar` 誤判成新的 key/value，導致 frontmatter parse error。
 - 這條規則尤其適用於 `SKILL.md` 的 `description` 欄位，因為常會同時包含觸發詞、例句與帶冒號的片段。
@@ -29,9 +31,11 @@ description: >-
 - 安全寫法如下：
 
 ```yaml
+name: skills-governance
 description: >-
-  Use when Dependabot has opened PRs for submodule updates.
-  Triggers on: "sync all", "update all skills".
+  用於建立或修改 `.agents/skills/` 下的專案客製 skills，或修改
+  `aery-marketplace/aery-skills/` 並需要套用本 repo 的目錄邊界、
+  相關文件同步與 Conventional Commit 規則時使用。
 ```
 
 ## 工作流程

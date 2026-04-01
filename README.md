@@ -209,7 +209,7 @@ copilot plugin install Aery9527/ai-research:aery-marketplace
 |-------|-----------|
 | **mongo-guidelines** | MongoDB 查詢、aggregation pipeline、Go driver、JS shell 型別陷阱 |
 | **windows-script** | `.bat`/`.cmd`/`.ps1` 語法陷阱、errorlevel、delayed expansion |
-| **write-md** | Markdown 文件撰寫，含 Mermaid 圖表使用決策規則 |
+| **write-md** | Markdown 文件撰寫，含 frontmatter 規則、YAML 安全與 Mermaid 圖表決策 |
 
 [返回開頭](#快速導覽)
 
