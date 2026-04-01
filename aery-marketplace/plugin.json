@@ -1,6 +1,6 @@
 {
   "name": "aery-skills",
   "version": "0.1.0",
-  "description": "Shared Aery skills plugin: mongo, plan-extension, windows-script, write-md",
+  "description": "Shared Aery skills plugin: mongo, windows-script, write-md",
   "skills": "./aery-skills"
 }

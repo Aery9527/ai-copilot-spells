@@ -1,6 +1,11 @@
 ---
 name: write-md
-description: Writing or editing markdown documents. Use when the user asks to write, create, update, or organize any markdown file — including feature docs, module docs, architecture overviews, READMEs, or technical specifications. Ensure the produced Markdown includes a quick-navigation section with Markdown links to major headings, and add a back-to-top link in each major section so readers can jump quickly. When the content involves architecture, module dependencies, data flows, state transitions, or component relationships that would be significantly easier to understand as a diagram, embed Mermaid diagrams. Do NOT use Mermaid for content that can be clearly expressed with lists, tables, or prose — only use it when visualization genuinely reduces comprehension difficulty.
+description: >-
+  撰寫或編輯 Markdown 文件時使用。當使用者要求撰寫、建立、更新或整理任何 Markdown
+  檔案時——包含功能文件、模組文件、架構總覽、README 與技術規格——應優先使用此 skill。
+  產出的 Markdown 必須包含可快速跳轉的章節導覽，並在每個主要章節提供返回開頭的
+  Markdown link。當內容涉及架構、模組相依、資料流、狀態轉換或元件關係，且圖表能顯著降低
+  理解難度時，應嵌入 Mermaid；若清單、表格或文字已能清楚表達，則不要使用 Mermaid。
 ---
 
 # Write MD
