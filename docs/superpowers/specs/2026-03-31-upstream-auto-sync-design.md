@@ -67,7 +67,7 @@ flowchart LR
 ```yaml
 version: 2
 updates:
-  - package-ecosystem: "gitsubmodules"
+  - package-ecosystem: "gitsubmodule"
     directory: "/"
     schedule:
       interval: "daily"
@@ -252,7 +252,7 @@ description: ...
 
 ## 驗收標準
 
-1. **Dependabot 啟用**：新建 `.github/dependabot.yml` 後，GitHub repo 的 Dependabot 設定頁顯示 `gitsubmodules` 已啟用
+1. **Dependabot 啟用**：新建 `.github/dependabot.yml` 後，GitHub repo 的 Dependabot 設定頁顯示 `gitsubmodule` 已啟用
 2. **PR 偵測**：手動製造 submodule SHA 過時的情況（或等 Dependabot 跑），可見 PR 被開出，格式為 `dependabot/submodules/<name>`
 3. **sync-all 無 PR 時**：invoke `sync-all` 時若無 open Dependabot PR，收到「無待處理的上游更新」訊息並停止，不報錯
 4. **sync-all 有 PR 時**：invoke `sync-all` 後，對應 sync skill 被觸發，submodule 更新，摘要重新生成，commit 出現在 main，Dependabot PR 被關閉

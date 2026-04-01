@@ -6,7 +6,7 @@
 
 **Architecture:** Dependabot 監控 `.gitmodules` 並在上游有新 commit 時自動開 PR（branch: `dependabot/submodules/<name>`）。使用者透過 email 得知更新後，invoke `sync-all` skill，它掃描 `.claude/skills/*/SKILL.md` frontmatter 動態建立 submodule → sync skill 映射表，依序 invoke 對應 sync skill，最後關閉 Dependabot PR。
 
-**Tech Stack:** GitHub Dependabot（gitsubmodules）、gh CLI、YAML frontmatter、Markdown skill files
+**Tech Stack:** GitHub Dependabot（gitsubmodule）、gh CLI、YAML frontmatter、Markdown skill files
 
 ---
 
@@ -97,7 +97,7 @@
   ```yaml
   version: 2
   updates:
-    - package-ecosystem: "gitsubmodules"
+    - package-ecosystem: "gitsubmodule"
       directory: "/"
       schedule:
         interval: "daily"
