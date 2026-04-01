@@ -1,6 +1,11 @@
 ---
 name: sync-all
-description: Use when Dependabot has opened PRs for submodule updates and you want to sync all pending upstream skill libraries in one step. Reads open Dependabot PRs, auto-discovers corresponding sync skills via SKILL.md frontmatter, runs them in sequence, then closes the PRs. Triggers on: "sync all", "update all skills", "process Dependabot PRs", "run sync-all".
+description: >-
+  Use when Dependabot has opened PRs for submodule updates and you want to sync
+  all pending upstream skill libraries in one step. Reads open Dependabot PRs,
+  auto-discovers corresponding sync skills via SKILL.md frontmatter, runs them
+  in sequence, then closes the PRs. Triggers on: "sync all", "update all
+  skills", "process Dependabot PRs", "run sync-all".
 ---
 
 # Sync-All

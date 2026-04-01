@@ -19,6 +19,21 @@ description: >-
 - 說明此專案內的檔案、目錄或參考文件時，**一律使用 Markdown link**，讓讀者可以直接跳轉；只有在純 code snippet、純路徑列舉或需要強調字面值時，才使用反引號路徑。
 - 所有輸出的 Markdown 文件都必須包含章節連結，且每個主要章節都必須提供可回到開頭的 Markdown link。
 
+## YAML frontmatter 注意事項
+
+- 若 Markdown 文件帶有 YAML frontmatter，而欄位值內會出現 `: `（冒號後接空白），**禁止**直接使用未加引號的 plain scalar。
+- `description`、`summary`、`title` 等長句欄位，預設優先使用 `>-` block scalar；若內容很短，也可以直接用單引號或雙引號包住整段字串。
+- 否則 parser 可能把內文中的 `foo: bar` 誤判成新的 key/value，導致 frontmatter parse error。
+- 這條規則尤其適用於 `SKILL.md` 的 `description` 欄位，因為常會同時包含觸發詞、例句與帶冒號的片段。
+- 典型踩雷例：`description: Use when ... Triggers on: "sync all"`。
+- 安全寫法如下：
+
+```yaml
+description: >-
+  Use when Dependabot has opened PRs for submodule updates.
+  Triggers on: "sync all", "update all skills".
+```
+
 ## 工作流程
 
 1. 釐清文件範圍：記錄什麼內容、目標讀者是誰
