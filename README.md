@@ -199,7 +199,7 @@ copilot plugin install Aery9527/ai-research:aery-marketplace
 
 | Skill | 解決的問題 |
 |-------|-----------|
-| **mongo** | MongoDB 查詢、aggregation pipeline、Go driver、JS shell 型別陷阱 |
+| **mongo-guidelines** | MongoDB 查詢、aggregation pipeline、Go driver、JS shell 型別陷阱 |
 | **windows-script** | `.bat`/`.cmd`/`.ps1` 語法陷阱、errorlevel、delayed expansion |
 | **write-md** | Markdown 文件撰寫，含 Mermaid 圖表使用決策規則 |
 
@@ -232,7 +232,7 @@ ai-research/
 ├── aery-marketplace/         # aery-skills plugin / local marketplace root
 │   ├── plugin.json           # GitHub Copilot plugin manifest
 │   ├── .claude-plugin/       # Claude Code plugin / marketplace metadata
-│   ├── aery-skills/          # skill 定義目錄（mongo, windows-script, write-md）
+│   ├── aery-skills/          # skill 定義目錄（mongo-guidelines, windows-script, write-md）
 │   └── README.md             # 安裝與維護說明
 ├── AGENTS.md                 # Skill 組合查表（任務導向）
 ├── CLAUDE.md                 # Claude Code project instructions

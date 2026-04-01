@@ -94,4 +94,4 @@
 | `.claude/skills/superpowers-skills-sync/` | 維運 skill | 同步 superpowers 上游 |
 | `.claude/skills/cli-doc-sync/` | 維運 skill | CLI 文件同步（Claude Code、GitHub Copilot） |
 | `.claude/skills/sync-all/` | 本地自製 | 統一 orchestrator：偵測 Dependabot PR → invoke 各 sync skill |
-| `aery-marketplace/` | 本地 plugin root | **`aery-skills`** plugin：mongo、windows-script、write-md（可安裝的 self-contained plugin / marketplace root）|
+| `aery-marketplace/` | 本地 plugin root | **`aery-skills`** plugin：mongo-guidelines、windows-script、write-md（可安裝的 self-contained plugin / marketplace root）|

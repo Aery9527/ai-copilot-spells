@@ -1,5 +1,5 @@
 ---
-name: mongo
+name: mongo-guidelines
 description: >-
   MongoDB 開發守則與陷阱防範。任何涉及 MongoDB 查詢、aggregation pipeline、
   Go mongo-go-driver 程式碼、或 MongoDB shell 腳本（.js）的開發任務都應使用此 skill。
