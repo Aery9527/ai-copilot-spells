@@ -49,7 +49,7 @@ copilot plugin install ./aery-marketplace
 
 ```bash
 copilot plugin install OWNER/REPO:aery-marketplace
-# 例：copilot plugin install myorg/ai-research:aery-marketplace
+# 例（本 repo）：copilot plugin install Aery9527/ai-research:aery-marketplace
 ```
 
 [返回開頭](#快速導覽)

@@ -182,6 +182,8 @@ copilot plugin install ./aery-marketplace
 
 # 從 GitHub repo subdirectory
 copilot plugin install OWNER/REPO:aery-marketplace
+# 例（本 repo）
+copilot plugin install Aery9527/ai-research:aery-marketplace
 ```
 
 **Claude Code 安裝：**
