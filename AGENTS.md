@@ -63,6 +63,7 @@
 | 我想要... | 使用 Skills |
 |----------|------------|
 | 創建或改善 AI Skill | `brainstorming` → `writing-skills` |
+| 維護本專案客製 skills 與 aery-skills 治理規則 | `skills-governance` |
 | 同步 Anthropic skills 上游 | `anthropic-skills-sync` |
 | 同步 superpowers 上游 | `superpowers-skills-sync` |
 | 同步 CLI 文件（Claude Code / Copilot） | `cli-doc-sync` |
@@ -94,4 +95,5 @@
 | `.claude/skills/superpowers-skills-sync/` | 維運 skill | 同步 superpowers 上游 |
 | `.claude/skills/cli-doc-sync/` | 維運 skill | CLI 文件同步（Claude Code、GitHub Copilot） |
 | `.claude/skills/sync-all/` | 本地自製 | 統一 orchestrator：偵測 Dependabot PR → invoke 各 sync skill |
+| `.agents/skills/` | 本地 project-specific custom skills | 專案內部治理與 repo 客製 workflow；不打包進 `aery-skills` plugin，例如 `skills-governance` |
 | `aery-marketplace/` | 本地 plugin root | **`aery-skills`** plugin：mongo-guidelines、windows-script、write-md（可安裝的 self-contained plugin / marketplace root）|

@@ -58,12 +58,13 @@ git submodule update --init --recursive
 
 ## Skills 系統
 
-本 repo 維護三個層次的 skills：
+本 repo 維護四個層次的 skills：
 
 | 目錄 | 來源 | 用途 |
 |------|------|------|
 | `anthropic-skills/` | [Anthropic 上游](https://github.com/anthropics/skills) | 創意設計、前端工程、AI 工程、Office 文件、技術寫作 |
 | `superpowers/` | [superpowers 上游](https://github.com/obra/superpowers) | 開發流程、Code Review、並行協作、Git 工作流、維運 |
+| `.agents/skills/` | 本地 project-specific custom skills | 專案內部治理、客製 workflow 與只在本 repo 使用的 skills，例如 [`skills-governance`](.agents/skills/skills-governance/SKILL.md) |
 | `aery-marketplace/` | 本地自製 plugin | `aery-skills`：工作踩坑實戰邏輯，可安裝的 self-contained plugin / marketplace root（[README](aery-marketplace/README.md)） |
 
 ### Skill Routers（第一層入口）
@@ -172,7 +173,14 @@ flowchart TD
 
 ## 個人自製 Skills
 
-[`aery-marketplace/`](./aery-marketplace/README.md) 是一個可安裝的本地 self-contained plugin / marketplace root，打包為 **`aery-skills`** plugin，供 GitHub Copilot 與 Claude Code 共用。詳細安裝說明見 [`aery-marketplace/README.md`](aery-marketplace/README.md)。
+本 repo 的自製 skills 分成兩條線維護：
+
+| 位置 | 定位 |
+|------|------|
+| [`.agents/skills/`](.agents/skills/skills-governance/SKILL.md) | 專案內部 custom skills；只放治理規則、維護政策與 repo 專用 workflow。首個 skill 為 [`skills-governance`](.agents/skills/skills-governance/SKILL.md)。 |
+| [`aery-marketplace/aery-skills/`](aery-marketplace/README.md) | 可安裝、可共享的 reusable skills，打包為 **`aery-skills`** plugin，供 GitHub Copilot 與 Claude Code 共用。 |
+
+[`aery-marketplace/`](./aery-marketplace/README.md) 是一個可安裝的本地 self-contained plugin / marketplace root，詳細安裝說明見 [`aery-marketplace/README.md`](aery-marketplace/README.md)。
 
 **GitHub Copilot 安裝：**
 
@@ -219,6 +227,7 @@ ai-research/
 │   └── .copilot/             # 使用者級別設定範本（複製到 ~/.copilot/ 生效）
 ├── other/                    # 其他語言 / 框架指引
 │   └── java-guidelines.md
+├── .agents/skills/           # repo 專用 custom skills（skills-governance, ...）
 ├── .claude/skills/           # Claude Code project skills
 │   ├── _shared/              # 共用協議（upstream-sync-protocol）
 │   ├── anthropic-skill/      # Anthropic router（categories + skills）

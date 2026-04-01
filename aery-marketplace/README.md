@@ -1,6 +1,8 @@
 # aery-skills
 
 > 本地可安裝 plugin：把實戰沉澱下來的 AI skills 收斂成自包含 package，供 GitHub Copilot 與 Claude Code 共用。
+>
+> **邊界說明**：這個目錄只放可安裝、可共享的 `aery-skills` plugin。repo 專用的內部治理 / custom skills 另放在 [`.agents/skills/skills-governance/SKILL.md`](../.agents/skills/skills-governance/SKILL.md)，不打包進本 plugin。
 
 ## 快速導覽
 
