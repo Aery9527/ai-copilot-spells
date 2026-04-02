@@ -6,7 +6,6 @@
 - [常用 CLI 參數](#常用-cli-參數)
 - [CLI 內建指令](#cli-內建指令)
 - [互動式 slash commands](#互動式-slash-commands)
-  - [Status Line 自訂指令](#status-line-自訂指令)
 - [內建 Skills](#內建-skills)
 - [互動式特殊功能](#互動式特殊功能)
 
@@ -230,41 +229,6 @@
 | `/reload-plugins` | 重新載入所有 active plugins。 | 不重開 CLI 也能套用變更。 |
 | `/remote-env` | 設定 `--remote` 啟動 web session 的預設遠端環境。 | 用於 Claude Code on the web。 |
 | `/statusline` | 設定 Claude Code 的 status line。 | 可描述需求，或不帶參數自動設定。 |
-
-#### Status Line 自訂指令
-
-`/statusline` 會互動式引導設定。若要直接掛自訂腳本，在 `settings.json` 或 `settings.local.json` 加入 `statusLine` key：
-
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/statusline-command.sh"
-  }
-}
-```
-
-腳本透過 **stdin** 接收 JSON，支援以下欄位：
-
-| 欄位路徑 | 型別 | 說明 |
-|---------|------|------|
-| `context_window.used_percentage` | `number` | Context window 已用百分比 |
-| `rate_limits.five_hour.used_percentage` | `number` | 5 小時 session 已用百分比 |
-| `rate_limits.five_hour.resets_at` | `number` | 5h 重置時間（Unix timestamp） |
-| `rate_limits.seven_day.used_percentage` | `number` | 7 天週期已用百分比 |
-| `rate_limits.seven_day.resets_at` | `number` | 7d 重置時間（Unix timestamp） |
-
-- 欄位不存在時不會出現（例如非 Claude.ai 訂閱者），腳本應做 null guard
-- `rate_limits` 欄位需收到第一個 API 回應後才有值
-- 腳本 stdout 直接顯示在 status line，支援 ANSI color codes
-
-**跨機器移植**：腳本提交至 `.claude/statusline-command.sh`（git tracked），換機器只需：
-
-```bash
-cp .claude/statusline-command.sh ~/.claude/
-```
-
-本 repo 的腳本實作參見 [.claude/statusline-command.sh](../.claude/statusline-command.sh)。
 
 ### Help / Account / Lifecycle
 
