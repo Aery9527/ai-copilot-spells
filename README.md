@@ -50,6 +50,7 @@ git submodule update --init --recursive
   - [anthropic-skills](#anthropic-skills)
   - [superpowers](#superpowers)
 - [AI 工具文件](#ai-工具文件)
+- [腳本文件](#腳本文件)
 - [個人自製 Skills](#個人自製-skills)
 - [目錄結構](#目錄結構)
 
@@ -171,6 +172,20 @@ flowchart TD
 
 ---
 
+## 腳本文件
+
+Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/README.md)。
+
+目前已收錄：
+
+- [`scripts/remove-local-git-user.ps1`](scripts/remove-local-git-user.ps1)：遞迴掃描指定路徑下的 Git repository / worktree，移除 local Git config 的 `[user]` section
+
+之後若 `scripts/` 目錄新增腳本，也應同步補充到 [`scripts/README.md`](scripts/README.md)。
+
+[返回開頭](#快速導覽)
+
+---
+
 ## 個人自製 Skills
 
 本 repo 的自製 skills 分成兩條線維護：
@@ -227,6 +242,9 @@ ai-research/
 │   └── .copilot/             # 使用者級別設定範本（複製到 ~/.copilot/ 生效）
 ├── other/                    # 其他語言 / 框架指引
 │   └── java-guidelines.md
+├── scripts/                  # 維護與自動化腳本文件
+│   ├── README.md
+│   └── remove-local-git-user.ps1
 ├── .agents/skills/           # repo 專用 custom skills（skills-governance, ...）
 ├── .claude/skills/           # Claude Code project skills
 │   ├── _shared/              # 共用協議（upstream-sync-protocol）

@@ -5,6 +5,7 @@
 ## 快速導覽
 
 - [任務 → Skill 組合](#任務--skill-組合)
+- [Repo 維護規則](#repo-維護規則)
 - [第一層 Router 入口](#第一層-router-入口)
 - [Skill Locations](#skill-locations)
 
@@ -71,6 +72,16 @@
 
 ---
 
+## Repo 維護規則
+
+### `scripts/` 文件同步規則
+
+- 當新增、移除、重新命名或明顯改動 `scripts/` 目錄下的腳本時，**必須同步更新 [`scripts/README.md`](scripts/README.md)**。
+- [`scripts/README.md`](scripts/README.md) 是 `scripts/` 的唯一總索引入口；後續新增腳本時，至少要補上：用途、參數、行為、風險/副作用、最小執行範例。
+- 若 root [`README.md`](README.md) 已列出腳本入口或腳本摘要，變更 `scripts/` 後也要一併檢查是否需要同步更新。
+
+---
+
 ## 第一層 Router 入口
 
 按需進入，不要一次展開全部：
@@ -97,3 +108,4 @@
 | `.claude/skills/sync-all/` | 本地自製 | 統一 orchestrator：偵測 Dependabot PR → invoke 各 sync skill |
 | `.agents/skills/` | 本地 project-specific custom skills | 專案內部治理與 repo 客製 workflow；不打包進 `aery-skills` plugin，例如 `skills-governance` |
 | `aery-marketplace/` | 本地 plugin root | **`aery-skills`** plugin：mongo-guidelines、windows-script、write-md（可安裝的 self-contained plugin / marketplace root）|
+| `scripts/` | 本地維護腳本 | repo 維護與自動化腳本；文件總入口為 [`scripts/README.md`](scripts/README.md) |
