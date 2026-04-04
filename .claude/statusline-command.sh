@@ -14,6 +14,8 @@ process.stdin.on('end',()=>{
 }
 
 used_pct=$(read_json "j?.context_window?.used_percentage")
+ctx_used=$(read_json "Math.round((j?.context_window?.used_percentage??0)*(j?.context_window?.context_window_size??200000)/100)")
+ctx_total=$(read_json "j?.context_window?.context_window_size")
 five_pct=$(read_json "j?.rate_limits?.five_hour?.used_percentage")
 five_resets=$(read_json "j?.rate_limits?.five_hour?.resets_at")
 week_pct=$(read_json "j?.rate_limits?.seven_day?.used_percentage")
@@ -21,6 +23,20 @@ week_resets=$(read_json "j?.rate_limits?.seven_day?.resets_at")
 model_name=$(read_json "j?.model?.display_name")
 model_id=$(read_json "j?.model?.id")
 cwd_path=$(read_json "j?.workspace?.current_dir")
+
+# --- Format number as Xk / X.Xk ---
+format_k() {
+    local n="$1"
+    [ -z "$n" ] && echo "" && return
+    if [ "$n" -ge 1000 ] 2>/dev/null; then
+        local k=$(( n / 1000 ))
+        local r=$(( (n % 1000 + 50) / 100 ))
+        [ "$r" -ge 10 ] && k=$(( k + 1 )) && r=0
+        if [ "$r" -eq 0 ]; then echo "${k}k"; else echo "${k}.${r}k"; fi
+    else
+        echo "${n}"
+    fi
+}
 
 # --- Progress bar (width=6) ---
 make_bar() {
@@ -120,7 +136,11 @@ SEP="${DIM} ▏${RESET}"
 
 # --- Context ---
 if [ -n "$used_pct" ]; then
-    ctx_part=$(render_seg "ctx " "$used_pct" "")
+    ctx_label="ctx "
+    if [ -n "$ctx_used" ] && [ -n "$ctx_total" ]; then
+        ctx_label="ctx $(format_k "$ctx_used")/$(format_k "$ctx_total") "
+    fi
+    ctx_part=$(render_seg "$ctx_label" "$used_pct" "")
 else
     ctx_part="${DIM}ctx ░░░░░░ --%${RESET}"
 fi
