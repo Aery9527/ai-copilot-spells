@@ -18,6 +18,9 @@ five_pct=$(read_json "j?.rate_limits?.five_hour?.used_percentage")
 five_resets=$(read_json "j?.rate_limits?.five_hour?.resets_at")
 week_pct=$(read_json "j?.rate_limits?.seven_day?.used_percentage")
 week_resets=$(read_json "j?.rate_limits?.seven_day?.resets_at")
+model_name=$(read_json "j?.model?.display_name")
+model_id=$(read_json "j?.model?.id")
+cwd_path=$(read_json "j?.workspace?.current_dir")
 
 # --- Progress bar (width=6) ---
 make_bar() {
@@ -43,6 +46,46 @@ color_for_pct() {
 ESC=$'\033'
 DIM="${ESC}[2m"
 RESET="${ESC}[0m"
+BOLD="${ESC}[1m"
+
+# --- Model label with think level ---
+# Detect extended thinking from model ID suffix: -thinking variants
+build_model_label() {
+    local display="$1"
+    local id="$2"
+    local label=""
+    if [ -z "$display" ]; then
+        echo ""
+        return
+    fi
+    # Shorten known verbose names
+    local short
+    short=$(echo "$display" | sed \
+        -e 's/Claude //' \
+        -e 's/ Sonnet/S/' \
+        -e 's/ Haiku/H/' \
+        -e 's/ Opus/O/' \
+        -e 's/ (Extended Thinking)/ 🧠/' \
+    )
+    # Fallback: if model ID contains "thinking", append indicator
+    if echo "$id" | grep -qi "thinking" && ! echo "$short" | grep -q "🧠"; then
+        short="${short} 🧠"
+    fi
+    echo "$short"
+}
+
+model_label=$(build_model_label "$model_name" "$model_id")
+
+# --- Git branch and repo root folder ---
+git_branch=""
+git_root_folder=""
+if [ -n "$cwd_path" ] && command -v git >/dev/null 2>&1; then
+    git_branch=$(git -C "$cwd_path" --no-optional-locks branch --show-current 2>/dev/null)
+    git_root=$(git -C "$cwd_path" --no-optional-locks rev-parse --show-toplevel 2>/dev/null)
+    if [ -n "$git_root" ]; then
+        git_root_folder=$(basename "$git_root")
+    fi
+fi
 
 # --- Remaining time ---
 format_remaining() {
@@ -96,9 +139,28 @@ else
     week_part=""
 fi
 
+# --- Model segment ---
+if [ -n "$model_label" ]; then
+    model_part="${ESC}[38;5;111m${model_label}${RESET}"
+else
+    model_part=""
+fi
+
+# --- Git segment: folder:branch ---
+if [ -n "$git_root_folder" ] && [ -n "$git_branch" ]; then
+    git_part="${DIM}${git_root_folder}${RESET}${DIM}:${RESET}${ESC}[38;5;183m${git_branch}${RESET}"
+elif [ -n "$git_root_folder" ]; then
+    git_part="${DIM}${git_root_folder}${RESET}"
+else
+    git_part=""
+fi
+
 # --- Assemble ---
-out="$ctx_part"
-[ -n "$five_part" ] && out+="${SEP}${five_part}"
-[ -n "$week_part" ] && out+="${SEP}${week_part}"
+out=""
+[ -n "$model_part" ] && out+="${model_part}"
+[ -n "$git_part"   ] && out+="${SEP}${git_part}"
+out+="${SEP}${ctx_part}"
+[ -n "$five_part"  ] && out+="${SEP}${five_part}"
+[ -n "$week_part"  ] && out+="${SEP}${week_part}"
 
 printf "%s" "$out"
