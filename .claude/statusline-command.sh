@@ -147,14 +147,14 @@ fi
 
 # --- 5h ---
 if [ -n "$five_pct" ] && [ -n "$five_resets" ]; then
-    five_part=$(render_seg "5h " "$five_pct" "$five_resets")
+    five_part=$(render_seg "5H " "$five_pct" "$five_resets")
 else
     five_part=""
 fi
 
 # --- 7d ---
 if [ -n "$week_pct" ] && [ -n "$week_resets" ]; then
-    week_part=$(render_seg "7d " "$week_pct" "$week_resets")
+    week_part=$(render_seg "7D " "$week_pct" "$week_resets")
 else
     week_part=""
 fi
@@ -176,11 +176,12 @@ else
 fi
 
 # --- Assemble ---
-out=""
-[ -n "$model_part" ] && out+="${model_part}"
-[ -n "$git_part"   ] && out+="${SEP}${git_part}"
-out+="${SEP}${ctx_part}"
-[ -n "$five_part"  ] && out+="${SEP}${five_part}"
-[ -n "$week_part"  ] && out+="${SEP}${week_part}"
+line1=""
+[ -n "$model_part" ] && line1+="${model_part}"
+[ -n "$git_part"   ] && line1+="${SEP}${git_part}"
 
-printf "%s" "$out"
+line2="${ctx_part}"
+[ -n "$five_part"  ] && line2+="${SEP}${five_part}"
+[ -n "$week_part"  ] && line2+="${SEP}${week_part}"
+
+printf "%s\n%s" "$line1" "$line2"
