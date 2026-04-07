@@ -161,10 +161,10 @@ flowchart TD
 
 ## AI 工具文件
 
-| 工具 | 文件 | 說明 |
-|------|------|------|
-| **Claude Code** | [`claude-code/cc-cli.md`](claude-code/cc-cli.md) | CLI 參數、slash commands、快捷鍵 |
-| **GitHub Copilot** | [`github-copilot/gc-cli.md`](github-copilot/gc-cli.md) | CLI 參數、slash commands、custom instructions |
+| 工具 | CLI 參考 | Agent 使用指南 | 說明 |
+|------|---------|----------------|------|
+| **Claude Code** | [`claude-code/cc-cli.md`](claude-code/cc-cli.md) | [`docs/claude-code-agents.md`](docs/claude-code-agents.md) | CLI 參數、slash commands、快捷鍵，以及 built-in / custom agent 用法 |
+| **GitHub Copilot** | [`github-copilot/gc-cli.md`](github-copilot/gc-cli.md) | [`docs/github-copilot-agents.md`](docs/github-copilot-agents.md) | CLI 參數、slash commands、custom instructions，以及 built-in / custom agent 用法 |
 
 其他工具操作文件索引：[`tool/README.md`](tool/README.md)
 
@@ -269,6 +269,8 @@ ai-research/
 │   ├── ps_func.md
 │   └── wsl-claude-code-env-setup.md
 └── docs/
+    ├── claude-code-agents.md
+    ├── github-copilot-agents.md
     └── superpowers/
         ├── specs/            # 設計文件
         └── plans/            # 實作計畫
