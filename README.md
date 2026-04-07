@@ -50,6 +50,7 @@ git submodule update --init --recursive
   - [anthropic-skills](#anthropic-skills)
   - [superpowers](#superpowers)
 - [AI 工具文件](#ai-工具文件)
+- [Agent 與 Skill 差異](#agent-與-skill-差異)
 - [腳本文件](#腳本文件)
 - [個人自製 Skills](#個人自製-skills)
 - [目錄結構](#目錄結構)
@@ -167,6 +168,69 @@ flowchart TD
 | **GitHub Copilot** | [`github-copilot/gc-cli.md`](github-copilot/gc-cli.md) | [`docs/github-copilot-agents.md`](docs/github-copilot-agents.md) | CLI 參數、slash commands、custom instructions，以及 built-in / custom agent 用法 |
 
 其他工具操作文件索引：[`tool/README.md`](tool/README.md)
+
+[返回開頭](#快速導覽)
+
+---
+
+## Agent 與 Skill 差異
+
+這一節整理目前 repo 內對 **Claude Code** 與 **GitHub Copilot CLI** 的 agent / skill 研究結論。若要查各工具的完整建立方式與實際用法，請先看 [Claude Code Agent 使用指南](docs/claude-code-agents.md) 與 [GitHub Copilot CLI Agent 使用指南](docs/github-copilot-agents.md)。
+
+### 核心區分
+
+**一句話：`agent` 是「誰來做」；`skill` 是「怎麼做」。**
+
+| 面向 | Agent | Skill |
+|------|-------|-------|
+| 本質 | 專家角色 / 執行者 | SOP / 任務知識包 |
+| 系統實際做的事 | 啟動一個專門 agent 或 subagent 去做 | 把 [`SKILL.md`](aery-marketplace/aery-skills/write-md/SKILL.md) 與附帶資源注入目前 agent 的 context |
+| Context | 常有獨立 context，適合隔離探索、測試、review | 多半沿用目前對話 context，屬 just-in-time 指南 |
+| 主要關注 | 角色、工具權限、模型、隔離、背景執行、可否委派 | 步驟、模板、範例、腳本、輸出格式 |
+| 適合場景 | `security-auditor`、`code-reviewer`、`test-runner` | `write-md`、`mongo-guidelines`、release note / deploy SOP |
+
+### 兩者如何搭配
+
+| 層次 | 用途 |
+|------|------|
+| custom instructions | 所有任務都應遵守的 repo 慣例與溝通方式 |
+| skill | 某一類任務才需要的知識、步驟與模板 |
+| agent | 負責執行任務的角色與 runtime 邊界 |
+| tool / MCP | 實際能力來源，例如讀檔、改檔、查 GitHub、操作外部服務 |
+
+實務上比較穩的設計通常是：**把知識與流程放 skill，把角色、權限與執行邊界放 agent**。  
+例如 [`.agents/skills/`](.agents/skills/skills-governance/SKILL.md) 與 [`aery-marketplace/aery-skills/`](aery-marketplace/README.md) 目前收的都是 skills，不是 agents。
+
+### Claude Code 與 GitHub Copilot 的差異
+
+| 項目 | Claude Code | GitHub Copilot CLI |
+|------|-------------|--------------------|
+| Agent 定位 | 比較像可編排的 subagent runtime | 比較像 specialist persona + tool profile |
+| Skill 定位 | skills 除知識外，還能設定 `allowed-tools`、`context: fork`、`hooks` 等行為 | skills 是 task-specific instructions，可附 scripts / resources，偏 just-in-time workflow |
+| Agent 與 Skill 搭配 | custom agent 可透過 `skills` 欄位預載 skills 內容 | custom agent 與 skills 都能共存，但 custom agent 主要負責角色與工具邊界 |
+| Agent 裡能否再叫 Agent | 被派出去的 subagent 不能再 spawn subagent；若整個 session 以 `claude --agent` 啟動，主執行緒仍可再派 | custom agent `tools` 支援 `agent` alias，可再叫其他 custom agent，但不建議做太深巢狀 |
+
+### Marketplace / Plugin 能不能放 Agent
+
+可以，但精準說法是：**marketplace 是分發 plugin 的地方；真正承載 agent 的是 plugin。**
+
+| 平台 | marketplace / plugin 能否包含 agent | 典型位置 | 補充 |
+|------|-----------------------------------|----------|------|
+| Claude Code | 可以 | plugin root 的 `agents/` | plugin 可包含 `skills`、`agents`、`hooks`、`MCP`、`LSP` |
+| GitHub Copilot CLI | 可以 | plugin root 的 `agents/`，檔名 `*.agent.md` | plugin 可包含 `agents`、`skills`、`hooks`、`MCP` 等元件 |
+
+不過 **agent 不像 skill 那樣容易跨 cc / gc 共用同一份定義**。兩邊都能透過 plugin / marketplace 發佈 agent，但 frontmatter、檔名格式、可用欄位與 tool naming 都不同：
+
+1. **Claude Code plugin agents** 支援 `skills`、`memory`、`background`、`isolation` 等欄位，但 plugin-shipped agents 不支援 `hooks`、`mcpServers`、`permissionMode`。
+2. **GitHub Copilot CLI plugin agents** 使用 `.agent.md` 格式，欄位與 tool aliases 也和 Claude Code 不同。
+3. 如果要讓同一個 marketplace root 同時服務 cc 與 gc，**可以共用同一個 plugin root 概念，但 agent 通常仍要各自包 wrapper**；skill 才比較適合共用同一套內容。
+
+### 這個 repo 目前怎麼看
+
+1. [`.claude/skills/`](.claude/skills/anthropic-skill/SKILL.md)、[`.agents/skills/`](.agents/skills/skills-governance/SKILL.md)、[`aery-marketplace/aery-skills/`](aery-marketplace/README.md) 主要都屬於 **skill 生態**。
+2. [Claude Code Agent 使用指南](docs/claude-code-agents.md) 與 [GitHub Copilot CLI Agent 使用指南](docs/github-copilot-agents.md) 則是整理 **agent 建立、使用與能力邊界**。
+3. [`aery-marketplace/`](aery-marketplace/README.md) 目前是 **skills plugin / marketplace root**；若未來要加入 agents，cc 與 gc 都做得到，但不應假設一份 agent 定義可直接跨兩邊共用。
+4. 如果你在設計新能力時猶豫該做 agent 還是 skill，先問自己一句：**我要的是專家，還是手冊？** 要專家就做 agent；要手冊就做 skill。
 
 [返回開頭](#快速導覽)
 
