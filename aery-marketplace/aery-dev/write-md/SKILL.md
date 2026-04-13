@@ -34,7 +34,7 @@ description: >-
 name: skills-governance
 description: >-
   用於建立或修改 `.agents/skills/` 下的專案客製 skills，或修改
-  `aery-marketplace/aery-skills/` 並需要套用本 repo 的目錄邊界、
+  `aery-marketplace/aery-dev/` 並需要套用本 repo 的目錄邊界、
   相關文件同步與 Conventional Commit 規則時使用。
 ```
 

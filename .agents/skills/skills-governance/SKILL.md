@@ -2,7 +2,7 @@
 name: skills-governance
 description: >-
   用於建立或修改 `.agents/skills/` 下的專案客製 skills，或修改
-  `aery-marketplace/aery-skills/` 並需要套用本 repo 的目錄邊界、
+  `aery-marketplace/aery-dev/` 並需要套用本 repo 的目錄邊界、
   相關文件同步與 Conventional Commit 規則時使用。
 ---
 
@@ -23,9 +23,9 @@ description: >-
 
 這個 repo 把「專案內部 custom skills」與「可安裝共享 skills」分成兩條線維護：  
 [`.agents/skills/`](../) 只放本 repo 自己的治理規則與客製流程；  
-[`aery-marketplace/aery-skills/`](../../../aery-marketplace/aery-skills/) 只放可安裝、可共享的 `aery-skills` plugin 內容。
+[`aery-marketplace/aery-dev/`](../../../aery-marketplace/aery-dev/) 只放可安裝、可共享的 `aery-skills` plugin 內容。
 
-凡是修改 [`aery-marketplace/aery-skills/`](../../../aery-marketplace/aery-skills/) 的任務，都必須把所有已經變成過期資訊的文件／metadata 在同一個 change slice 內同步補齊，並在該 slice 可獨立驗證後立刻 commit，不得拖到之後與不相關修改混批。
+凡是修改 [`aery-marketplace/aery-dev/`](../../../aery-marketplace/aery-dev/) 的任務，都必須把所有已經變成過期資訊的文件／metadata 在同一個 change slice 內同步補齊，並在該 slice 可獨立驗證後立刻 commit，不得拖到之後與不相關修改混批。
 
 [返回開頭](#快速導覽)
 
@@ -34,10 +34,10 @@ description: >-
 | 路徑 | 定位 | 應放內容 |
 |------|------|----------|
 | [`.agents/skills/`](../) | project-specific custom skills | 只對本 repo 有效的治理規則、內部 workflow、維護政策 |
-| [`aery-marketplace/aery-skills/`](../../../aery-marketplace/aery-skills/) | installable shared skills | 會隨 `aery-skills` plugin 發佈、可被其他環境重用的 skills |
+| [`aery-marketplace/aery-dev/`](../../../aery-marketplace/aery-dev/) | installable shared skills | 會隨 `aery-skills` plugin 發佈、可被其他環境重用的 skills |
 
 - **本 repo 專用規則**，放 [`.agents/skills/`](../)。
-- **可安裝／可共享的 skill 能力**，放 [`aery-marketplace/aery-skills/`](../../../aery-marketplace/aery-skills/)。
+- **可安裝／可共享的 skill 能力**，放 [`aery-marketplace/aery-dev/`](../../../aery-marketplace/aery-dev/)。
 - 不要把只對本 repo 有意義的治理規則塞進 `aery-skills` plugin。
 
 [返回開頭](#快速導覽)
@@ -45,7 +45,7 @@ description: >-
 ## 何時放到哪裡
 
 - 任務是在規範這個 repo 自己怎麼維護 skills、怎麼 commit、怎麼同步文件 → 放 [`.agents/skills/`](../)。
-- 任務是在新增／修改一個可被 GitHub Copilot 或 Claude Code 安裝使用的 skill → 放 [`aery-marketplace/aery-skills/`](../../../aery-marketplace/aery-skills/)。
+- 任務是在新增／修改一個可被 GitHub Copilot 或 Claude Code 安裝使用的 skill → 放 [`aery-marketplace/aery-dev/`](../../../aery-marketplace/aery-dev/)。
 - 若一條規則離開這個 repo 就失去意義，它不是 shared plugin skill。
 
 [返回開頭](#快速導覽)
@@ -78,7 +78,7 @@ description: >-
 
 建議 scope：
 
-- `aery-skills`：修改 [`aery-marketplace/aery-skills/`](../../../aery-marketplace/aery-skills/) 本體或其對外說明
+- `aery-skills`：修改 [`aery-marketplace/aery-dev/`](../../../aery-marketplace/aery-dev/) 本體或其對外說明
 - `agents-skills`：修改 [`.agents/skills/`](../) 內部治理 skill
 - `plugin`：修改 plugin / marketplace metadata
 
@@ -102,7 +102,7 @@ feat > fix > refactor > docs > chore
 
 ## 文件與 metadata 同步清單
 
-修改 [`aery-marketplace/aery-skills/`](../../../aery-marketplace/aery-skills/) 時，至少檢查以下位置是否因本次變更而過期：
+修改 [`aery-marketplace/aery-dev/`](../../../aery-marketplace/aery-dev/) 時，至少檢查以下位置是否因本次變更而過期：
 
 - [`README.md`](../../../README.md)
 - [`AGENTS.md`](../../../AGENTS.md)
