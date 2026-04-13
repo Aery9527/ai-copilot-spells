@@ -1,0 +1,23 @@
+{
+  "skill_name": "image-to-html",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "C:\\Users\\User\\Downloads\\MM\\南一歷史科總複習總整_開箱超能力週攻略.png 幫我轉成 HTML。先做桌面版固定寬 1301px，標題和條列要是可選取文字，三本書封允許從原圖裁切，並用 Python 視覺 diff 把結果對齊到接近原圖。",
+      "expected_output": "產出單一 HTML 檔與必要的裁切資產，並提供同尺寸 screenshot 與 diff 指標。",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "我有一張活動 banner JPG，要做純 HTML/CSS 重建。主標、副標、按鈕文案必須是文字，人物插畫可以沿用原圖局部 crop。請用 Python 工具檢查 render 與原稿尺寸一致，並輸出 diff bbox 幫我定位誤差。",
+      "expected_output": "產出 HTML/CSS、人物裁切圖、以及可用來定位誤差的 diff 資訊。",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "現在 HTML 已經 80% 像，但看起來怪怪的：上方色條重複、裁切像整欄截圖。請找出 root cause，把資產改成真正的局部 crop，然後用 Python 視覺 diff 驗證。",
+      "expected_output": "指出 root cause、修正 HTML 與資產策略，並用視覺 diff 證明差異收斂。",
+      "files": []
+    }
+  ]
+}
