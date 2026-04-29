@@ -1,10 +1,10 @@
 ---
 name: windows-script
 description: >-
-  Use when 撰寫、修改、review 任何 Windows 腳本（.ps1、.bat、.cmd），或處理
-  PowerShell 的 encoding、BOM、line ending、Windows PowerShell 5.1 相容性、
-  中文／非 ASCII 內容、hook script、init.ps1、Windows CLI 自動化時。只要任務碰到
-  .ps1、PowerShell、UTF-8、BOM、CRLF/LF、batch script 遷移，就應先使用此 skill。
+   Use when 撰寫、修改、review 任何 Windows 腳本（.ps1、.bat、.cmd），或處理
+   PowerShell 的 encoding、BOM、line ending、Windows PowerShell 5.1 相容性、
+   中文／非 ASCII 內容、hook script、init.ps1、Windows CLI 自動化時。只要任務碰到
+   .ps1、PowerShell、UTF-8、BOM、CRLF/LF、batch script 遷移，就應先使用此 skill。
 ---
 
 # Windows Script 開發守則
@@ -144,7 +144,50 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\script.ps1
 
 ---
 
-### 7. 中文 / UTF-8 輸出
+### 7. 讀取外部 UTF-8 文字檔 ── `Get-Content` 必須指定 `-Encoding UTF8`
+
+`Get-Content` 在 Windows PowerShell 5.1 預設使用系統 OEM 編碼（繁中機器為 CP950/Big5，
+簡中機器為 GBK）讀檔，即使目標檔案實際上是 UTF-8。這個行為在讀取含非 ASCII 內容
+（中文注解、中文欄位值）的設定檔、規則檔、資料檔時，會造成**靜默性行內容錯亂**。
+
+#### 危險核心：Big5/GBK decoder 會「吃掉」換行符號
+
+當 Big5/GBK decoder 遇到 UTF-8 中文字節序列時，可能會誤認為某個雙位元組字元的第二
+byte 是 `0x0A`（LF），進而**把換行符號當成字元的一部分消耗掉**。兩個實體行因此合併成一行，
+行尾的換行消失，下一行的內容直接拼在後面。
+
+```
+# 設定檔（UTF-8，實際上是兩行）
+# 這是注解，說明下面的設定項目。
+some-key    some-value
+
+# Get-Content 不加 -Encoding UTF8，系統用 Big5 解碼 →
+# "# 這是注解，說明下面的設定項目。some-key    some-value"   ← 合併成一行！
+```
+
+**後果**：合併後的行以 `#` 開頭 → 被注解過濾邏輯（`StartsWith('#')` / `continue`）靜默跳過
+→ 設定項目**從未被載入**，防護/功能形同虛設，程式行為異常但無任何錯誤訊息。
+
+#### 鐵則：所有讀取外部文字檔的 `Get-Content` 一律加 `-Encoding UTF8`
+
+```powershell
+# ❌ 危險：依賴系統預設 OEM 編碼，含中文的 UTF-8 檔案行內容可能被吃掉
+foreach ($line in Get-Content $configFile) { ... }
+
+# ✅ 安全：明確指定 UTF-8，UTF-8 byte 序列才會被正確解析，換行不會被吃掉
+foreach ($line in Get-Content $configFile -Encoding UTF8) { ... }
+```
+
+適用範圍：任何由腳本讀取、內容可能含非 ASCII 字元（包含 UTF-8 中文注解）的外部檔案，
+無論是`.txt`、`.json`、`.yaml`、`.csv`、設定檔、規則檔還是其他文字檔。
+
+> **注意**：這個問題與第 6 節的 `.ps1` 腳本 BOM 問題相互獨立：
+> - 第 6 節：`.ps1` 腳本檔案本身需要 BOM，5.1 才能正確**解析腳本語法**
+> - 本節：讀取**外部文字資料檔**時，必須主動指定 `-Encoding UTF8`，與腳本本身用什麼 encoding 儲存無關
+
+---
+
+### 8. 中文 / UTF-8 輸出
 
 Windows PowerShell（5.x）預設 console encoding 是 CP950（繁中）或 GBK（簡中），
 可能讓中文輸出亂碼或讓 `git` 輸出被截斷：
@@ -158,7 +201,7 @@ PowerShell 7+ 預設 UTF-8，通常不需要手動設定。
 
 ---
 
-### 8. CWD 保護 ── 禁止污染呼叫端目錄
+### 9. CWD 保護 ── 禁止污染呼叫端目錄
 
 腳本頂層直接呼叫 `Set-Location` 會**永久改變呼叫端（termial）的工作目錄**，用完腳本後 CWD 已不是原始位置，使用者需要手動 `cd` 回去。
 
@@ -180,7 +223,7 @@ try {
 
 ---
 
-### 9. 彩色輸出 ── 所有互動式腳本必須使用
+### 10. 彩色輸出 ── 所有互動式腳本必須使用
 
 **凡是使用者會在 terminal 直接執行的腳本，都必須使用 `-ForegroundColor` 讓輸出可讀**。純後台 / CI 腳本例外。
 
@@ -231,6 +274,14 @@ try {
 }
 ```
 
+**讀取外部文字檔一律加 `-Encoding UTF8`（見第 7 節）：**
+
+```powershell
+# ✅ 正確：讀取可能含非 ASCII 內容的設定檔
+foreach ($line in Get-Content $configFile -Encoding UTF8) { ... }
+$content = Get-Content $dataFile -Raw -Encoding UTF8
+```
+
 ### 路徑分隔符
 
 用 `Join-Path` 或 `/`（PowerShell 兼容），含空格必須加引號。
@@ -252,5 +303,9 @@ $path = Join-Path $PSScriptRoot ".." "scripts" "go-mod.ps1"
    錯。BOM 與 line ending 無關，line ending 仍然遵循 repo 規則。
 4. **「只是改一行註解 / 中文字串，不會影響腳本執行」**  
    錯。只要檔案從全 ASCII 變成含非 ASCII，5.1 的風險就上來了。
+5. **「`Get-Content` 讀 UTF-8 設定檔不用指定 encoding，反正看起來都是 ASCII 欄位」**  
+   錯。**檔案裡的中文注解**就已足夠讓 Big5/GBK decoder 在解析時吃掉換行符號（`0x0A`），
+   導致注解行和下一行的設定項目合併成一行，被注解過濾邏輯靜默跳過，設定項目從未生效。
+   一律加 `-Encoding UTF8`。
 
 [返回開頭](#快速導覽)
