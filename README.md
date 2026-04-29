@@ -184,7 +184,7 @@ flowchart TD
 | 面向 | Agent | Skill |
 |------|-------|-------|
 | 本質 | 專家角色 / 執行者 | SOP / 任務知識包 |
-| 系統實際做的事 | 啟動一個專門 agent 或 subagent 去做 | 把 [`SKILL.md`](aery-marketplace/aery-skills/write-md/SKILL.md) 與附帶資源注入目前 agent 的 context |
+| 系統實際做的事 | 啟動一個專門 agent 或 subagent 去做 | 把 [`SKILL.md`](aery-marketplace/aery-dev/write-md/SKILL.md) 與附帶資源注入目前 agent 的 context |
 | Context | 常有獨立 context，適合隔離探索、測試、review | 多半沿用目前對話 context，屬 just-in-time 指南 |
 | 主要關注 | 角色、工具權限、模型、隔離、背景執行、可否委派 | 步驟、模板、範例、腳本、輸出格式 |
 | 適合場景 | `security-auditor`、`code-reviewer`、`test-runner` | `write-md`、`mongo-guidelines`、release note / deploy SOP |
@@ -199,7 +199,7 @@ flowchart TD
 | tool / MCP | 實際能力來源，例如讀檔、改檔、查 GitHub、操作外部服務 |
 
 實務上比較穩的設計通常是：**把知識與流程放 skill，把角色、權限與執行邊界放 agent**。  
-例如 [`.agents/skills/`](.agents/skills/skills-governance/SKILL.md) 與 [`aery-marketplace/aery-skills/`](aery-marketplace/README.md) 目前收的都是 skills，不是 agents。
+例如 [`.agents/skills/`](.agents/skills/skills-governance/SKILL.md) 與 [`aery-marketplace/aery-dev/`](aery-marketplace/README.md) 目前收的都是 skills，不是 agents。
 
 ### Claude Code 與 GitHub Copilot 的差異
 
@@ -227,7 +227,7 @@ flowchart TD
 
 ### 這個 repo 目前怎麼看
 
-1. [`.claude/skills/`](.claude/skills/anthropic-skill/SKILL.md)、[`.agents/skills/`](.agents/skills/skills-governance/SKILL.md)、[`aery-marketplace/aery-skills/`](aery-marketplace/README.md) 主要都屬於 **skill 生態**。
+1. [`.claude/skills/`](.claude/skills/anthropic-skill/SKILL.md)、[`.agents/skills/`](.agents/skills/skills-governance/SKILL.md)、[`aery-marketplace/aery-dev/`](aery-marketplace/README.md) 主要都屬於 **skill 生態**。
 2. [Claude Code Agent 使用指南](docs/claude-code-agents.md) 與 [GitHub Copilot CLI Agent 使用指南](docs/github-copilot-agents.md) 則是整理 **agent 建立、使用與能力邊界**。
 3. [`aery-marketplace/`](aery-marketplace/README.md) 目前是 **skills plugin / marketplace root**；若未來要加入 agents，cc 與 gc 都做得到，但不應假設一份 agent 定義可直接跨兩邊共用。
 4. 如果你在設計新能力時猶豫該做 agent 還是 skill，先問自己一句：**我要的是專家，還是手冊？** 要專家就做 agent；要手冊就做 skill。
@@ -257,7 +257,7 @@ Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/READM
 | 位置 | 定位 |
 |------|------|
 | [`.agents/skills/`](.agents/skills/skills-governance/SKILL.md) | 專案內部 custom skills；只放治理規則、維護政策與 repo 專用 workflow。首個 skill 為 [`skills-governance`](.agents/skills/skills-governance/SKILL.md)。 |
-| [`aery-marketplace/aery-skills/`](aery-marketplace/README.md) | 可安裝、可共享的 reusable skills，打包為 **`aery-skills`** plugin，供 GitHub Copilot 與 Claude Code 共用。 |
+| [`aery-marketplace/aery-dev/`](aery-marketplace/README.md) | 可安裝、可共享的 reusable skills，打包為 **`aery-skills`** plugin，供 GitHub Copilot 與 Claude Code 共用。 |
 
 [`aery-marketplace/`](./aery-marketplace/README.md) 是一個可安裝的本地 self-contained plugin / marketplace root，詳細安裝說明見 [`aery-marketplace/README.md`](aery-marketplace/README.md)。
 
@@ -323,7 +323,7 @@ ai-research/
 ├── aery-marketplace/         # aery-skills plugin / local marketplace root
 │   ├── plugin.json           # GitHub Copilot plugin manifest
 │   ├── .claude-plugin/       # Claude Code plugin / marketplace metadata
-│   ├── aery-skills/          # skill 定義目錄（mongo-guidelines, windows-script, write-md）
+│   ├── aery-dev/             # skill 定義目錄（mongo-guidelines, windows-script, write-md）
 │   └── README.md             # 安裝與維護說明
 ├── AGENTS.md                 # Skill 組合查表（任務導向）
 ├── CLAUDE.md                 # Claude Code project instructions

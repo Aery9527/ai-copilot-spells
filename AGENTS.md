@@ -107,5 +107,5 @@
 | `.claude/skills/cli-doc-sync/` | 維運 skill | CLI 文件同步（Claude Code、GitHub Copilot） |
 | `.claude/skills/sync-all/` | 本地自製 | 統一 orchestrator：偵測 Dependabot PR → invoke 各 sync skill |
 | `.agents/skills/` | 本地 project-specific custom skills | 專案內部治理與 repo 客製 workflow；不打包進 `aery-skills` plugin，例如 `skills-governance` |
-| `aery-marketplace/` | 本地 plugin root | **`aery-skills`** plugin：mongo-guidelines、windows-script、write-md（可安裝的 self-contained plugin / marketplace root）|
+| `aery-marketplace/` | 本地 plugin root | **`aery-skills`** plugin：mongo-guidelines、windows-script、write-md（可安裝的 self-contained plugin / marketplace root，skill 定義目錄為 `aery-dev/`）|
 | `scripts/` | 本地維護腳本 | repo 維護與自動化腳本；文件總入口為 [`scripts/README.md`](scripts/README.md) |

@@ -23,7 +23,7 @@ aery-marketplace/            ← self-contained marketplace / plugin root（本�
 ├── .claude-plugin/
 │   ├── plugin.json          ← Claude Code plugin manifest
 │   └── marketplace.json     ← Claude Code local marketplace manifest
-├── aery-skills/             ← skill 定義目錄
+├── aery-dev/                ← skill 定義目錄
 │   ├── mongo-guidelines/
 │   ├── windows-script/
 │   └── write-md/
