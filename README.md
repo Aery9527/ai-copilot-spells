@@ -1,6 +1,6 @@
 # ai-research
 
-> AI 工具研究 × Skills 知識庫：彙整 Claude Code、GitHub Copilot 等 AI 工具的使用方式，並沉澱為可重複使用的 Skills。
+> AI 工具研究 × Skills 知識庫：彙整 Claude Code、GitHub Copilot、Codex 等 AI 工具的使用方式，並沉澱為可重複使用的 Skills。
 
 ```mermaid
 flowchart LR
@@ -166,6 +166,7 @@ flowchart TD
 |------|---------|----------------|------|
 | **Claude Code** | [`claude-code/cc-cli.md`](claude-code/cc-cli.md) | [`docs/claude-code-agents.md`](docs/claude-code-agents.md) | CLI 參數、slash commands、快捷鍵，以及 built-in / custom agent 用法 |
 | **GitHub Copilot** | [`github-copilot/gc-cli.md`](github-copilot/gc-cli.md) | [`docs/github-copilot-agents.md`](docs/github-copilot-agents.md) | CLI 參數、slash commands、custom instructions，以及 built-in / custom agent 用法 |
+| **Codex CLI** | [`codex/codex-cli.md`](codex/codex-cli.md) | [`docs/codex-agents.md`](docs/codex-agents.md) | 安裝、登入、approval / sandbox、`codex exec`、subagents、`AGENTS.md`、slash commands、config，以及 TUI 快捷操作 |
 
 其他工具操作文件索引：[`tool/README.md`](tool/README.md)
 
@@ -175,7 +176,7 @@ flowchart TD
 
 ## Agent 與 Skill 差異
 
-這一節整理目前 repo 內對 **Claude Code** 與 **GitHub Copilot CLI** 的 agent / skill 研究結論。若要查各工具的完整建立方式與實際用法，請先看 [Claude Code Agent 使用指南](docs/claude-code-agents.md) 與 [GitHub Copilot CLI Agent 使用指南](docs/github-copilot-agents.md)。
+這一節整理目前 repo 內對 **Claude Code** 與 **GitHub Copilot CLI** 的 agent / skill 研究結論。若要查各工具的完整建立方式與實際用法，請先看 [Claude Code Agent 使用指南](docs/claude-code-agents.md)、[GitHub Copilot CLI Agent 使用指南](docs/github-copilot-agents.md) 與 [Codex Agent 使用指南](docs/codex-agents.md)。
 
 ### 核心區分
 
@@ -304,6 +305,8 @@ ai-research/
 │   └── .claude/              # 使用者級別設定範本（複製到 ~/.claude/ 生效）
 ├── github-copilot/           # GitHub Copilot CLI + custom instructions
 │   └── .copilot/             # 使用者級別設定範本（複製到 ~/.copilot/ 生效）
+├── codex/                    # Codex CLI 參考
+│   └── codex-cli.md
 ├── other/                    # 其他語言 / 框架指引
 │   └── java-guidelines.md
 ├── scripts/                  # 維護與自動化腳本文件
@@ -334,6 +337,7 @@ ai-research/
 │   └── wsl-claude-code-env-setup.md
 └── docs/
     ├── claude-code-agents.md
+    ├── codex-agents.md
     ├── github-copilot-agents.md
     └── superpowers/
         ├── specs/            # 設計文件
