@@ -39,7 +39,7 @@ Claude Claude_pzs8sxrjxfjjc!Claude
 ```ahk
 #Requires AutoHotkey v2.0
 
-!Space:: {
+^!Space:: {
     appExe := "Claude.exe"
 
     hwnd := WinExist("ahk_exe " appExe)
@@ -70,7 +70,7 @@ Claude Claude_pzs8sxrjxfjjc!Claude
 
 啟動後：
 - 右下角 tray 會出現 **AHK 綠色圖示**，代表腳本正在執行
-- 按下 `Alt + 空白鍵` 即可控制 Claude Desktop
+- 按下 `Ctrl + Alt + 空白鍵` 即可控制 Claude Desktop
 
 ### 快捷鍵行為
 
@@ -98,4 +98,4 @@ Claude Claude_pzs8sxrjxfjjc!Claude
 
 - 本腳本適用於從 **Microsoft Store** 安裝的 Claude Desktop
 - 若是從官網下載安裝的版本，`Run` 的路徑需改為實際的 `Claude.exe` 路徑
-- 如需更換快捷鍵，修改 `!Space::` 這行即可（`!` 代表 Alt，`#` 代表 Win，`^` 代表 Ctrl，`+` 代表 Shift）
+- 如需更換快捷鍵，修改 `^!Space::` 這行即可（`!` 代表 Alt，`#` 代表 Win，`^` 代表 Ctrl，`+` 代表 Shift）
