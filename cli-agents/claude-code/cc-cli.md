@@ -23,11 +23,13 @@
 
 ## 更新時間與差異總結
 
-- 更新時間：`2026-03-31 14:30 UTC`
+- 更新時間：`2026-05-03 07:35 UTC`
 - 比較基準：上一版本地文件（本次同步前）
 - 差異摘要：
-  - 新增 `--betas`、`--include-partial-messages`、`--permission-prompt-tool`、`--init`、`--init-only`、`--maintenance`、`--settings`、`--setting-sources`、`--channels` 等 9 個官方 cli-reference 已列出的 CLI flags。
-  - Slash commands（`/commands` 頁）、鍵盤快捷鍵、內建 Skills 本次與官方比對後無差異，無需更新。
+  - 新增 `--dangerously-load-development-channels`、`--debug-file`、`--exclude-dynamic-system-prompt-sections`、`--include-hook-events`、`--remote-control-session-name-prefix`、`--replay-user-messages` 等近期補上的高影響 CLI flags，並把 `--debug` 對齊官方現行寫法。
+  - 補上 `claude install`、`claude project purge`、`claude setup-token`、`claude ultrareview` 等官方已列出的 CLI 內建指令。
+  - 補上 `/autofix-pr`、`/focus`、`/heapdump`、`/powerup`、`/recap`、`/setup-bedrock`、`/setup-vertex`、`/teleport`、`/tui`、`/ultraplan`、`/ultrareview`、`/web-setup`、`/team-onboarding`，以及內建 skill `/fewer-permission-prompts`。
+  - 修正 `--enable-auto-mode`、`/review`、`/cost`、`/stats` 的過時描述，讓內容回到目前官方行為。
 
 [返回開頭](#快速導覽)
 
@@ -65,6 +67,8 @@
 | `--fallback-model=MODEL` | `claude -p --fallback-model sonnet "query"` | 預設模型過載時自動切換備援（print 模式）。 | 低 | 高可用場景實用。 |
 | `--betas` | `claude --betas interleaved-thinking` | 在 API 請求中加入 beta headers（僅限 API key 使用者）。 | 低 | 例如 `interleaved-thinking` 等實驗功能。 |
 | `--include-partial-messages` | `claude -p --include-partial-messages --output-format stream-json "query"` | 在 stream-json 輸出中包含部分 streaming events。 | 中 | 須配合 `--print` 與 `--output-format=stream-json`。 |
+| `--include-hook-events` | `claude -p --output-format stream-json --include-hook-events "query"` | 在輸出串流中包含所有 hook lifecycle events。 | 中 | 需搭配 `--output-format=stream-json`。 |
+| `--replay-user-messages` | `claude -p --input-format stream-json --output-format stream-json --replay-user-messages` | 將 stdin 的 user messages 原樣回送到 stdout 以便外部系統確認。 | 中 | 需同時使用 `--input-format=stream-json` 與 `--output-format=stream-json`。 |
 
 ### System Prompt
 
@@ -74,6 +78,7 @@
 | `--system-prompt-file=PATH` | 從檔案讀取，完全取代預設 system prompt。 | 與 `--system-prompt` 互斥。 |
 | `--append-system-prompt=TEXT` | 在預設 system prompt 後附加自訂文字。 | 可與取代旗標並用。 |
 | `--append-system-prompt-file=PATH` | 從檔案讀取並附加到 system prompt 末端。 | 可與取代旗標並用。 |
+| `--exclude-dynamic-system-prompt-sections` | 將 system prompt 中依機器而變的區塊（工作目錄、環境資訊、memory paths、git 狀態）移到第一則 user message。 | 只在預設 system prompt 下生效；常搭配 `-p` 做多使用者 scripted workflow，以提高 prompt cache 重用率。 |
 
 ### Tools 與權限
 
@@ -87,7 +92,7 @@
 | `--dangerously-skip-permissions` | `claude --dangerously-skip-permissions` | 直接跳過權限提示。 | **極高** | 極度謹慎使用。 |
 | `--bare` | `claude --bare -p "query"` | Minimal mode：停用 skills、hooks、plugins、MCP auto-discovery 等自動載入。 | 中 | 腳本化呼叫能更快、更乾淨。 |
 | `--disable-slash-commands` | `claude --disable-slash-commands` | 停用本次 session 的所有 slash commands 與 skills。 | 中 | 做基線測試或限制能力時實用。 |
-| `--enable-auto-mode` | `claude --enable-auto-mode` | 讓 `Shift+Tab` 可切到 auto mode。 | 中 | 需要支援方案與模型。 |
+| `--enable-auto-mode` | `claude --enable-auto-mode` | **已於 v2.1.111 移除**；auto mode 現在預設就在 `Shift+Tab` 的模式循環中。 | 低 | 若要一開始就進 auto mode，改用 `--permission-mode auto`。 |
 | `--permission-prompt-tool` | `claude -p --permission-prompt-tool mcp__my-mcp__prompt "query"` | 指定一個 MCP tool 來處理非互動模式的權限提示。 | 中 | 適合全自動 pipeline 搭配自訂審核邏輯。 |
 
 ### Workspace / Browser
@@ -110,6 +115,7 @@
 | `--settings` | `claude --settings ./settings.json` | 從 JSON 檔或 JSON 字串載入額外設定。 | 低 | 可與既有設定合併使用。 |
 | `--setting-sources` | `claude --setting-sources user,project` | 逗號分隔的設定來源清單（`user`、`project`、`local`）。 | 低 | 限制載入哪些層級的設定。 |
 | `--channels` | `claude --channels notifications` | （Research preview）指定 Claude 應監聽的 MCP servers channel 通知。 | 中 | 尚在研究預覽階段。 |
+| `--dangerously-load-development-channels` | `claude --dangerously-load-development-channels server:webhook` | 允許載入不在核准 allowlist 中的 development channels，供本機開發與測試使用。 | 中 | 接受 `plugin:<name>@<marketplace>` 與 `server:<name>`，且會要求確認。 |
 
 ### Remote / Automation / Other
 
@@ -117,9 +123,11 @@
 |---|---|---|---|
 | `--agent=AGENT` | `claude --agent my-agent` | 指定本次 session 使用的 agent（覆蓋 `agent` 設定）。 | 低 |
 | `--agents=JSON` | `claude --agents '{"reviewer":{"description":"Reviews code","prompt":"You are a code reviewer"}}'` | 以 JSON 動態定義 custom subagents。 | 中 |
-| `--debug[=CATEGORY]` | `claude --debug "api,mcp"` | 啟用 debug 模式，可選擇性過濾類別。 | 低 |
+| `--debug` | `claude --debug "api,mcp"` | 啟用 debug 模式，並可選擇性過濾類別（例如 `api,hooks` 或 `!statsig,!file`）。 | 低 |
+| `--debug-file=PATH` | `claude --debug-file /tmp/claude-debug.log` | 將 debug logs 寫到指定檔案路徑，且會隱式啟用 debug mode。 | 低 |
 | `--remote` | `claude --remote "Fix the login bug"` | 在 claude.ai 建立新的 web session。 | 中 |
 | `--remote-control`, `--rc` | `claude --remote-control "My Project"` | 啟動可由 claude.ai / Claude app 遠端控制的互動 session。 | 中 |
+| `--remote-control-session-name-prefix=PREFIX` | `claude remote-control --remote-control-session-name-prefix dev-box` | 為未顯式命名的 Remote Control session 指定自動名稱前綴。 | 低 |
 | `--teleport` | `claude --teleport` | 將 web session 拉回本機 terminal。 | 中 |
 | `--teammate-mode` | `claude --teammate-mode in-process` | 設定 agent team teammates 的顯示模式。 | 低 |
 | `--tmux` | `claude -w feature-auth --tmux` | 為 worktree session 建立 tmux / panes 工作區。 | 中 |
@@ -143,14 +151,18 @@
 | `claude -c -p "query"` | `claude -c -p "Check for type errors"` | 以 print 模式繼續最近一次對話。 | 腳本化接續既有上下文。 |
 | `claude -r "<session>" "query"` | `claude -r "auth-refactor" "Finish this PR"` | 以名稱或 ID 恢復指定 session 並繼續工作。 | 長任務追蹤很好用。 |
 | `claude update` | `claude update` | 更新 CLI 到最新版本。 | 等同重新安裝最新版。 |
+| `claude install [version]` | `claude install stable` | 安裝或重新安裝 native binary。 | 可指定 `stable`、`latest` 或特定版本號。 |
 | `claude auth login` | `claude auth login --console` | 登入 Anthropic 帳號。 | 支援 `--email`、`--sso`、`--console`。 |
 | `claude auth logout` | `claude auth logout` | 登出並移除本機憑證。 | 切換帳號或清理環境。 |
 | `claude auth status` | `claude auth status --text` | 顯示認證狀態。 | 預設輸出 JSON；`--text` 為人類可讀格式。 |
+| `claude setup-token` | `claude setup-token` | 產生給 CI / scripts 使用的 long-lived OAuth token。 | 會直接印到 terminal，不會自動保存；需有 Claude subscription。 |
+| `claude project purge [path]` | `claude project purge ~/work/repo --dry-run` | 清除某個 project 的本機 Claude Code 狀態資料。 | 可用 `--dry-run` 預覽，也支援 `--yes`、`--interactive`、`--all`。 |
 | `claude agents` | `claude agents` | 列出所有已設定的 subagents，依來源分組。 | 確認可用 agent 清單。 |
 | `claude auto-mode defaults` | `claude auto-mode defaults > rules.json` | 輸出內建 auto mode classifier 規則。 | 可搭配 `claude auto-mode config` 查看實際設定。 |
 | `claude mcp` | `claude mcp` | 管理 MCP server 設定。 | 詳見 MCP 文件。 |
 | `claude plugin` | `claude plugin install code-review@claude-plugins-official` | 管理 Claude Code plugins。 | `claude plugins` 也是 alias。 |
 | `claude remote-control` | `claude remote-control --name "My Project"` | 啟動 Remote Control server。 | 讓 claude.ai 或 Claude app 可控制本機 session。 |
+| `claude ultrareview [target]` | `claude ultrareview 1234 --json` | 以非互動模式執行 ultrareview。 | 成功回傳 0、失敗回傳 1；可用 `--json` 與 `--timeout <minutes>`。 |
 
 [返回開頭](#快速導覽)
 
@@ -167,6 +179,7 @@
 | `/agents` | 管理 agent 設定。 | 確認可用 agent 清單。 |
 | `/tasks` | 列出並管理背景任務。 | 含 subagents 與 shell sessions。 |
 | `/plan [description]` | 直接進入 plan mode。 | 可直接附帶任務描述。 |
+| `/ultraplan <prompt>` | 在瀏覽器草擬 ultraplan，審閱後可遠端執行或送回 terminal。 | 適合把大任務先拉到 web 端規劃。 |
 | `/fast [on|off]` | 切換 fast mode。 | 適合快速回應場景。 |
 | `/btw <question>` | 問一個不寫入主對話歷史的 side question。 | 只使用目前 context，不會動用 tools。 |
 
@@ -175,16 +188,21 @@
 | command | 說明 | notes |
 |---|---|---|
 | `/init` | 初始化 `CLAUDE.md` project guide。 | 可搭配新版 interactive init flow。 |
+| `/autofix-pr [prompt]` | 啟動會監看目前 branch PR 的 Claude Code on the web session，自動處理 CI failure 與 review comments。 | 需要 `gh` CLI 與 Claude Code on the web 權限。 |
 | `/diff` | 開啟互動式 diff 檢視器，顯示未提交變更與逐 turn 差異。 | 方向鍵可切換檢視。 |
 | `/ide` | 管理 IDE 整合並顯示連線狀態。 | 與 VS Code、JetBrains 等整合。 |
 | `/chrome` | 設定 Claude in Chrome。 | 管理瀏覽器整合設定。 |
+| `/focus` | 切換 focus view，只顯示最後一個 prompt、單行 tool 摘要與最終回應。 | 僅在 fullscreen rendering 可用。 |
+| `/heapdump` | 匯出 JavaScript heap snapshot 與 memory breakdown 以排查高記憶體使用。 | 預設寫到 `~/Desktop`，Linux 無 Desktop 時改寫 home 目錄。 |
 | `/security-review` | 分析目前 branch 待提交的變更，找出安全漏洞。 | 涵蓋 injection、auth、data exposure 等。 |
 | `/pr-comments [PR]` | 取得 GitHub PR 的留言。 | 自動偵測當前 branch 的 PR，或手動指定 URL / 編號。 |
 | `/install-github-app` | 為 repository 設定 Claude GitHub Actions app。 | GitHub Actions 整合入口。 |
 | `/install-slack-app` | 安裝 Claude Slack app。 | 會開啟瀏覽器完成 OAuth。 |
 | `/doctor` | 診斷並驗證 Claude Code 安裝與設定。 | 排查環境問題的第一步。 |
 | `/insights` | 產生 Claude Code session 分析報告。 | 查看互動模式、摩擦點與專案分布。 |
-| `/review` | 啟動 code review workflow。 | **已 deprecated**；官方建議改裝 `code-review` plugin。 |
+| `/review [PR]` | 在目前 session 內對 PR 做本地 review。 | 若要更深度的雲端多 agent review，改用 `/ultrareview`。 |
+| `/ultrareview [PR]` | 在 cloud sandbox 中執行深度、多 agent 的 code review。 | 額度與可用性依方案 / 期間而定。 |
+| `/web-setup` | 使用本機 `gh` CLI credentials 把 GitHub 帳號接到 Claude Code on the web。 | 若 GitHub 尚未連線，`/schedule` 也會引導這一步。 |
 
 ### Permissions / Directories
 
@@ -203,13 +221,16 @@
 | `/rename [name]` | 重新命名目前 session。 | 省略名稱時會自動產生。 |
 | `/context` | 以彩色格子視覺化目前 context window 使用量。 | 顯示優化建議與容量警告。 |
 | `/compact [instructions]` | 壓縮對話歷史以節省 context。 | 可附帶保留重點的指示。 |
+| `/recap` | 立即產生目前 session 的單行摘要。 | 與離開後自動出現的 session recap 是同一類資訊。 |
 | `/clear` | 清空目前對話歷史。 | aliases：`/reset`、`/new`。 |
 | `/rewind` | 倒回到先前某個對話點，或從選定訊息摘要。 | alias：`/checkpoint`。 |
 | `/export [filename]` | 將目前對話匯出為純文字。 | 可直接寫入檔案，或開對話框另存。 |
 | `/copy [N]` | 複製最近一次或第 `N` 新的 assistant 回應。 | 有 code block 時會開 picker；也能寫入檔案。 |
 | `/desktop` | 把目前 session 接到 Claude Code Desktop app。 | macOS / Windows only；alias：`/app`。 |
+| `/teleport` | 將 Claude Code on the web 的 session 拉回目前 terminal。 | 會開 picker 並抓回 branch 與對話；alias：`/tp`。 |
 | `/remote-control` | 讓目前 session 可被 claude.ai 遠端控制。 | alias：`/rc`。 |
 | `/schedule [description]` | 建立、更新、列出或執行 Cloud scheduled tasks。 | Claude 會互動式引導設定。 |
+| `/team-onboarding` | 根據你過去 30 天的使用紀錄產生團隊 onboarding guide。 | 產物可直接貼給隊友作為第一次使用提示。 |
 
 ### Configuration / Extensibility
 
@@ -219,9 +240,12 @@
 | `/theme` | 更換色彩主題。 | 支援 light / dark / daltonized / ANSI themes。 |
 | `/color [color|default]` | 設定 prompt bar 顏色。 | 支援 `red`、`blue`、`green`、`yellow`、`purple`、`orange`、`pink`、`cyan`。 |
 | `/vim` | 切換 Vim 與 Normal 輸入模式。 | 也可透過 `/config` 永久設定。 |
+| `/tui [default|fullscreen]` | 設定 terminal UI renderer，並保留目前對話重新啟動。 | `fullscreen` 會啟用 flicker-free alt-screen renderer；不帶參數可顯示目前 renderer。 |
 | `/terminal-setup` | 設定 terminal keybindings（如 `Shift+Enter`）。 | 僅在需要設定的 terminal 中顯示。 |
 | `/keybindings` | 開啟或建立 keybindings 設定檔。 | 自訂快捷鍵入口。 |
 | `/mcp` | 管理 MCP server 設定與 OAuth 認證。 | 包含 MCP prompts 與 server 狀態。 |
+| `/setup-bedrock` | 透過互動式 wizard 設定 Amazon Bedrock 的認證、region 與 model pins。 | 僅在 `CLAUDE_CODE_USE_BEDROCK=1` 時顯示。 |
+| `/setup-vertex` | 透過互動式 wizard 設定 Google Vertex AI 的認證、project、region 與 model pins。 | 僅在 `CLAUDE_CODE_USE_VERTEX=1` 時顯示。 |
 | `/memory` | 編輯 `CLAUDE.md` 記憶檔，啟用 / 停用 auto-memory，並檢視 auto-memory 條目。 | 管理跨 session 的持久記憶。 |
 | `/hooks` | 檢視 tool 事件的 hook 設定。 | 確認自動化 hook 規則。 |
 | `/skills` | 列出可用的 skills。 | 確認已載入的 skill 清單。 |
@@ -235,10 +259,11 @@
 | command | 說明 | notes |
 |---|---|---|
 | `/help` | 顯示互動模式指令說明。 | **最準的即時指令清單入口。** |
+| `/powerup` | 透過互動式短教學與 animated demos 探索 Claude Code 功能。 | 新功能導覽入口。 |
 | `/release-notes` | 顯示完整 changelog，最新版本優先。 | 可快速查看近期變更。 |
-| `/stats` | 視覺化每日使用量、session 歷史、連續使用紀錄與模型偏好。 | 了解個人使用模式。 |
+| `/stats` | `/usage` 的 alias，直接開在 Stats 分頁。 | 用來查看使用量與活動統計摘要。 |
 | `/usage` | 顯示方案使用限制與 rate limit 狀態。 | 確認剩餘配額。 |
-| `/cost` | 顯示 token 使用量統計。 | 成本追蹤。 |
+| `/cost` | `/usage` 的 alias。 | 顯示 session cost、方案用量與活動統計。 |
 | `/status` | 開啟 Settings 介面（Status 頁），顯示版本、模型、帳號、連線狀態。 | 可在 Claude 回應途中直接查看。 |
 | `/feedback [report]` | 提交 Claude Code 回饋。 | alias：`/bug`。 |
 | `/login` | 登入 Anthropic 帳號。 | 首次使用或 token 失效時。 |
@@ -263,6 +288,7 @@ Bundled skills 隨 Claude Code 出貨，是 prompt-based 的指令，可協調�
 | `/batch <instruction>` | 大規模平行改動：分析程式碼、拆解為 5–30 個獨立單元並展示計畫，再對每個單元產生獨立 git worktree 的背景 agent，各自實作、測試並開 PR。 | 需要 git repo。 |
 | `/claude-api` | 載入 Claude API 與 Agent SDK 參考資料，涵蓋多語言 SDK、tool use、streaming、batches、structured outputs 與常見陷阱。 | 匯入 `anthropic`、`@anthropic-ai/sdk`、`claude_agent_sdk` 時也可能自動啟用。 |
 | `/debug [description]` | 讀取 session debug log 進行自我除錯。可選擇性描述問題以聚焦分析。 | 互動模式異常時的首選指令。 |
+| `/fewer-permission-prompts` | 掃描 transcript 中常見的唯讀 Bash / MCP 呼叫，並把優先 allowlist 寫進 project `.claude/settings.json`。 | 適合被 permission prompts 打斷得很煩時使用。 |
 | `/loop [interval] <prompt>` | 以固定間隔重複執行 prompt，直到 session 結束。 | 適合輪詢部署或追蹤 PR，例如 `/loop 5m check deploy status`。 |
 | `/simplify [focus]` | 複查最近修改的檔案，找出程式碼重用、品質、效率問題並修正。 | 同時會產生多個 review agents 並行處理。 |
 
