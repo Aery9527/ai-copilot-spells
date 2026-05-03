@@ -47,6 +47,7 @@ git submodule update --init --recursive
 ## 快速導覽
 
 - [Skills 系統](#skills-系統)
+  - [.claude-plugin 檔案說明](#claude-plugin-檔案說明)
   - [anthropic-skills](#anthropic-skills)
   - [superpowers](#superpowers)
 - [AI 工具文件](#ai-工具文件)
@@ -79,6 +80,28 @@ git submodule update --init --recursive
 ### 共用基礎設施
 
 [`.claude/skills/_shared/upstream-sync-protocol.md`](.claude/skills/_shared/upstream-sync-protocol.md) — 各 upstream sync skill 共用的通用 sync 流程協議。新增第三、四個 submodule 時，sync skill 只需引用這份文件 + 填入庫設定。
+
+### .claude-plugin 檔案說明
+
+Claude Code plugin 系統在 `.claude-plugin/` 目錄下有兩種設定檔，職責不同：
+
+| 檔案 | 層次 | 定義的是什麼 |
+|------|------|------------|
+| `marketplace.json` | Marketplace 層 | 一個目錄清單：列出要發行哪些 plugins、各自來源與設定 |
+| `plugin.json` | Plugin 層 | 單個 plugin 的身份：`name`, `version`, `author`, `keywords`… |
+
+**為什麼 `superpowers/` 同時有兩個？**
+
+`superpowers` 身兼兩種角色：它本身是一個可安裝的 plugin（需要 `plugin.json` 聲明身份），同時也透過 `marketplace.json`（名為 `superpowers-dev`）作為 marketplace 發行自己。
+
+**為什麼 `anthropic-skills/` 只有 `marketplace.json`？**
+
+`anthropic-skills` 純粹是一個 **marketplace**，打包了 `document-skills`、`example-skills`、`claude-api` 等多個 plugin。它的 `marketplace.json` 對每個 plugin 都設了 `"strict": false`，意思是由 marketplace 完全控制 plugin 配置，各 plugin 不需要自己的 `plugin.json`。
+
+> `strict: false` = marketplace entry 是完整定義，plugin 內不需要自備 `plugin.json`。  
+> 預設 `strict: true` = plugin 自己的 `plugin.json` 才是權威來源。
+
+---
 
 ### anthropic-skills
 
