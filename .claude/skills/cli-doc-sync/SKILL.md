@@ -25,7 +25,7 @@ description: >-
 以下關鍵詞或意圖應觸發此 skill：
 
 - 「同步 CLI 文件」「更新 CLI 參考」「檢查 CLI 變更」
-- 「cc-cli.md」「gc-cli.md」「codex-cli.md」 + 更新 / 同步 / 對比
+- 「cc-cli.md」「gc-cli.md」「cx-cli.md」 + 更新 / 同步 / 對比
 - 「看看官方文件有沒有新的 flag / command / shortcut」
 - 明確指定要更新某個工具的 CLI 參考文件
 

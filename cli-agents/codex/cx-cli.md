@@ -25,7 +25,7 @@
 ## 更新時間與差異總結
 
 - 更新時間：`2026-05-03 05:50 UTC`
-- 比較基準：導入 `cli-doc-sync` 支援前的初版 `codex-cli.md`
+- 比較基準：導入 `cli-doc-sync` 支援前的初版文件（現檔名 `cx-cli.md`，原名 `codex-cli.md`）
 - 差異摘要：
   - 將文件開頭摘要章節統一為 `cli-doc-sync` 管理的 `## 更新時間與差異總結`，避免後續同步需要為 `codex-cli` 加特例分支。
   - 保留原本首次建立時的重點：本文件聚焦 **Codex CLI / TUI 本地工作流**，不是 Codex Web。

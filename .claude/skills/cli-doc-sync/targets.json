@@ -34,7 +34,7 @@
     ]
   },
   "codex-cli": {
-    "md_path": "cli-agents/codex/codex-cli.md",
+    "md_path": "cli-agents/codex/cx-cli.md",
     "sources": [
       {
         "url": "https://developers.openai.com/codex",
