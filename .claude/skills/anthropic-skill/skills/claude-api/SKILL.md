@@ -6,73 +6,41 @@ source: anthropic-skills/skills/claude-api/SKILL.md
 
 ## 概述
 
-協助開發者用 Claude API 或 Anthropic SDK 建構 LLM 應用程式，涵蓋從單次 API 調用到完整 Agent 系統的所有場景，並提供多語言支援與最新模型規格。
+這個 skill 用來協助開發者以 Claude API 或 Anthropic SDK 建構 LLM 應用，先判斷該用單次 API、tool-use workflow、Agent SDK，還是 Managed Agents，再導向對應語言與文件。最新版內容特別補強了 Managed Agents、Models API、prompt caching 與 model migration 的決策與參考資料。
 
 ## 能做什麼
 
-- 偵測專案語言（Python/TypeScript/Java/Go/Ruby/C#/PHP/cURL）
-- 選擇正確的應用層級（單次調用 → Workflow → Agent → Agent SDK）
-- 提供各語言的 SDK 代碼範例
-- 工具調用（tool use）、串流（streaming）、批次處理（batches）
-- 文件 API（Files API）、結構化輸出（structured outputs）
-- Agent SDK 整合（Python/TypeScript，含內建工具、MCP）
-- 上下文壓縮（Compaction，Opus 4.6）
-
-## 當前模型規格（2026-02-17）
-
-| 模型 | Model ID | 情境窗口 | 輸入$/1M | 輸出$/1M |
-|------|----------|----------|----------|----------|
-| Claude Opus 4.6 | `claude-opus-4-6` | 200K (1M beta) | $5.00 | $25.00 |
-| Claude Sonnet 4.6 | `claude-sonnet-4-6` | 200K (1M beta) | $3.00 | $15.00 |
-| Claude Haiku 4.5 | `claude-haiku-4-5` | 200K | $1.00 | $5.00 |
-
-**預設使用 `claude-opus-4-6`**，除非使用者明確指定其他模型。
-
-## 關鍵 API 決策樹
-
-```
-需要什麼？
-├─ 單次分類/摘要/提取 → Claude API（一次請求一次回應）
-├─ Claude 需自行讀寫檔案/瀏覽網頁/執行指令
-│   └─ Agent SDK（Python/TypeScript only）
-├─ 多步驟、程式碼控制的 workflow
-│   └─ Claude API + tool use
-└─ 開放式 agent（模型決定行動路徑）
-    └─ Claude API agentic loop
-```
-
-## 思考模式（Thinking）
-
-- **Opus 4.6 / Sonnet 4.6**：使用 `thinking: {type: "adaptive"}`（自適應）
-- **禁止使用 `budget_tokens`**（在 Opus/Sonnet 4.6 上已棄用）
-- `effort` 參數：`low | medium | high | max`（在 `output_config` 內）
+- 依專案檔案自動判斷語言，導向 Python、TypeScript、Java、Go、Ruby、C#、PHP 或 cURL 文件
+- 協助在 Claude API、Claude API + tool use、Agent SDK、Managed Agents 之間選擇正確 surface
+- 提供 streaming、batches、Files API、structured outputs、tool runner / manual loop 的導讀
+- 指向 Agent SDK 的 built-in tools、permissions、MCP、hooks、session resumption 等能力
+- 補充 Managed Agents 的 shared 文件與各語言 `managed-agents/README.md` 入口，包含 memory stores、tools、events、environments、client patterns
+- 提醒何時應改查 live docs，例如最新模型能力、context window、beta features 或 cached 資訊可能過期時
 
 ## 解決什麼問題
 
-開發者需要快速正確地整合 Claude API，但 SDK 版本更新、模型參數、最佳實踐容易出錯。此 skill 提供最新規格與語言特定代碼範例，避免常見陷阱。
+Claude 生態同時有 Claude API、Anthropic SDK、Agent SDK、Managed Agents 與多個 supporting docs；如果選錯 surface、沿用過時模型參數、或自行重造 SDK 已內建的 loop / tool abstraction，很容易把架構做複雜又踩 API 細節坑。這個 skill 的價值就是把 surface 選型、最新模型預設、語言別文件入口，以及常見陷阱整理成可直接採用的路徑。
 
 ## 何時使用（觸發條件）
 
-- 代碼中出現 `import anthropic`、`from anthropic import`、`@anthropic-ai/sdk`
-- 詢問「如何使用 Claude API」
-- 需要 tool use、streaming、batches、Files API
-- 建構 AI agent 或 chatbot
-- Agent SDK 相關問題
+- 程式碼或需求明確提到 `anthropic`、`@anthropic-ai/sdk`、`claude_agent_sdk`
+- 使用者要「用 Claude API / Anthropic SDK 建應用」或問 Agent SDK / Managed Agents 怎麼接
+- 需求涉及 tool use、streaming、batches、Files API、prompt caching、structured outputs
+- 要做有 file / web / terminal 能力的 agent、agentic coding assistant、或需要 built-in permissions / guardrails
+- 想查最新模型能力、thinking / effort、context window、或模型遷移建議
 
-## 語言支援矩陣
+## 關鍵技術棧
 
-| 語言 | Tool Runner | Agent SDK |
-|------|-------------|-----------|
-| Python | ✅ (beta) | ✅ |
-| TypeScript | ✅ (beta) | ✅ |
-| Java | ✅ (beta) | ❌ |
-| Go | ✅ (beta) | ❌ |
-| Ruby | ✅ (beta) | ❌ |
-| C# / PHP | ❌ | ❌ |
+- Claude Messages API 與 supporting endpoints：Models、Batches、Files、Token Counting
+- Anthropic 官方 SDK：Python、TypeScript、Java、Go、Ruby、C#、PHP，以及 cURL/raw HTTP
+- Agent SDK（Python / TypeScript）與 MCP、hooks、subagents、built-in tools
+- Managed Agents 文件群：各語言 `managed-agents/README.md` 與 `shared/managed-agents-*.md`
+- Streaming、prompt caching、structured outputs、tool runner、manual agent loops
 
-## 常見陷阱
+## 重要注意事項
 
-- Opus 4.6 不支援 prefill（會返回 400）→ 改用 `output_config.format`
-- 128K output tokens 需要 streaming（避免 HTTP 超時）
-- `output_format` 已棄用 → 使用 `output_config: {format: {...}}`
-- 不要自定義 SDK 已有的 TypeScript 介面（如 `MessageParam`、`Tool`）
+- 預設模型是 `claude-opus-4-6`；較複雜任務預設用 `thinking: {type: "adaptive"}`，不要在 Opus 4.6 / Sonnet 4.6 上再用 `budget_tokens`
+- 先選最簡單可行的 surface：單次 API / workflow 能解就不要直接升級成 agent
+- 想要內建 file / web / terminal tools、permissions、MCP 時用 Agent SDK；若是你自己定義工具與流程控制，優先用 Claude API + tool use
+- Managed Agents 相關內容現在有獨立 shared 文件與語言別 `managed-agents/` 入口；不要再把它和舊版 Agent SDK patterns 混在一起理解
+- 使用者明確問「最新 / current」模型能力或 cached 資訊看起來不對時，應改讀 `shared/live-sources.md` 指向的官方文件
