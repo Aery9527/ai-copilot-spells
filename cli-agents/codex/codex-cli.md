@@ -30,7 +30,7 @@
   - 將文件開頭摘要章節統一為 `cli-doc-sync` 管理的 `## 更新時間與差異總結`，避免後續同步需要為 `codex-cli` 加特例分支。
   - 保留原本首次建立時的重點：本文件聚焦 **Codex CLI / TUI 本地工作流**，不是 Codex Web。
   - 目前涵蓋安裝、登入、approval / sandbox、`codex exec`、`resume`、`cloud`、slash commands、config 與 TUI 快捷操作。
-  - Codex 版本迭代很快；某些 flags、subcommands 與 slash commands 可能只在較新版本可見，**遇到差異時以 `codex --help` / `codex <subcommand> --help` 為準**。若你需要的是遠端瀏覽器版工作流，應改查 OpenAI 的 Codex Web 文件；關於 subagents、custom agents 與 `AGENTS.md`，請搭配 [Codex Agent 使用指南](../docs/codex-agents.md) 一起看。
+  - Codex 版本迭代很快；某些 flags、subcommands 與 slash commands 可能只在較新版本可見，**遇到差異時以 `codex --help` / `codex <subcommand> --help` 為準**。若你需要的是遠端瀏覽器版工作流，應改查 OpenAI 的 Codex Web 文件；關於 subagents、custom agents 與 `AGENTS.md`，請搭配 [Codex Agent 使用指南](../../docs/codex-agents.md) 一起看。
 
 [返回開頭](#快速導覽)
 

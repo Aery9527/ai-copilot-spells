@@ -14,7 +14,7 @@
 
 GitHub Copilot CLI 既有內建 agent，也支援 custom agents。當你下 prompt 時，主 agent 可能自動把部分工作委派給 subagent；若該任務很符合某個 custom agent 的 `description`，Copilot 也可能直接推斷並使用它。
 
-這份文件聚焦在「如何在 GitHub Copilot CLI 使用 agent」與「如何建立 custom agent profile」。完整 CLI flags、slash commands 與指令列表，請搭配 [GitHub Copilot CLI 參考](../github-copilot/gc-cli.md) 一起看。
+這份文件聚焦在「如何在 GitHub Copilot CLI 使用 agent」與「如何建立 custom agent profile」。完整 CLI flags、slash commands 與指令列表，請搭配 [GitHub Copilot CLI 參考](../cli-agents/github-copilot/gc-cli.md) 一起看。
 
 [返回開頭](#快速導覽)
 
@@ -123,7 +123,7 @@ GitHub Copilot CLI 的 custom agent 偏向「專家 persona + tool profile」。
 
 ## 參考文件
 
-- [GitHub Copilot CLI 參考](../github-copilot/gc-cli.md)
+- [GitHub Copilot CLI 參考](../cli-agents/github-copilot/gc-cli.md)
 - [GitHub Docs：Creating and using custom agents for GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/create-custom-agents-for-cli)
 - [GitHub Docs：Custom agents configuration](https://docs.github.com/en/copilot/reference/custom-agents-configuration)
 - [GitHub Docs：Using GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli)

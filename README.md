@@ -187,9 +187,9 @@ flowchart TD
 
 | 工具 | CLI 參考 | Agent 使用指南 | 說明 |
 |------|---------|----------------|------|
-| **Claude Code** | [`claude-code/cc-cli.md`](claude-code/cc-cli.md) | [`docs/claude-code-agents.md`](docs/claude-code-agents.md) | CLI 參數、slash commands、快捷鍵，以及 built-in / custom agent 用法 |
-| **GitHub Copilot** | [`github-copilot/gc-cli.md`](github-copilot/gc-cli.md) | [`docs/github-copilot-agents.md`](docs/github-copilot-agents.md) | CLI 參數、slash commands、custom instructions，以及 built-in / custom agent 用法 |
-| **Codex CLI** | [`codex/codex-cli.md`](codex/codex-cli.md) | [`docs/codex-agents.md`](docs/codex-agents.md) | 安裝、登入、approval / sandbox、`codex exec`、subagents、`AGENTS.md`、slash commands、config，以及 TUI 快捷操作 |
+| **Claude Code** | [`cli-agents/claude-code/cc-cli.md`](cli-agents/claude-code/cc-cli.md) | [`docs/claude-code-agents.md`](docs/claude-code-agents.md) | CLI 參數、slash commands、快捷鍵，以及 built-in / custom agent 用法 |
+| **GitHub Copilot** | [`cli-agents/github-copilot/gc-cli.md`](cli-agents/github-copilot/gc-cli.md) | [`docs/github-copilot-agents.md`](docs/github-copilot-agents.md) | CLI 參數、slash commands、custom instructions，以及 built-in / custom agent 用法 |
+| **Codex CLI** | [`cli-agents/codex/codex-cli.md`](cli-agents/codex/codex-cli.md) | [`docs/codex-agents.md`](docs/codex-agents.md) | 安裝、登入、approval / sandbox、`codex exec`、subagents、`AGENTS.md`、slash commands、config，以及 TUI 快捷操作 |
 
 其他工具操作文件索引：[`tool/README.md`](tool/README.md)
 
@@ -324,12 +324,13 @@ copilot plugin install Aery9527/ai-research:aery-marketplace
 ai-research/
 ├── anthropic-skills/         # Anthropic 上游 skills submodule
 ├── superpowers/              # superpowers 上游 skills submodule
-├── claude-code/              # Claude Code CLI 參考
-│   └── .claude/              # 使用者級別設定範本（複製到 ~/.claude/ 生效）
-├── github-copilot/           # GitHub Copilot CLI + custom instructions
-│   └── .copilot/             # 使用者級別設定範本（複製到 ~/.copilot/ 生效）
-├── codex/                    # Codex CLI 參考
-│   └── codex-cli.md
+├── cli-agents/               # 各 CLI agent 的參考文件與使用者級別設定範本
+│   ├── claude-code/          # Claude Code CLI 參考
+│   │   └── .claude/          # 使用者級別設定範本（複製到 ~/.claude/ 生效）
+│   ├── github-copilot/       # GitHub Copilot CLI + custom instructions
+│   │   └── .copilot/         # 使用者級別設定範本（複製到 ~/.copilot/ 生效）
+│   └── codex/                # Codex CLI 參考
+│       └── codex-cli.md
 ├── other/                    # 其他語言 / 框架指引
 │   └── java-guidelines.md
 ├── scripts/                  # 維護與自動化腳本文件

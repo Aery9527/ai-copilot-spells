@@ -14,7 +14,7 @@
 
 Claude Code 的 agent 在官方文件中主要稱為 **subagent**。主 session 會依任務描述與 agent 的 `description` 自動判斷是否委派，讓探索、測試、review、實作等工作在各自的 context window 中進行，避免主對話被雜訊塞滿。
 
-這份文件聚焦在「如何在 Claude Code 使用 agent」與「自訂 agent 能做到哪些事」。如果你想查完整 CLI flags、slash commands 與快捷鍵，請先看 [Claude Code CLI 參考](../claude-code/cc-cli.md)。
+這份文件聚焦在「如何在 Claude Code 使用 agent」與「自訂 agent 能做到哪些事」。如果你想查完整 CLI flags、slash commands 與快捷鍵，請先看 [Claude Code CLI 參考](../cli-agents/claude-code/cc-cli.md)。
 
 [返回開頭](#快速導覽)
 
@@ -124,7 +124,7 @@ Claude Code 的自訂 agent 不只是 persona；它比較接近一個可編排�
 
 ## 參考文件
 
-- [Claude Code CLI 參考](../claude-code/cc-cli.md)
+- [Claude Code CLI 參考](../cli-agents/claude-code/cc-cli.md)
 - [Claude Code 官方文件：Subagents](https://code.claude.com/docs/en/sub-agents)
 - [Claude Code 官方文件：CLI Reference](https://code.claude.com/docs/en/cli-reference)
 

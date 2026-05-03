@@ -1,6 +1,6 @@
 {
   "claude-code": {
-    "md_path": "claude-code/cc-cli.md",
+    "md_path": "cli-agents/claude-code/cc-cli.md",
     "sources": [
       {
         "url": "https://code.claude.com/docs/en/cli-reference",
@@ -21,7 +21,7 @@
     ]
   },
   "github-copilot": {
-    "md_path": "github-copilot/gc-cli.md",
+    "md_path": "cli-agents/github-copilot/gc-cli.md",
     "sources": [
       {
         "url": "https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference",
@@ -34,7 +34,7 @@
     ]
   },
   "codex-cli": {
-    "md_path": "codex/codex-cli.md",
+    "md_path": "cli-agents/codex/codex-cli.md",
     "sources": [
       {
         "url": "https://developers.openai.com/codex",

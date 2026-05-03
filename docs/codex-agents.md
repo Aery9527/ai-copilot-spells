@@ -20,7 +20,7 @@ Codex 官方把這套能力主要稱為 **subagents**。主 agent 不會自動�
 1. **怎麼在 Codex CLI 使用 subagent / custom agent**
 2. **`AGENTS.md` 在 Codex 裡到底扮演什麼角色**
 
-如果你要查完整 CLI flags、slash commands、sandbox / approval 與 TUI 操作，請先搭配 [Codex CLI 參考](../codex/codex-cli.md) 一起看。
+如果你要查完整 CLI flags、slash commands、sandbox / approval 與 TUI 操作，請先搭配 [Codex CLI 參考](../cli-agents/codex/codex-cli.md) 一起看。
 
 [返回開頭](#快速導覽)
 
@@ -220,7 +220,7 @@ Codex 的 custom agent 本質上是一層 **session config overlay**。它不是
 
 ## 參考文件
 
-- [Codex CLI 參考](../codex/codex-cli.md)
+- [Codex CLI 參考](../cli-agents/codex/codex-cli.md)
 - [OpenAI Developers：Subagents](https://developers.openai.com/codex/subagents)
 - [OpenAI Developers：Subagent concepts](https://developers.openai.com/codex/concepts/subagents)
 - [OpenAI Developers：Custom instructions with AGENTS.md](https://developers.openai.com/codex/guides/agents-md)

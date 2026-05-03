@@ -58,7 +58,7 @@ python .claude/skills/cli-doc-sync/fetch_docs.py --url "https://..."
 ```json
 {
   "target": "claude-code",
-  "md_path": "claude-code/cc-cli.md",
+  "md_path": "cli-agents/claude-code/cc-cli.md",
   "fetched_at": "2026-03-28T12:00:00+00:00",
   "sources": [
     {
@@ -239,9 +239,9 @@ python .claude/skills/cli-doc-sync/fetch_docs.py --url "https://..."
 
 | 目標 | md 路徑 | 來源數量 |
 |------|---------|---------|
-| `claude-code` | `claude-code/cc-cli.md` | 4 個 URL |
-| `github-copilot` | `github-copilot/gc-cli.md` | 2 個 URL |
-| `codex-cli` | `codex/codex-cli.md` | 5 個 URL |
+| `claude-code` | `cli-agents/claude-code/cc-cli.md` | 4 個 URL |
+| `github-copilot` | `cli-agents/github-copilot/gc-cli.md` | 2 個 URL |
+| `codex-cli` | `cli-agents/codex/codex-cli.md` | 5 個 URL |
 
 注意：`claude-code` 目前拆成 `cli-reference`、`commands`、`interactive-mode`、`skills` 四個官方來源，因為舊的 `slash-commands` 頁面已不再提供可直接同步的指令表。
 
