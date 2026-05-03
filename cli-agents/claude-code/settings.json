@@ -23,5 +23,10 @@
       "Edit(.env*)",
       "Write(.env*)"
     ]
-  }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
+  "language": "繁體中文"
 }
