@@ -32,5 +32,30 @@
         "label": "使用流程、權限與互動模式補充"
       }
     ]
+  },
+  "codex-cli": {
+    "md_path": "codex/codex-cli.md",
+    "sources": [
+      {
+        "url": "https://developers.openai.com/codex",
+        "label": "安裝、產品概覽與雲端工作流補充"
+      },
+      {
+        "url": "https://developers.openai.com/codex/cli/reference",
+        "label": "CLI 參數、CLI 內建指令"
+      },
+      {
+        "url": "https://developers.openai.com/codex/cli/slash-commands",
+        "label": "互動式 slash commands"
+      },
+      {
+        "url": "https://developers.openai.com/codex/cli/features",
+        "label": "approval、sandbox、profiles、remote 與 TUI 功能"
+      },
+      {
+        "url": "https://developers.openai.com/codex/auth",
+        "label": "登入與認證"
+      }
+    ]
   }
 }

@@ -2,7 +2,7 @@
 
 ## 快速導覽
 
-- [首次建立與摘要](#首次建立與摘要)
+- [更新時間與差異總結](#更新時間與差異總結)
 - [安裝與登入](#安裝與登入)
 - [常用 CLI 參數](#常用-cli-參數)
 - [CLI 內建指令](#cli-內建指令)
@@ -22,15 +22,15 @@
 
 ---
 
-## 首次建立與摘要
+## 更新時間與差異總結
 
-- 更新時間：`2026-05-02 12:57 +08:00`
-- 比較基準：首次建立
-- 摘要：
-  - 這份文件聚焦 **Codex CLI / TUI 本地工作流**，不是 Codex Web。
-  - 內容涵蓋：安裝、登入、approval / sandbox、`codex exec`、`resume`、`cloud`、slash commands、config 與 TUI 快捷操作。
-  - Codex 版本迭代很快；某些 flags、subcommands 與 slash commands 可能只在較新版本可見，**遇到差異時以 `codex --help` / `codex <subcommand> --help` 為準**。
-  - 若你需要的是遠端瀏覽器版工作流，應改查 OpenAI 的 Codex Web 文件；CLI 側重 terminal 互動與本機/遠端 workspace 操作。關於 subagents、custom agents 與 `AGENTS.md`，請搭配 [Codex Agent 使用指南](../docs/codex-agents.md) 一起看。
+- 更新時間：`2026-05-03 05:50 UTC`
+- 比較基準：導入 `cli-doc-sync` 支援前的初版 `codex-cli.md`
+- 差異摘要：
+  - 將文件開頭摘要章節統一為 `cli-doc-sync` 管理的 `## 更新時間與差異總結`，避免後續同步需要為 `codex-cli` 加特例分支。
+  - 保留原本首次建立時的重點：本文件聚焦 **Codex CLI / TUI 本地工作流**，不是 Codex Web。
+  - 目前涵蓋安裝、登入、approval / sandbox、`codex exec`、`resume`、`cloud`、slash commands、config 與 TUI 快捷操作。
+  - Codex 版本迭代很快；某些 flags、subcommands 與 slash commands 可能只在較新版本可見，**遇到差異時以 `codex --help` / `codex <subcommand> --help` 為準**。若你需要的是遠端瀏覽器版工作流，應改查 OpenAI 的 Codex Web 文件；關於 subagents、custom agents 與 `AGENTS.md`，請搭配 [Codex Agent 使用指南](../docs/codex-agents.md) 一起看。
 
 [返回開頭](#快速導覽)
 

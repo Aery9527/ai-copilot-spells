@@ -2,7 +2,7 @@
 name: cli-doc-sync
 description: >-
   同步 CLI 參考文件與官方文件。當使用者提到「同步 CLI 文件」、「更新 CLI 參考」、
-  「檢查 CLI 有沒有更新」、「cc-cli 對比官方」、「gc-cli 更新」，或任何涉及將
+  「檢查 CLI 有沒有更新」、「cc-cli 對比官方」、「gc-cli 更新」、「codex-cli 更新」，或任何涉及將
   CLI 參考 Markdown 與官方文件對齊的需求時觸發。
 ---
 
@@ -25,7 +25,7 @@ description: >-
 以下關鍵詞或意圖應觸發此 skill：
 
 - 「同步 CLI 文件」「更新 CLI 參考」「檢查 CLI 變更」
-- 「cc-cli.md」「gc-cli.md」 + 更新 / 同步 / 對比
+- 「cc-cli.md」「gc-cli.md」「codex-cli.md」 + 更新 / 同步 / 對比
 - 「看看官方文件有沒有新的 flag / command / shortcut」
 - 明確指定要更新某個工具的 CLI 參考文件
 
@@ -47,6 +47,7 @@ python .claude/skills/cli-doc-sync/fetch_docs.py --list
 # 抓取指定目標
 python .claude/skills/cli-doc-sync/fetch_docs.py claude-code
 python .claude/skills/cli-doc-sync/fetch_docs.py github-copilot
+python .claude/skills/cli-doc-sync/fetch_docs.py codex-cli
 
 # 抓取單一 URL
 python .claude/skills/cli-doc-sync/fetch_docs.py --url "https://..."
@@ -240,8 +241,11 @@ python .claude/skills/cli-doc-sync/fetch_docs.py --url "https://..."
 |------|---------|---------|
 | `claude-code` | `claude-code/cc-cli.md` | 4 個 URL |
 | `github-copilot` | `github-copilot/gc-cli.md` | 2 個 URL |
+| `codex-cli` | `codex/codex-cli.md` | 5 個 URL |
 
 注意：`claude-code` 目前拆成 `cli-reference`、`commands`、`interactive-mode`、`skills` 四個官方來源，因為舊的 `slash-commands` 頁面已不再提供可直接同步的指令表。
+
+注意：`codex-cli` 目前拆成 `codex overview`、`cli reference`、`slash commands`、`features`、`auth` 五個來源，用來覆蓋 CLI flags / commands、互動式 commands、approval / sandbox / remote 功能與登入流程。
 
 [返回開頭](#快速導覽)
 

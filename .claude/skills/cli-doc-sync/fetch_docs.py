@@ -5,6 +5,7 @@ fetch_docs.py — 從官方文件 URL 抓取 CLI 參考內容，轉為 Markdown 
 Usage:
     python fetch_docs.py claude-code          # 抓取指定目標的所有來源
     python fetch_docs.py github-copilot       # 同上
+    python fetch_docs.py codex-cli            # 同上
     python fetch_docs.py --url URL            # 抓取單一 URL
     python fetch_docs.py --list               # 列出可用目標
 
@@ -81,7 +82,7 @@ def main():
     parser.add_argument(
         "target",
         nargs="?",
-        help="Target name (e.g. claude-code, github-copilot)",
+        help="Target name (e.g. claude-code, github-copilot, codex-cli)",
     )
     parser.add_argument(
         "--url",
