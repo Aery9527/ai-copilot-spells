@@ -61,14 +61,13 @@ git submodule update --init --recursive
 
 ## Skills 系統
 
-本 repo 維護四個層次的 skills：
+本 repo 維護三個層次的 skills：
 
 | 目錄 | 來源 | 用途 |
 |------|------|------|
 | `anthropic-skills/` | [Anthropic 上游](https://github.com/anthropics/skills) | 創意設計、前端工程、AI 工程、Office 文件、技術寫作 |
 | `superpowers/` | [superpowers 上游](https://github.com/obra/superpowers) | 開發流程、Code Review、並行協作、Git 工作流、維運 |
 | `.agents/skills/` | 本地 project-specific custom skills | 專案內部治理、客製 workflow 與只在本 repo 使用的 skills，例如 [`skills-governance`](.agents/skills/skills-governance/SKILL.md) |
-| `aery-marketplace/` | 本地自製 plugin | `aery-skills`：工作踩坑實戰邏輯，可安裝的 self-contained plugin / marketplace root（[README](aery-marketplace/README.md)） |
 
 ### Skill Routers（第一層入口）
 
@@ -208,10 +207,10 @@ flowchart TD
 | 面向 | Agent | Skill |
 |------|-------|-------|
 | 本質 | 專家角色 / 執行者 | SOP / 任務知識包 |
-| 系統實際做的事 | 啟動一個專門 agent 或 subagent 去做 | 把 [`SKILL.md`](aery-marketplace/aery-dev/write-md/SKILL.md) 與附帶資源注入目前 agent 的 context |
+| 系統實際做的事 | 啟動一個專門 agent 或 subagent 去做 | 把對應的 [`SKILL.md`](.agents/skills/skills-governance/SKILL.md) 與附帶資源注入目前 agent 的 context |
 | Context | 常有獨立 context，適合隔離探索、測試、review | 多半沿用目前對話 context，屬 just-in-time 指南 |
 | 主要關注 | 角色、工具權限、模型、隔離、背景執行、可否委派 | 步驟、模板、範例、腳本、輸出格式 |
-| 適合場景 | `security-auditor`、`code-reviewer`、`test-runner` | `write-md`、`mongo-guidelines`、release note / deploy SOP |
+| 適合場景 | `security-auditor`、`code-reviewer`、`test-runner` | `skills-governance`、release note / deploy SOP |
 
 ### 兩者如何搭配
 
@@ -223,7 +222,7 @@ flowchart TD
 | tool / MCP | 實際能力來源，例如讀檔、改檔、查 GitHub、操作外部服務 |
 
 實務上比較穩的設計通常是：**把知識與流程放 skill，把角色、權限與執行邊界放 agent**。  
-例如 [`.agents/skills/`](.agents/skills/skills-governance/SKILL.md) 與 [`aery-marketplace/aery-dev/`](aery-marketplace/README.md) 目前收的都是 skills，不是 agents。
+例如 [`.agents/skills/`](.agents/skills/skills-governance/SKILL.md) 目前收的就是 repo 專用 skills，不是 agents。
 
 ### Claude Code 與 GitHub Copilot 的差異
 
@@ -251,9 +250,9 @@ flowchart TD
 
 ### 這個 repo 目前怎麼看
 
-1. [`.claude/skills/`](.claude/skills/anthropic-skill/SKILL.md)、[`.agents/skills/`](.agents/skills/skills-governance/SKILL.md)、[`aery-marketplace/aery-dev/`](aery-marketplace/README.md) 主要都屬於 **skill 生態**。
+1. [`.claude/skills/`](.claude/skills/anthropic-skill/SKILL.md) 與 [`.agents/skills/`](.agents/skills/skills-governance/SKILL.md) 主要都屬於 **skill 生態**。
 2. [Claude Code Agent 使用指南](docs/claude-code-agents.md) 與 [GitHub Copilot CLI Agent 使用指南](docs/github-copilot-agents.md) 則是整理 **agent 建立、使用與能力邊界**。
-3. [`aery-marketplace/`](aery-marketplace/README.md) 目前是 **skills plugin / marketplace root**；若未來要加入 agents，cc 與 gc 都做得到，但不應假設一份 agent 定義可直接跨兩邊共用。
+3. 如果未來要新增可分發的 plugin / marketplace，cc 與 gc 都做得到，但不應假設一份 agent 定義可直接跨兩邊共用。
 4. 如果你在設計新能力時猶豫該做 agent 還是 skill，先問自己一句：**我要的是專家，還是手冊？** 要專家就做 agent；要手冊就做 skill。
 
 [返回開頭](#快速導覽)
@@ -276,43 +275,13 @@ Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/READM
 
 ## 個人自製 Skills
 
-本 repo 的自製 skills 分成兩條線維護：
+目前 repo 內自製 skills 僅維護在 [`.agents/skills/`](.agents/skills/skills-governance/SKILL.md)：
 
 | 位置 | 定位 |
 |------|------|
 | [`.agents/skills/`](.agents/skills/skills-governance/SKILL.md) | 專案內部 custom skills；只放治理規則、維護政策與 repo 專用 workflow。首個 skill 為 [`skills-governance`](.agents/skills/skills-governance/SKILL.md)。 |
-| [`aery-marketplace/aery-dev/`](aery-marketplace/README.md) | 可安裝、可共享的 reusable skills，打包為 **`aery-skills`** plugin，供 GitHub Copilot 與 Claude Code 共用。 |
 
-[`aery-marketplace/`](./aery-marketplace/README.md) 是一個可安裝的本地 self-contained plugin / marketplace root，詳細安裝說明見 [`aery-marketplace/README.md`](aery-marketplace/README.md)。
-
-**GitHub Copilot 安裝：**
-
-```bash
-# 本地路徑
-copilot plugin install ./aery-marketplace
-
-# 從 GitHub repo subdirectory
-copilot plugin install OWNER/REPO:aery-marketplace
-# 例（本 repo）
-copilot plugin install Aery9527/ai-research:aery-marketplace
-```
-
-**Claude Code 安裝：**
-
-```
-/plugin marketplace add ./aery-marketplace
-/plugin install aery-skills@aery-plugins
-```
-
-> **注意**：`./aery-marketplace` 採本地路徑安裝，clone 此 repo 後即可直接使用。Claude Code 目前不支援 `owner/repo:subdir` 格式的遠端 marketplace add，無法直接從遠端子目錄安裝 marketplace。
-
-包含 Skills：
-
-| Skill | 解決的問題 |
-|-------|-----------|
-| **mongo-guidelines** | MongoDB 查詢、aggregation pipeline、Go driver、JS shell 型別陷阱 |
-| **windows-script** | `.bat`/`.cmd`/`.ps1` 語法陷阱、errorlevel、delayed expansion |
-| **write-md** | Markdown 文件撰寫，含 frontmatter 規則、YAML 安全與 Mermaid 圖表決策 |
+這些 skills 的用途是讓本 repo 的維護規則可以被 AI 工具即時載入，而不是對外發佈成可安裝 plugin。
 
 [返回開頭](#快速導覽)
 
@@ -347,11 +316,6 @@ ai-research/
 │   └── sync-all/             # 統一 orchestrator：Dependabot PR → invoke 各 sync skill
 ├── .github/
 │   └── dependabot.yml        # 每日自動偵測所有 submodule 上游變更
-├── aery-marketplace/         # aery-skills plugin / local marketplace root
-│   ├── plugin.json           # GitHub Copilot plugin manifest
-│   ├── .claude-plugin/       # Claude Code plugin / marketplace metadata
-│   ├── aery-dev/             # skill 定義目錄（mongo-guidelines, windows-script, write-md）
-│   └── README.md             # 安裝與維護說明
 ├── AGENTS.md                 # Skill 組合查表（任務導向）
 ├── CLAUDE.md                 # Claude Code project instructions
 ├── tool/                     # 工具操作文件
