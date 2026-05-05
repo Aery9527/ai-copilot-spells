@@ -7,7 +7,7 @@ flowchart LR
     U(["👤 使用者"])
 
     subgraph nav ["導覽層"]
-        A["📋 AGENTS.md\n任務 → Skill 組合"]
+        A["📋 AGENTS.md / AGENTS_zhTW.md\nTask → Skill 組合"]
         B["📖 README.md\n快速定位"]
     end
 
@@ -28,7 +28,7 @@ flowchart LR
     P -.->|"協議"| S
 ```
 
-**你現在想做什麼？** → 看 [AGENTS.md](AGENTS.md) 找 skill 組合，一秒定位。
+**你現在想做什麼？** → 看英文主版 [AGENTS.md](AGENTS.md)；若偏好繁中對照，改看 [AGENTS_zhTW.md](AGENTS_zhTW.md)。
 
 首次初始化 submodule：
 
@@ -301,7 +301,8 @@ ai-research/
 │   └── sync-all/             # 統一 orchestrator：Dependabot PR → invoke 各 sync skill
 ├── .github/
 │   └── dependabot.yml        # 每日自動偵測所有 submodule 上游變更
-├── AGENTS.md                 # Skill 組合查表（任務導向）
+├── AGENTS.md                 # English skill lookup and repo guidance
+├── AGENTS_zhTW.md            # 繁中對照版 skill lookup and repo guidance
 ├── CLAUDE.md                 # Claude Code project instructions
 ├── tool/                     # 工具操作文件
 │   ├── README.md

@@ -1,110 +1,117 @@
-# AGENTS.md — Skill 組合查表
+# AGENTS.md — Skill Combination Lookup
 
-本文件的用途：**你有任務要做時，快速找到需要哪些 skill 組合**。Skill 名稱點進去才展開細節，這裡只保留第一層。
+Purpose: **quickly find the right skill combination for the task at hand**. Follow the skill links for details; this file stays at the first routing layer only.
 
-## 快速導覽
+## Quick Navigation
 
-- [任務 → Skill 組合](#任務--skill-組合)
-- [Repo 維護規則](#repo-維護規則)
-- [第一層 Router 入口](#第一層-router-入口)
+- [Task → Skill Combination](#task--skill-combination)
+- [Repository Governance](#repository-governance)
+- [Top-Level Router Entry Points](#top-level-router-entry-points)
 - [Skill Locations](#skill-locations)
 
 ---
 
-## 任務 → Skill 組合
+## Task → Skill Combination
 
-### 🔄 開發流程
+### Development Flow
 
-| 我想要... | 使用 Skills（依序） |
-|----------|-------------------|
-| 開發新功能（完整流程） | `brainstorming` → `writing-plans` → `test-driven-development` → `subagent-driven-development` → `requesting-code-review` |
-| Debug 一個 bug | `systematic-debugging` |
-| 宣告完成 / 準備 commit / PR 前 | `verification-before-completion` |
-| 在新 session 執行計畫 | `executing-plans` |
-| 在當前 session 執行計畫（subagent 逐 task） | `subagent-driven-development` |
-| 多個獨立子任務並行 | `dispatching-parallel-agents` |
-| 開始工作前需要隔離 workspace | `using-git-worktrees` |
+| I want to... | Use Skills (in order) |
+|--------------|-----------------------|
+| Build a new feature end-to-end | `brainstorming` → `writing-plans` → `test-driven-development` → `subagent-driven-development` → `requesting-code-review` |
+| Debug a bug | `systematic-debugging` |
+| Declare completion / prepare before commit / PR | `verification-before-completion` |
+| Execute a plan in a new session | `executing-plans` |
+| Execute a plan in the current session task-by-task with subagents | `subagent-driven-development` |
+| Run multiple independent subtasks in parallel | `dispatching-parallel-agents` |
+| Isolate the workspace before starting work | `using-git-worktrees` |
 
-### 👀 Review 與收尾
+### Review And Wrap-Up
 
-| 我想要... | 使用 Skills |
-|----------|------------|
-| 收到 code review 意見，技術評估後再實作 | `receiving-code-review` |
-| 完成功能需要 review | `requesting-code-review` |
-| 所有 task 完成，選擇收尾方式 | `finishing-a-development-branch` |
+| I want to... | Use Skills |
+|--------------|------------|
+| Evaluate code review feedback before implementing changes | `receiving-code-review` |
+| Request a review after finishing a feature | `requesting-code-review` |
+| Choose a wrap-up path after all tasks are done | `finishing-a-development-branch` |
 
-### 🎨 創意・前端・文件
+### Creative, Frontend, And Docs
 
-| 我想要... | 使用 Skills |
-|----------|------------|
-| 建 Web UI / landing page | `brainstorming` → `frontend-design` |
-| 建複雜 Claude artifact（React + shadcn） | `web-artifacts-builder` |
-| 測試本地 Web 應用（Playwright） | `webapp-testing` |
-| 生成海報 / 靜態視覺（PNG/PDF） | `canvas-design` |
-| 生成算法藝術（流場、粒子、幾何） | `algorithmic-art` |
-| 為 artifact 套主題 | `theme-factory` |
-| 套用 Anthropic 品牌色彩 | `brand-guidelines` |
-| 做 Slack 動態 GIF | `slack-gif-creator` |
+| I want to... | Use Skills |
+|--------------|------------|
+| Build a Web UI / landing page | `brainstorming` → `frontend-design` |
+| Build a complex Claude artifact (React + shadcn) | `web-artifacts-builder` |
+| Test a local web app (Playwright) | `webapp-testing` |
+| Generate posters / static visuals (PNG/PDF) | `canvas-design` |
+| Generate algorithmic art (flow fields, particles, geometry) | `algorithmic-art` |
+| Theme an artifact | `theme-factory` |
+| Apply Anthropic brand colors | `brand-guidelines` |
+| Create an animated Slack GIF | `slack-gif-creator` |
 
-### ⚙️ AI 工程・文件操作・寫作
+### AI Engineering, Document Operations, And Writing
 
-| 我想要... | 使用 Skills |
-|----------|------------|
-| 建 Claude API 應用 / Anthropic SDK | `brainstorming` → `claude-api` |
-| 建 MCP server | `brainstorming` → `mcp-builder` |
-| 操作 PDF | `pdf` |
-| 操作 Word 文件 | `docx` |
-| 操作 Excel | `xlsx` |
-| 操作 PowerPoint | `pptx` |
-| 撰寫技術規格 / 設計文件 | `doc-coauthoring` |
-| 撰寫內部溝通（3P 更新、事故報告） | `internal-comms` |
+| I want to... | Use Skills |
+|--------------|------------|
+| Build a Claude API app / Anthropic SDK integration | `brainstorming` → `claude-api` |
+| Build an MCP server | `brainstorming` → `mcp-builder` |
+| Work with PDFs | `pdf` |
+| Work with Word documents | `docx` |
+| Work with Excel files | `xlsx` |
+| Work with PowerPoint files | `pptx` |
+| Write technical specs / design docs | `doc-coauthoring` |
+| Write internal communications (3P updates, incident reports) | `internal-comms` |
 
-### 🛠 Skill 維護
+### Skill Maintenance
 
-| 我想要... | 使用 Skills |
-|----------|------------|
-| 創建或改善 AI Skill | `brainstorming` → `writing-skills` |
-| 維護本專案客製 skills 治理規則 | `skills-governance` |
-| 同步 Anthropic skills 上游 | `anthropic-skills-sync` |
-| 同步 superpowers 上游 | `superpowers-skills-sync` |
-| 同步 CLI 文件（Claude Code / Copilot） | `cli-doc-sync` |
-| 一鍵同步所有上游變更（Dependabot PR 觸發） | `sync-all` |
-
----
-
-## Repo 維護規則
-
-### `scripts/` 文件同步規則
-
-- 當新增、移除、重新命名或明顯改動 `scripts/` 目錄下的腳本時，**必須同步更新 [`scripts/README.md`](scripts/README.md)**。
-- [`scripts/README.md`](scripts/README.md) 是 `scripts/` 的唯一總索引入口；後續新增腳本時，至少要補上：用途、參數、行為、風險/副作用、最小執行範例。
-- 若 root [`README.md`](README.md) 已列出腳本入口或腳本摘要，變更 `scripts/` 後也要一併檢查是否需要同步更新。
+| I want to... | Use Skills |
+|--------------|------------|
+| Create or improve an AI skill | `brainstorming` → `writing-skills` |
+| Maintain governance rules for this repo's custom skills | `skills-governance` |
+| Sync Anthropic skills upstream | `anthropic-skills-sync` |
+| Sync superpowers upstream | `superpowers-skills-sync` |
+| Sync CLI docs (Claude Code / Copilot) | `cli-doc-sync` |
+| Sync all upstream changes in one pass (Dependabot PR trigger) | `sync-all` |
 
 ---
 
-## 第一層 Router 入口
+## Repository Governance
 
-按需進入，不要一次展開全部：
+### Bilingual AGENTS Rule
 
-| 涵蓋範疇 | Router |
-|---------|--------|
-| 創意設計・前端工程・AI 工程・Office 文件・技術寫作 | [anthropic-skill](.claude/skills/anthropic-skill/SKILL.md) |
-| 開發流程・Code Review・並行協作・Git 工作流・維運 | [superpowers-skill](.claude/skills/superpowers-skill/SKILL.md) |
+- `AGENTS.md` is the English primary version.
+- `AGENTS_zhTW.md` is the Traditional Chinese mirror.
+- Any addition, deletion, rename, or semantic change to either file must update both language versions in the same change slice.
+- Do not leave one language temporarily stale with a plan to sync it later.
+
+### `scripts/` Documentation Sync Rule
+
+- When adding, removing, renaming, or materially changing scripts under `scripts/`, you **must** update [`scripts/README.md`](scripts/README.md) in the same slice.
+- [`scripts/README.md`](scripts/README.md) is the single index for `scripts/`; new scripts must document at least purpose, arguments, behavior, risks / side effects, and a minimal usage example.
+- If root [`README.md`](README.md) already lists script entries or summaries, check whether it also needs to be updated.
+
+---
+
+## Top-Level Router Entry Points
+
+Enter only as needed; do not expand everything at once:
+
+| Scope | Router |
+|-------|--------|
+| Creative design, frontend engineering, AI engineering, Office docs, technical writing | [anthropic-skill](.claude/skills/anthropic-skill/SKILL.md) |
+| Development workflow, code review, parallel collaboration, git workflow, maintenance | [superpowers-skill](.claude/skills/superpowers-skill/SKILL.md) |
 
 ---
 
 ## Skill Locations
 
-| 目錄 | 來源 | 說明 |
-|------|------|------|
-| `anthropic-skills/` | Anthropic 上游 | 原始 skill 定義（勿直接修改） |
-| `superpowers/` | superpowers 上游 | 原始 skill 定義（勿直接修改） |
-| `.claude/skills/anthropic-skill/` | 本地 router | Anthropic skills 第一層分類入口 |
-| `.claude/skills/superpowers-skill/` | 本地 router | Superpowers skills 第一層分類入口 |
-| `.claude/skills/_shared/` | 共用協議 | `upstream-sync-protocol.md` 供各 sync skill 引用 |
-| `.claude/skills/anthropic-skills-sync/` | 維運 skill | 同步 Anthropic skills 上游 |
-| `.claude/skills/superpowers-skills-sync/` | 維運 skill | 同步 superpowers 上游 |
-| `.claude/skills/cli-doc-sync/` | 維運 skill | CLI 文件同步（Claude Code、GitHub Copilot） |
-| `.claude/skills/sync-all/` | 本地自製 | 統一 orchestrator：偵測 Dependabot PR → invoke 各 sync skill |
-| `.agents/skills/` | 本地 project-specific custom skills | 專案內部治理與 repo 客製 workflow，例如 `skills-governance` |
-| `scripts/` | 本地維護腳本 | repo 維護與自動化腳本；文件總入口為 [`scripts/README.md`](scripts/README.md) |
+| Directory | Source | Description |
+|-----------|--------|-------------|
+| `anthropic-skills/` | Anthropic upstream | Original skill definitions; do not modify directly |
+| `superpowers/` | superpowers upstream | Original workflow skill definitions; do not modify directly |
+| `.claude/skills/anthropic-skill/` | Local router | Top-level category entry point for Anthropic skills |
+| `.claude/skills/superpowers-skill/` | Local router | Top-level category entry point for superpowers skills |
+| `.claude/skills/_shared/` | Shared protocol | `upstream-sync-protocol.md` referenced by sync skills |
+| `.claude/skills/anthropic-skills-sync/` | Maintenance skill | Sync Anthropic skills upstream |
+| `.claude/skills/superpowers-skills-sync/` | Maintenance skill | Sync superpowers upstream |
+| `.claude/skills/cli-doc-sync/` | Maintenance skill | Sync CLI documentation for Claude Code and GitHub Copilot |
+| `.claude/skills/sync-all/` | Local custom skill | Unified orchestrator: detect Dependabot PRs and invoke sync skills |
+| `.agents/skills/` | Local project-specific custom skills | Internal governance and repo-specific workflows such as `skills-governance` |
+| `scripts/` | Local maintenance scripts | Repo maintenance and automation; documentation index lives in [`scripts/README.md`](scripts/README.md) |
