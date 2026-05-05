@@ -28,24 +28,10 @@ flowchart LR
     P -.->|"協議"| S
 ```
 
-**你現在想做什麼？** → 看英文主版 [AGENTS.md](AGENTS.md)；若偏好繁中對照，改看 [AGENTS_zhTW.md](AGENTS_zhTW.md)。
-
-首次初始化 submodule：
-
-```powershell
-git submodule update --init --recursive
-```
-
-同步上游更新：
-
-[GitHub Dependabot](.github/dependabot.yml) 每日自動偵測上游 submodule 變更並開 PR。收到通知 email 後，`sync-all` 一個 skill 即完成全部同步：
-
-> Dependabot 開 PR → email 通知 → invoke `sync-all` → pull + AI 摘要 + commit + push + 關閉 PR
-
----
-
 ## 快速導覽
 
+- [首次初始化 submodule](#首次初始化-submodule)
+- [同步上游更新](#同步上游更新)
 - [Skills 系統](#skills-系統)
   - [.claude-plugin 檔案說明](#claude-plugin-檔案說明)
   - [anthropic-skills](#anthropic-skills)
@@ -58,6 +44,21 @@ git submodule update --init --recursive
 
 ---
 
+## 首次初始化 submodule
+
+```powershell
+git submodule update --init --recursive
+```
+
+---
+
+## 同步上游更新
+
+[GitHub Dependabot](.github/dependabot.yml) 每日自動偵測上游 submodule 變更並開 PR。收到通知 email 後，`sync-all` 一個 skill 即完成全部同步：
+
+> Dependabot 開 PR → email 通知 → invoke `sync-all` → pull + AI 摘要 + commit + push + 關閉 PR
+
+---
 
 ## Skills 系統
 
@@ -171,6 +172,7 @@ flowchart TD
 
 | 工具 | CLI 參考 | Agent 使用指南 | 說明 |
 |------|---------|----------------|------|
+| **Shared Rules** | [`cli-agents/rules.md`](cli-agents/rules.md) / [`cli-agents/rules_zhTW.md`](cli-agents/rules_zhTW.md) | - | 可作為 Claude Code、GitHub Copilot、Codex 等 AI 工具共用的基本守則，包含語言偏好、工作態度與禁止行為 |
 | **Claude Code** | [`cli-agents/claude-code/cc-cli.md`](cli-agents/claude-code/cc-cli.md) | [`docs/claude-code-agents.md`](docs/claude-code-agents.md) | CLI 參數、slash commands、快捷鍵，以及 built-in / custom agent 用法 |
 | **GitHub Copilot** | [`cli-agents/github-copilot/gc-cli.md`](cli-agents/github-copilot/gc-cli.md) | [`docs/github-copilot-agents.md`](docs/github-copilot-agents.md) | CLI 參數、slash commands、custom instructions，以及 built-in / custom agent 用法 |
 | **Codex CLI** | [`cli-agents/codex/cx-cli.md`](cli-agents/codex/cx-cli.md) | [`docs/codex-agents.md`](docs/codex-agents.md) | 安裝、登入、approval / sandbox、`codex exec`、subagents、`AGENTS.md`、slash commands、config，以及 TUI 快捷操作 |
