@@ -1,0 +1,8 @@
+model = "gpt-5.4"
+model_reasoning_effort = "medium"
+
+[tui]
+status_line = ["model-with-reasoning", "fast-mode", "current-dir", "git-branch", "thread-title", "task-progress", "five-hour-limit", "weekly-limit", "used-tokens", "context-window-size", "context-used", "run-state"]
+
+[windows]
+sandbox = "unelevated"
