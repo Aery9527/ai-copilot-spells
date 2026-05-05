@@ -19,5 +19,5 @@ function ggc { # golang github copilot
 
 function gcx { # golang codex
     . "$PSScriptRoot\Set-GoEnv.ps1"
-    codex -a never --sandbox workspace-write --ask-for-approval on-request @args
+    codex --sandbox workspace-write -a on-request @args
 }
