@@ -104,21 +104,14 @@ Claude Code plugin 系統在 `.claude-plugin/` 目錄下有兩種設定檔，職
 
 ### anthropic-skills
 
-**安裝方法：**
+目前 `anthropic-skills` 主要透過 Claude Code / GitHub Copilot CLI 的 plugin marketplace 使用；本 repo 尚未替它提供 Codex marketplace 或 `.codex-plugin` 封裝。
 
-```
-/plugin marketplace add anthropics/skills
-/plugin install example-skills@anthropic-agent-skills
-/plugin install document-skills@anthropic-agent-skills
-```
-
-以 plugin 為單位組織，目前共三個 plugin，可依需求選擇性安裝：
-
-| Plugin | 包含 Skills | 適用場景 |
-|--------|------------|---------|
-| **document-skills** | `xlsx`, `docx`, `pptx`, `pdf` | 各類 Office 文件與 PDF |
-| **example-skills** | `algorithmic-art`, `brand-guidelines`, `canvas-design`, `doc-coauthoring`, `frontend-design`, `internal-comms`, `mcp-builder`, `skill-creator`, `slack-gif-creator`, `theme-factory`, `web-artifacts-builder`, `webapp-testing` | 創意設計、前端工程、AI 工程、文字寫作 |
-| **claude-api** | `claude-api` | Claude API / Anthropic SDK 應用 |
+| 維度 | Claude Code | GitHub Copilot CLI | Codex |
+|------|------|------|------|
+| 說明 | 使用 `anthropics/skills` 作為 marketplace source，marketplace 名稱是 `anthropic-agent-skills`。 | 使用同一份 `.claude-plugin/marketplace.json`，透過 `copilot plugin` 註冊 marketplace 並安裝 plugin。 | 目前不適用；`anthropic-skills/` 沒有 Codex 用的 `.agents/plugins/marketplace.json` 或 `.codex-plugin/plugin.json`。 |
+| 安裝 | `/plugin marketplace add anthropics/skills`<br>`/plugin install document-skills@anthropic-agent-skills`<br>`/plugin install example-skills@anthropic-agent-skills`<br>`/plugin install claude-api@anthropic-agent-skills`<br>`/reload-plugins` | `copilot plugin marketplace add anthropics/skills`<br>`copilot plugin install document-skills@anthropic-agent-skills`<br>`copilot plugin install example-skills@anthropic-agent-skills`<br>`copilot plugin install claude-api@anthropic-agent-skills`<br>`copilot plugin list` | 需先另建 Codex 封裝後才能安裝。 |
+| 更新 | `/plugin marketplace update anthropic-agent-skills`<br>`/reload-plugins`<br>或在 `/plugin` 的 Marketplaces tab 對 `anthropic-agent-skills` 啟用 auto-update。 | `copilot plugin update document-skills@anthropic-agent-skills`<br>`copilot plugin update example-skills@anthropic-agent-skills`<br>`copilot plugin update claude-api@anthropic-agent-skills` | 不適用。 |
+| 移除 | `/plugin uninstall document-skills@anthropic-agent-skills`<br>`/plugin uninstall example-skills@anthropic-agent-skills`<br>`/plugin uninstall claude-api@anthropic-agent-skills`<br>`/plugin marketplace remove anthropic-agent-skills` | `copilot plugin uninstall document-skills@anthropic-agent-skills`<br>`copilot plugin uninstall example-skills@anthropic-agent-skills`<br>`copilot plugin uninstall claude-api@anthropic-agent-skills`<br>`copilot plugin marketplace remove anthropic-agent-skills` | 不適用。 |
 
 詳細設定見 [`anthropic-skills/.claude-plugin/marketplace.json`](anthropic-skills/.claude-plugin/marketplace.json)。
 
@@ -126,22 +119,14 @@ Claude Code plugin 系統在 `.claude-plugin/` 目錄下有兩種設定檔，職
 
 ### superpowers
 
-**安裝方法：**
+`superpowers` 同時提供 Claude Code / GitHub Copilot CLI 的 plugin marketplace 入口，也提供 Codex 可用的 plugin / native skill discovery 安裝方式。
 
-```
-# 官方 marketplace（推薦）
-/plugin install superpowers@claude-plugins-official
-
-# 或透過 obra's marketplace
-/plugin marketplace add obra/superpowers-marketplace
-/plugin install superpowers@superpowers-marketplace
-```
-
-為單一 plugin，涵蓋開發流程全套 skills：
-
-| Plugin | 包含 Skills | 適用場景 |
-|--------|------------|---------|
-| **superpowers** | `brainstorming`, `writing-plans`, `subagent-driven-development`, `executing-plans`, `test-driven-development`, `systematic-debugging`, `requesting-code-review`, `receiving-code-review`, `finishing-a-development-branch`, `using-git-worktrees`, `dispatching-parallel-agents`, `verification-before-completion`, `writing-skills`, `using-superpowers` | 開發流程、Code Review、並行協作、Git 工作流、維運 |
+| 維度 | Claude Code | GitHub Copilot CLI | Codex |
+|------|------|------|------|
+| 說明 | 可直接從官方 marketplace 安裝；若要使用 obra marketplace，marketplace source 是 `obra/superpowers-marketplace`。 | 使用 `obra/superpowers-marketplace` 註冊 marketplace，plugin 名稱是 `superpowers`。 | 可在 Codex 使用 `/plugins superpowers` 搜尋並安裝；若要本機 native skill discovery，依 [`superpowers/.codex/INSTALL.md`](superpowers/.codex/INSTALL.md) 使用 clone + junction。 |
+| 安裝 | `/plugin install superpowers@claude-plugins-official`<br>或：<br>`/plugin marketplace add obra/superpowers-marketplace`<br>`/plugin install superpowers@superpowers-marketplace`<br>`/reload-plugins` | `copilot plugin marketplace add obra/superpowers-marketplace`<br>`copilot plugin install superpowers@superpowers-marketplace`<br>`copilot plugin list` | `codex`<br>`/plugins superpowers`<br>選擇 `Install Plugin`<br>本機 discovery：<br>`git clone https://github.com/obra/superpowers.git "$env:USERPROFILE\.codex\superpowers"`<br>`New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.agents\skills"`<br>`New-Item -ItemType Junction -Path "$env:USERPROFILE\.agents\skills\superpowers" -Target "$env:USERPROFILE\.codex\superpowers\skills"` |
+| 更新 | 官方 marketplace 可透過 `/plugin` 的 Marketplaces tab 或 auto-update 管理。若使用 obra marketplace：<br>`/plugin marketplace update superpowers-marketplace`<br>`/reload-plugins` | `copilot plugin update superpowers@superpowers-marketplace` | `/plugins` 內管理已安裝 plugin。若使用本機 discovery：<br>`git -C "$env:USERPROFILE\.codex\superpowers" pull` |
+| 移除 | `/plugin uninstall superpowers@claude-plugins-official`<br>或：<br>`/plugin uninstall superpowers@superpowers-marketplace`<br>`/plugin marketplace remove superpowers-marketplace` | `copilot plugin uninstall superpowers@superpowers-marketplace`<br>`copilot plugin marketplace remove superpowers-marketplace` | `/plugins` 內停用或移除 plugin。若使用本機 discovery：<br>`Remove-Item -Force "$env:USERPROFILE\.agents\skills\superpowers"`<br>可選：`Remove-Item -Recurse -Force "$env:USERPROFILE\.codex\superpowers"` |
 
 `using-superpowers` 是元技能（meta-skill），不參與任何具體工作流程，但它是所有流程的前提條件：收到任何任務前，哪怕只有 1% 機率有 skill 可用，就必須先呼叫 Skill tool 確認，再執行任何動作。
 
