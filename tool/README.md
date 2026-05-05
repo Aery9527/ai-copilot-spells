@@ -9,10 +9,22 @@
 | 文件 | 說明 |
 |------|------|
 | [`claude_desktop_ahk.md`](claude_desktop_ahk.md) | 用 AutoHotkey v2 設定快捷鍵叫出 / 關閉 Claude Desktop |
-| [`Microsoft.PowerShell_profile.ps1`](Microsoft.PowerShell_profile.ps1) | PowerShell profile 捷徑函數：`gws`/`jws`（切換工作目錄）、`gcc`/`ggc`/`gcx`（在 Golang 專案叫出各 AI CLI）|
-| [`Set-GoEnv.ps1`](Set-GoEnv.ps1) | 設定 Go 環境變數（`GO_HOME`、`PATH`）；被 `Microsoft.PowerShell_profile.ps1` 引用，**兩檔需放在同一目錄** |
+| [`PowerShell/`](PowerShell/) | PowerShell 啟動設定與 AI CLI / 語言環境切換腳本 |
 
-> **使用方式**：將 `Microsoft.PowerShell_profile.ps1` 與 `Set-GoEnv.ps1` 複製到同一個資料夾，再將 `Microsoft.PowerShell_profile.ps1` 的內容貼入（或以 dot-source 方式 `. /path/to/Microsoft.PowerShell_profile.ps1` 載入）你的 PowerShell profile（`$PROFILE`）。
+### `PowerShell/` 內容
+
+| 文件 | 說明 |
+|------|------|
+| [`PowerShell/Microsoft.PowerShell_profile.ps1`](PowerShell/Microsoft.PowerShell_profile.ps1) | PowerShell profile 入口；提供 `gws`/`jws` 工作目錄切換，以及 `acc`/`agc`/`acx`、`gcc`/`ggc`/`gcx`、`jcc`/`jgc`/`jcx` 等捷徑函數 |
+| [`PowerShell/Exe-CC.ps1`](PowerShell/Exe-CC.ps1) | 執行 Claude Code：`claude --permission-mode auto @args` |
+| [`PowerShell/Exe-GC.ps1`](PowerShell/Exe-GC.ps1) | 執行 GitHub Copilot CLI：`copilot --allow-all-tools @args` |
+| [`PowerShell/Exe-CX.ps1`](PowerShell/Exe-CX.ps1) | 執行 Codex CLI：`codex --sandbox danger-full-access -a never @args` |
+| [`PowerShell/Set-CommonEnv.ps1`](PowerShell/Set-CommonEnv.ps1) | 全域共用環境變數設定入口 |
+| [`PowerShell/Set-DevEnv.ps1`](PowerShell/Set-DevEnv.ps1) | 開發時共用環境變數設定入口；供 Go / Java CLI wrapper 載入 |
+| [`PowerShell/Set-GoVersion.ps1`](PowerShell/Set-GoVersion.ps1) | 設定 Go 版本與 `GO_HOME` / `PATH` |
+| [`PowerShell/Set-JavaVersion.ps1`](PowerShell/Set-JavaVersion.ps1) | 設定 Java 版本與 `JAVA_HOME` / `PATH` |
+
+> **使用方式**：將 `PowerShell/` 目錄完整保留，並以 dot-source 方式載入 [`PowerShell/Microsoft.PowerShell_profile.ps1`](PowerShell/Microsoft.PowerShell_profile.ps1) 到你的 PowerShell profile（`$PROFILE`）。此 profile 會透過 `$PSScriptRoot` 載入同目錄下其他腳本，因此不適合只單獨複製其中一個檔案。
 
 ---
 
