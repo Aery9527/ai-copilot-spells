@@ -1,0 +1,11 @@
+prefix_rule(
+    pattern = ["git"],
+    decision = "allow",
+    justification = "Allow all git operations",
+)
+
+prefix_rule(
+    pattern = ["icacls", ".git"],
+    decision = "allow",
+    justification = "Allow icacls to fix .git ACLs on Windows",
+)
