@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Source: cli-agents/claude-code/statusline-command.sh
+# ~/.claude/statusline-command.sh
 
 input=$(cat)
 
@@ -29,6 +29,8 @@ effort_level=$(read_json "j?.effort?.level")
 cache_read_tokens=$(read_json "j?.context_window?.current_usage?.cache_read_input_tokens")
 cache_creation_tokens=$(read_json "j?.context_window?.current_usage?.cache_creation_input_tokens")
 turn_count=$(read_json "j?.turn_count")
+session_state=$(read_json "j?.session_state")
+has_current_usage=$(read_json "j?.context_window?.current_usage != null ? 'yes' : ''")
 
 # --- Format number as Xk / X.Xk ---
 format_k() {
@@ -250,11 +252,36 @@ if [ -n "$turn_count" ] && [ "$turn_count" -gt 0 ] 2>/dev/null; then
     turn_part="${DIM}turn ${turn_count}${RESET}"
 fi
 
+# --- Session state segment ---
+# session_state: "idle" | "awaiting_selection" | "active" (Claude Code may emit this)
+# Fallback heuristic: infer from has_current_usage
+state_part=""
+if [ -n "$session_state" ]; then
+    case "$session_state" in
+        idle)
+            state_part="${DIM}◉ 等待指示${RESET}" ;;
+        awaiting_selection|awaiting-selection)
+            state_part="${ESC}[38;5;226m◉ 等待選擇${RESET}" ;;
+        active|running)
+            state_part="${ESC}[38;5;114m◉ 執行中${RESET}" ;;
+        *)
+            state_part="${DIM}◉ ${session_state}${RESET}" ;;
+    esac
+else
+    # Heuristic: if current_usage exists → recently active; else → idle
+    if [ "$has_current_usage" = "yes" ]; then
+        state_part="${ESC}[38;5;114m◉ 執行中${RESET}"
+    else
+        state_part="${DIM}◉ 等待指示${RESET}"
+    fi
+fi
+
 # --- Assemble ---
 line1=""
 [ -n "$model_part"          ] && line1+="${model_part}"
 [ -n "$git_part"            ] && line1+="${SEP}${git_part}"
 [ -n "$session_tokens_part" ] && line1+="${SEP}${session_tokens_part}"
+[ -n "$state_part"          ] && line1+="${SEP}${state_part}"
 
 line2=""
 [ -n "$cache_part" ] && line2+="${cache_part}"
