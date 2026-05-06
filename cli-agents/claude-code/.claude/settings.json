@@ -15,14 +15,8 @@
       "WebSearch"
     ],
     "deny": [
-      "Bash(rm -rf *)",
       "Bash(sudo *)",
-      "Bash(curl *)",
-      "Bash(wget *)",
-      "Read(.env*)",
-      "Read(**/secrets/**)",
-      "Edit(.env*)",
-      "Write(.env*)"
+      "Read(**/secrets/**)"
     ]
   },
   "statusLine": {
