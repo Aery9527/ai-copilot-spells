@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ~/.claude/statusline-command.sh
+# Source: cli-agents/claude-code/statusline-command.sh
 
 input=$(cat)
 

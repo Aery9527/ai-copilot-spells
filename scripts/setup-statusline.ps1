@@ -4,7 +4,7 @@
     Install the statusLine configuration to ~/.claude/settings.json and deploy the statusline script.
 
 .DESCRIPTION
-    1. Copies .claude/statusline-command.sh from this repo to ~/.claude/
+    1. Copies cli-agents/claude-code/statusline-command.sh from this repo to ~/.claude/
     2. Injects the statusLine key into ~/.claude/settings.json (creates the file if absent)
 
     After running, the status line is active for all Claude Code sessions on this machine.
@@ -25,7 +25,7 @@ $ErrorActionPreference = 'Stop'
 
 # --- Paths ---
 $repoRoot   = Split-Path $PSScriptRoot -Parent
-$shSrc      = Join-Path $repoRoot '.claude\statusline-command.sh'
+$shSrc      = Join-Path $repoRoot 'cli-agents\claude-code\statusline-command.sh'
 $claudeDir  = Join-Path $env:USERPROFILE '.claude'
 $shDst      = Join-Path $claudeDir 'statusline-command.sh'
 $settingsPath = Join-Path $claudeDir 'settings.json'
