@@ -35,7 +35,7 @@
 | 腳本 | 類型 | 用途 | 是否修改檔案 | 備註 |
 |------|------|------|--------------|------|
 | [`remove-local-git-user.ps1`](./remove-local-git-user.ps1) | PowerShell | 遞迴掃描指定路徑下的 Git repository / worktree，移除 local git config 中的 `[user]` section | 會，直接覆寫 Git config | 不建立 backup；遇到異常 config 會跳過 |
-| [`setup-statusline.ps1`](./setup-statusline.ps1) | PowerShell | 將 statusLine 設定寫入 `~/.claude/settings.json`，並將 [`statusline-command.sh`](../cli-agents/claude-code/statusline-command.sh) 部署至 `~/.claude/` | 會，更新 `~/.claude/settings.json` 並複製 sh 腳本 | 若目標 sh 已是最新版則略過複製；`-Force` 強制覆寫 |
+| [`setup-statusline.ps1`](./setup-statusline.ps1) | PowerShell | 將 statusLine 設定與狀態追蹤 hooks 寫入 `~/.claude/settings.json`，並將 [`statusline-command.sh`](../cli-agents/claude-code/statusline-command.sh) 及 [`hooks/`](../cli-agents/claude-code/hooks/) 部署至 `~/.claude/` | 會，更新 `~/.claude/settings.json` 並複製 sh 腳本 | 若目標 sh 已是最新版則略過複製；`-Force` 強制覆寫；hooks 合併不覆蓋既有設定 |
 
 ---
 
@@ -134,37 +134,50 @@ Summary
 
 #### 目的
 
-一鍵在本機安裝 Claude Code 的自訂 status line：
+一鍵在本機安裝 Claude Code 的自訂 status line，包含即時執行狀態顯示（◉ 執行中 / ◉ 等待指示）：
 
 - 將 [`statusline-command.sh`](../cli-agents/claude-code/statusline-command.sh)（repo 內 git tracked）複製到 `~/.claude/statusline-command.sh`
-- 在 `~/.claude/settings.json` 寫入 `statusLine` key，讓設定對整個帳號所有 Claude Code session 生效
+- 將 [`cli-agents/claude-code/hooks/`](../cli-agents/claude-code/hooks/) 下的所有 `.sh` 複製到 `~/.claude/hooks/`
+- 在 `~/.claude/settings.json` 寫入 `statusLine` key
+- 在 `~/.claude/settings.json` 注入 `UserPromptSubmit`、`PreToolUse`、`Stop` 三個 lifecycle hooks，用於即時更新狀態暫存檔
 
 適用於：
 
 - 換機器後重建 Claude Code 工具環境
 - 初次設定 status line（不用手動複製檔案或改 JSON）
 
+#### 狀態追蹤原理
+
+| Hook 事件 | 觸發時機 | 寫入狀態 |
+|-----------|----------|----------|
+| `UserPromptSubmit` | 使用者送出 prompt | `running` |
+| `PreToolUse` | 工具執行前 | `running` |
+| `Stop` | Claude 回應完成 | `idle` |
+
+Hook 腳本從 stdin 讀取 `session_id`，寫入 `$TMPDIR/claude_state_<session_id>`。StatusLine 腳本讀取此檔決定顯示狀態。
+
 #### 參數
 
 | 參數 | 型別 | 說明 |
 |------|------|------|
-| `-Force` | `switch` | 強制覆寫 `~/.claude/statusline-command.sh`，即使目標已存在且與來源相同 |
+| `-Force` | `switch` | 強制覆寫所有目標 `.sh`，即使目標已存在且與來源相同 |
 
 #### 它實際在做什麼
 
-1. 以 `$PSScriptRoot\..` 推算 repo 根目錄，取得 [`statusline-command.sh`](../cli-agents/claude-code/statusline-command.sh) 路徑。
-2. 確認 `~/.claude/` 目錄存在，不存在則建立。
-3. 比對來源與目標 SHA-256；若不同（或 `-Force`）則複製。
+1. 以 `$PSScriptRoot\..` 推算 repo 根目錄。
+2. 確認 `~/.claude/` 及 `~/.claude/hooks/` 目錄存在，不存在則建立。
+3. 比對來源與目標 SHA-256；若不同（或 `-Force`）則複製 `statusline-command.sh` 及 `hooks/*.sh`。
 4. 讀取 `~/.claude/settings.json`（不存在則初始化為空物件）。
 5. 若 `statusLine` key 不存在則新增，已存在則更新，其他欄位原封不動。
-6. 將修改後的 JSON 寫回 `~/.claude/settings.json`（UTF-8，無 BOM）。
+6. 逐一檢查 `UserPromptSubmit`、`PreToolUse`、`Stop` 三個 hook 事件：若指令不存在則新增，已存在則略過（不重複也不覆蓋現有 hooks）。
+7. 將修改後的 JSON 寫回 `~/.claude/settings.json`（UTF-8，無 BOM）。
 
 #### 風險與限制
 
 - **直接覆寫 `~/.claude/settings.json`，沒有自動 backup。**
 - 使用 `ConvertFrom-Json` → 修改 → `ConvertTo-Json -Depth 10` 重新格式化，原始排版不保留。
 - 若現有 `settings.json` 為無效 JSON，腳本會直接報錯終止，不做任何修改。
-- `~/.claude/` 不存在時會自動建立。
+- Hook 注入採「只新增，不覆蓋」策略：相同 `command` 字串已存在則略過，不會重複新增；但也不移除使用者已有的其他 hooks。
 
 #### 範例
 
@@ -172,7 +185,7 @@ Summary
 powershell -ExecutionPolicy Bypass -File .\scripts\setup-statusline.ps1
 ```
 
-強制更新 sh 腳本（即使 hash 相同）：
+強制更新所有 sh 腳本（即使 hash 相同）：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\setup-statusline.ps1 -Force
@@ -181,10 +194,14 @@ powershell -ExecutionPolicy Bypass -File .\scripts\setup-statusline.ps1 -Force
 #### 預期輸出
 
 ```text
-Copied : C:\Users\...\ai-research\cli-agents\claude-code\statusline-command.sh -> C:\Users\..\.claude\statusline-command.sh
-Added  : statusLine in C:\Users\..\.claude\settings.json
+Copied : ...\cli-agents\claude-code\statusline-command.sh -> C:\Users\..\.claude\statusline-command.sh
+Created: C:\Users\..\.claude\hooks
+Copied : ...\hooks\state-idle.sh -> C:\Users\..\.claude\hooks\state-idle.sh
+Copied : ...\hooks\state-running.sh -> C:\Users\..\.claude\hooks\state-running.sh
+Updated: statusLine in C:\Users\..\.claude\settings.json
+Updated: hooks in C:\Users\..\.claude\settings.json
 
-Done. Status line is now active for all Claude Code sessions.
+Done. Status line and state-tracking hooks are now active for all Claude Code sessions.
 ```
 
 ---

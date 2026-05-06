@@ -30,7 +30,7 @@ cache_read_tokens=$(read_json "j?.context_window?.current_usage?.cache_read_inpu
 cache_creation_tokens=$(read_json "j?.context_window?.current_usage?.cache_creation_input_tokens")
 turn_count=$(read_json "j?.turn_count")
 session_state=$(read_json "j?.session_state")
-has_current_usage=$(read_json "j?.context_window?.current_usage != null ? 'yes' : ''")
+session_id=$(read_json "j?.session_id")
 
 # --- Format number as Xk / X.Xk ---
 format_k() {
@@ -149,6 +149,18 @@ if [ -n "$cwd_path" ] && command -v git >/dev/null 2>&1; then
     fi
 fi
 
+# --- Git diff line counts vs HEAD (staged + unstaged combined) ---
+diff_ins=""
+diff_del=""
+if [ -n "$git_root" ]; then
+    _numstat=$(git -C "$git_root" --no-optional-locks diff HEAD --numstat 2>/dev/null)
+    if [ -n "$_numstat" ]; then
+        _sums=$(echo "$_numstat" | awk '{ins+=$1; del+=$2} END {print ins+0, del+0}')
+        diff_ins=$(echo "$_sums" | cut -d' ' -f1)
+        diff_del=$(echo "$_sums" | cut -d' ' -f2)
+    fi
+fi
+
 # --- Remaining time ---
 format_remaining() {
     local resets_at="$1"
@@ -212,9 +224,15 @@ else
     model_part=""
 fi
 
-# --- Git segment: path (branch) ---
+# --- Git segment: path (branch +ins -del) ---
+_branch_inner="${ESC}[38;5;183m${git_branch}${RESET}"
+if [ "${diff_ins:-0}" -gt 0 ] 2>/dev/null || [ "${diff_del:-0}" -gt 0 ] 2>/dev/null; then
+    [ "${diff_ins:-0}" -gt 0 ] 2>/dev/null && _branch_inner+=" ${ESC}[38;5;114m+${diff_ins}${RESET}"
+    [ "${diff_del:-0}" -gt 0 ] 2>/dev/null && _branch_inner+=" ${ESC}[38;5;203m-${diff_del}${RESET}"
+fi
+
 if [ -n "$git_display_path" ] && [ -n "$git_branch" ]; then
-    git_part="${ESC}[38;5;183m${git_display_path}${RESET} ${DIM}(${RESET}${ESC}[38;5;183m${git_branch}${RESET}${DIM})${RESET}"
+    git_part="${ESC}[38;5;183m${git_display_path}${RESET} ${DIM}(${RESET}${_branch_inner}${DIM})${RESET}"
 elif [ -n "$git_display_path" ]; then
     git_part="${ESC}[38;5;183m${git_display_path}${RESET}"
 else
@@ -253,27 +271,29 @@ if [ -n "$turn_count" ] && [ "$turn_count" -gt 0 ] 2>/dev/null; then
 fi
 
 # --- Session state segment ---
-# session_state: "idle" | "awaiting_selection" | "active" (Claude Code may emit this)
-# Fallback heuristic: infer from has_current_usage
+# Priority: hook state file > session_state field (future Claude Code) > default idle
 state_part=""
-if [ -n "$session_state" ]; then
+hook_state=""
+if [ -n "$session_id" ]; then
+    _sf="${TMPDIR:-/tmp}/claude_state_${session_id}"
+    [ -f "$_sf" ] && hook_state=$(cat "$_sf" 2>/dev/null)
+fi
+
+if [ -n "$hook_state" ]; then
+    case "$hook_state" in
+        running) state_part="${ESC}[38;5;114m◉ 執行中${RESET}" ;;
+        idle)    state_part="${DIM}◉ 等待指示${RESET}" ;;
+        *)       state_part="${DIM}◉ ${hook_state}${RESET}" ;;
+    esac
+elif [ -n "$session_state" ]; then
     case "$session_state" in
-        idle)
-            state_part="${DIM}◉ 等待指示${RESET}" ;;
-        awaiting_selection|awaiting-selection)
-            state_part="${ESC}[38;5;226m◉ 等待選擇${RESET}" ;;
-        active|running)
-            state_part="${ESC}[38;5;114m◉ 執行中${RESET}" ;;
-        *)
-            state_part="${DIM}◉ ${session_state}${RESET}" ;;
+        idle)                                  state_part="${DIM}◉ 等待指示${RESET}" ;;
+        awaiting_selection|awaiting-selection) state_part="${ESC}[38;5;226m◉ 等待選擇${RESET}" ;;
+        active|running)                        state_part="${ESC}[38;5;114m◉ 執行中${RESET}" ;;
+        *)                                     state_part="${DIM}◉ ${session_state}${RESET}" ;;
     esac
 else
-    # Heuristic: if current_usage exists → recently active; else → idle
-    if [ "$has_current_usage" = "yes" ]; then
-        state_part="${ESC}[38;5;114m◉ 執行中${RESET}"
-    else
-        state_part="${DIM}◉ 等待指示${RESET}"
-    fi
+    state_part="${DIM}◉ 等待指示${RESET}"
 fi
 
 # --- Assemble ---
@@ -281,7 +301,6 @@ line1=""
 [ -n "$model_part"          ] && line1+="${model_part}"
 [ -n "$git_part"            ] && line1+="${SEP}${git_part}"
 [ -n "$session_tokens_part" ] && line1+="${SEP}${session_tokens_part}"
-[ -n "$state_part"          ] && line1+="${SEP}${state_part}"
 
 line2=""
 [ -n "$cache_part" ] && line2+="${cache_part}"
@@ -289,5 +308,6 @@ line2=""
 [ -n "$line2"      ] && line2+="${SEP}${ctx_part}" || line2="${ctx_part}"
 [ -n "$five_part"  ] && line2+="${SEP}${five_part}"
 [ -n "$week_part"  ] && line2+="${SEP}${week_part}"
+[ -n "$state_part" ] && line2+="${SEP}${state_part}"
 
 printf "%s\n%s" "$line1" "$line2"
