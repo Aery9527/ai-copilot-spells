@@ -10,7 +10,8 @@
 - [互動式特殊功能](#互動式特殊功能)
 
 - 安裝：`npm install -g @anthropic-ai/claude-code`
-- 更新：`claude update`，或重新執行 `npm install -g @anthropic-ai/claude-code`
+- 更新：`claude update`；若為 npm 全域安裝，也可用 `npm update -g @anthropic-ai/claude-code`，或重新執行 `npm install -g @anthropic-ai/claude-code`
+- 移除：`npm uninstall -g @anthropic-ai/claude-code`
 - 來源：
   - <https://code.claude.com/docs/en/cli-reference>
   - <https://code.claude.com/docs/en/commands>
@@ -23,9 +24,11 @@
 
 ## 更新時間與差異總結
 
-- 更新時間：`2026-05-03 07:35 UTC`
+- 更新時間：`2026-05-07 04:23 UTC`
 - 比較基準：上一版本地文件（本次同步前）
 - 差異摘要：
+  - 補上透過 npm 全域安裝時可直接移除的寫法：`npm uninstall -g @anthropic-ai/claude-code`。
+  - 補上透過 npm 全域安裝時可直接升級的寫法：`npm update -g @anthropic-ai/claude-code`。
   - 新增 `--dangerously-load-development-channels`、`--debug-file`、`--exclude-dynamic-system-prompt-sections`、`--include-hook-events`、`--remote-control-session-name-prefix`、`--replay-user-messages` 等近期補上的高影響 CLI flags，並把 `--debug` 對齊官方現行寫法。
   - 補上 `claude install`、`claude project purge`、`claude setup-token`、`claude ultrareview` 等官方已列出的 CLI 內建指令。
   - 補上 `/autofix-pr`、`/focus`、`/heapdump`、`/powerup`、`/recap`、`/setup-bedrock`、`/setup-vertex`、`/teleport`、`/tui`、`/ultraplan`、`/ultrareview`、`/web-setup`、`/team-onboarding`，以及內建 skill `/fewer-permission-prompts`。
@@ -150,7 +153,7 @@
 | `claude -c` | `claude -c` | 繼續目前目錄最近一次對話。 | 快速接回原任務。 |
 | `claude -c -p "query"` | `claude -c -p "Check for type errors"` | 以 print 模式繼續最近一次對話。 | 腳本化接續既有上下文。 |
 | `claude -r "<session>" "query"` | `claude -r "auth-refactor" "Finish this PR"` | 以名稱或 ID 恢復指定 session 並繼續工作。 | 長任務追蹤很好用。 |
-| `claude update` | `claude update` | 更新 CLI 到最新版本。 | 等同重新安裝最新版。 |
+| `claude update` | `claude update` | 更新 CLI 到最新版本。 | 若為 npm 全域安裝，也可用 `npm update -g @anthropic-ai/claude-code`；重新執行 `npm install -g @anthropic-ai/claude-code` 也可達到相同效果。 |
 | `claude install [version]` | `claude install stable` | 安裝或重新安裝 native binary。 | 可指定 `stable`、`latest` 或特定版本號。 |
 | `claude auth login` | `claude auth login --console` | 登入 Anthropic 帳號。 | 支援 `--email`、`--sso`、`--console`。 |
 | `claude auth logout` | `claude auth logout` | 登出並移除本機憑證。 | 切換帳號或清理環境。 |

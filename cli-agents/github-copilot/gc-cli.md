@@ -9,7 +9,8 @@
 - [互動式特殊功能](#互動式特殊功能)
 
 - 安裝：`npm install -g @github/copilot@latest`
-- 更新：`copilot update`，或重新執行 `npm install -g @github/copilot@latest`
+- 更新：`copilot update`；若為 npm 全域安裝，也可用 `npm update -g @github/copilot`，或重新執行 `npm install -g @github/copilot@latest`
+- 移除：`npm uninstall -g @github/copilot`
 - 來源：
   - <https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference>
   - <https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli>
@@ -18,9 +19,11 @@
 
 ## 更新時間與差異總結
 
-- 更新時間：`2026-05-03 07:51 UTC`
+- 更新時間：`2026-05-07 04:23 UTC`
 - 比較基準：上一版本地文件（本次同步前）
 - 差異摘要：
+  - 補上透過 npm 全域安裝時可直接移除的寫法：`npm uninstall -g @github/copilot`。
+  - 補上透過 npm 全域安裝時可直接升級的寫法：`npm update -g @github/copilot`。
   - 補上 `--connect`、`--effort` / `--reasoning-effort`、`--enable-reasoning-summaries`、`--mode`、`--mouse`、`--no-mouse`、`--no-remote`、`--plan`、`--plugin-dir`、`--remote` 等官方目前已列出的高影響 flags。
   - 補上 `copilot completion`、`copilot mcp`，以及 `/ask`、`/changelog`、`/chronicle`、`/copy`、`/downgrade`、`/env`、`/instructions`、`/keep-alive`、`/pr`、`/remote`、`/research`、`/restart`、`/statusline`、`/version` 等互動式 commands。
   - 修正 `/mcp`、`/session`、`/share`、`/theme` 等已過時描述，補上目前官方列出的 subcommands 與支援格式。
@@ -106,7 +109,7 @@
 | `copilot completion SHELL` | `copilot completion bash` | 產生指定 shell 的 tab completion script。 | 支援 `bash`、`zsh`、`fish`。 |
 | `copilot help [topic]` | `copilot help permissions` | 顯示 CLI 說明。 | `topic` 常見值有 `config`、`commands`、`environment`、`logging`、`permissions`。 |
 | `copilot init` | `copilot init` | 初始化 repository 的 Copilot custom instructions。 | 會協助建立與 agentic workflow 相關的檔案。 |
-| `copilot update` | `copilot update` | 更新 CLI 到最新版本。 | 適合已安裝 CLI 後直接升級。 |
+| `copilot update` | `copilot update` | 更新 CLI 到最新版本。 | 若為 npm 全域安裝，也可用 `npm update -g @github/copilot`；要明確重抓最新 dist-tag 時可重新執行 `npm install -g @github/copilot@latest`。 |
 | `copilot version` | `copilot version` | 顯示版本資訊並檢查更新。 | 可快速確認本機版本。 |
 | `copilot login` | `copilot login` | 登入 GitHub Copilot。 | 支援指定 `--host HOST`。 |
 | `copilot logout` | `copilot logout` | 登出並移除本機憑證。 | 常用於切換帳號或清理環境。 |

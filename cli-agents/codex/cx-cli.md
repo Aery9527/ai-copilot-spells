@@ -11,7 +11,8 @@
 - [互動式特殊功能](#互動式特殊功能)
 
 - 安裝：`npm install -g @openai/codex`，或 `brew install --cask codex`
-- 更新：`codex update`
+- 更新：`codex update`；若為 npm 全域安裝，也可用 `npm update -g @openai/codex`
+- 移除：若為 npm 全域安裝可用 `npm uninstall -g @openai/codex`；若為 Homebrew 安裝可用 `brew uninstall --cask codex`
 - 來源：
   - <https://developers.openai.com/codex>
   - <https://developers.openai.com/codex/cli/reference>
@@ -24,9 +25,11 @@
 
 ## 更新時間與差異總結
 
-- 更新時間：`2026-05-03 05:50 UTC`
+- 更新時間：`2026-05-07 04:23 UTC`
 - 比較基準：導入 `cli-doc-sync` 支援前的初版文件（現檔名 `cx-cli.md`，原名 `codex-cli.md`）
 - 差異摘要：
+  - 補上對應安裝來源的移除方式：`npm uninstall -g @openai/codex` 與 `brew uninstall --cask codex`。
+  - 補上透過 npm 全域安裝時可直接升級的寫法：`npm update -g @openai/codex`。
   - 將文件開頭摘要章節統一為 `cli-doc-sync` 管理的 `## 更新時間與差異總結`，避免後續同步需要為 `codex-cli` 加特例分支。
   - 保留原本首次建立時的重點：本文件聚焦 **Codex CLI / TUI 本地工作流**，不是 Codex Web。
   - 目前涵蓋安裝、登入、approval / sandbox、`codex exec`、`resume`、`cloud`、slash commands、config 與 TUI 快捷操作。
@@ -109,7 +112,7 @@ codex login --device-auth
 | `codex fork` | `codex fork SESSION_ID` | 把舊 session 分叉成新 thread。 | 適合保留主線又試新路線。 |
 | `codex login` | `codex login` | 登入 ChatGPT 或 API key。 | headless 可用 `--device-auth`。 |
 | `codex logout` | `codex logout` | 清除本機認證。 | CLI 與 IDE extension 共用 auth cache。 |
-| `codex update` | `codex update` | 檢查並更新 CLI。 | 僅支援 self-update 的安裝方式有效。 |
+| `codex update` | `codex update` | 檢查並更新 CLI。 | 若為 npm 全域安裝，也可用 `npm update -g @openai/codex`；`codex update` 仍僅在支援 self-update 的安裝方式有效。 |
 | `codex features` | `codex features list` | 管理 feature flags。 | 會寫入 `~/.codex/config.toml`。 |
 | `codex completion` | `codex completion powershell` | 產生 shell completion script。 | 支援 Bash、Zsh、Fish、PowerShell。 |
 | `codex app` | `codex app` | 啟動 Codex Desktop。 | Windows 會印出要開啟的 path。 |
