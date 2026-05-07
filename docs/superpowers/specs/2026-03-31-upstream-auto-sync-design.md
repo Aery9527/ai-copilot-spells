@@ -4,7 +4,7 @@
 
 ---
 
-## 快速導覽
+## Quick Navigation
 
 - [問題與目標](#問題與目標)
 - [架構總覽](#架構總覽)
@@ -16,6 +16,8 @@
 - [擴展指引](#擴展指引)
 - [Edge Cases](#edge-cases)
 - [驗收標準](#驗收標準)
+
+[Back to top](#quick-navigation)
 
 ---
 
@@ -31,6 +33,8 @@
 **不在範圍內**：
 - 全自動無人介入的 AI API 呼叫（sync 摘要生成仍由使用者觸發的本地 AI 執行）
 - 修改現有各 `*-sync` skill 的 sync 邏輯本身
+
+[Back to top](#quick-navigation)
 
 ---
 
@@ -55,6 +59,8 @@ flowchart LR
 
     EMAIL -- "invoke sync-all" --> SA
 ```
+
+[Back to top](#quick-navigation)
 
 ---
 
@@ -183,6 +189,8 @@ description: ...（原文不動）
 
 sync 邏輯本身（Step 1–7 in `_shared/upstream-sync-protocol.md`）**不改**。
 
+[Back to top](#quick-navigation)
+
 ---
 
 ## 資料流
@@ -204,6 +212,8 @@ flowchart TD
     --> M["gh pr close #42"]
     --> N["✅ 完成"]
 ```
+
+[Back to top](#quick-navigation)
 
 ---
 
@@ -234,6 +244,8 @@ description: ...
 
 下次執行 `sync-all` 時，新 skill 會自動被發現並納入流程。
 
+[Back to top](#quick-navigation)
+
 ---
 
 ## Edge Cases
@@ -248,6 +260,8 @@ description: ...
 | Submodule 未初始化 | sync skill 的 Step 1 會捕捉並提示 `git submodule update --init` |
 | 上游 default branch 非 `main` | 由個別 sync skill 處理（遵照 `_shared/upstream-sync-protocol.md` edge case 表） |
 
+[Back to top](#quick-navigation)
+
 ---
 
 ## 驗收標準
@@ -257,3 +271,5 @@ description: ...
 3. **sync-all 無 PR 時**：invoke `sync-all` 時若無 open Dependabot PR，收到「無待處理的上游更新」訊息並停止，不報錯
 4. **sync-all 有 PR 時**：invoke `sync-all` 後，對應 sync skill 被觸發，submodule 更新，摘要重新生成，commit 出現在 main，Dependabot PR 被關閉
 5. **擴展性驗證**：新增一個 mock submodule + sync skill（帶 `submodule-path` frontmatter），`sync-all` 無需修改即可自動偵測並處理
+
+[Back to top](#quick-navigation)

@@ -1,6 +1,6 @@
 # GitHub Copilot CLI Agent 使用指南
 
-## 快速導覽
+## Quick Navigation
 
 - [概覽](#概覽)
 - [內建與自訂 Agent](#內建與自訂-agent)
@@ -10,13 +10,25 @@
 - [注意事項](#注意事項)
 - [參考文件](#參考文件)
 
+[Back to top](#quick-navigation)
+
+---
+
 ## 概覽
 
 GitHub Copilot CLI 既有內建 agent，也支援 custom agents。當你下 prompt 時，主 agent 可能自動把部分工作委派給 subagent；若該任務很符合某個 custom agent 的 `description`，Copilot 也可能直接推斷並使用它。
 
 這份文件聚焦在「如何在 GitHub Copilot CLI 使用 agent」與「如何建立 custom agent profile」。完整 CLI flags、slash commands 與指令列表，請搭配 [GitHub Copilot CLI 參考](../cli-agents/github-copilot/gc-cli.md) 一起看。
 
-[返回開頭](#快速導覽)
+```mermaid
+flowchart LR
+    A["主 prompt"] --> B{"Copilot 如何選 agent？"}
+    B -->|"自動委派"| C["built-in agent"]
+    B -->|"命中 description 或手動指定"| D["custom agent"]
+    D --> E["tools / model / MCP / metadata"]
+```
+
+[Back to top](#quick-navigation)
 
 ## 內建與自訂 Agent
 
@@ -30,7 +42,7 @@ GitHub Copilot CLI 既有內建 agent，也支援 custom agents。當你下 prom
 
 對 Copilot CLI 來說，custom agent 本質上是 **agent profile**。它用 Markdown + YAML frontmatter 定義「這個 agent 會做什麼、什麼時候該被用到、可以用哪些工具」。真正執行任務時，Copilot 會為它啟動一個獨立 subagent。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 建立自訂 Agent
 
@@ -70,7 +82,7 @@ exposed secrets, and dependency issues. Report concrete findings first.
 
 如果同名 agent 同時存在於 project 與 user scope，**user scope 會覆蓋 project scope**。另外，CLI 用在 `--agent` 的名稱通常就是檔名去掉 `.agent.md` 的結果。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 使用 Agent 的方法
 
@@ -84,7 +96,7 @@ exposed secrets, and dependency issues. Report concrete findings first.
 
 內建 agent 與 custom agents 是兩條不同軸線：內建 agent 主要由 Copilot 在背景自動委派，自訂 agent 則是你拿來固定工作方法、團隊規範與工具能力的客製入口。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 自訂 Agent 可以做到什麼
 
@@ -110,7 +122,7 @@ GitHub Copilot CLI 的 custom agent 偏向「專家 persona + tool profile」。
 
 相較之下，Copilot CLI 的 agent profile **沒有** Claude Code 那種 `hooks`、`memory`、`background`、`worktree isolation` 這類更像 runtime orchestration 的欄位；它更偏向把工作方式與工具邊界預先定義好。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 注意事項
 
@@ -119,7 +131,7 @@ GitHub Copilot CLI 的 custom agent 偏向「專家 persona + tool profile」。
 3. 若你希望某 agent 只能手動選，不要被模型主動推斷，可設定 `disable-model-invocation: true`。
 4. 若你只想提供一小部分 MCP 工具給 agent，請在 `tools` 中精確列出 `server-name/tool-name`，不要直接全開。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 參考文件
 
@@ -128,4 +140,4 @@ GitHub Copilot CLI 的 custom agent 偏向「專家 persona + tool profile」。
 - [GitHub Docs：Custom agents configuration](https://docs.github.com/en/copilot/reference/custom-agents-configuration)
 - [GitHub Docs：Using GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli)
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)

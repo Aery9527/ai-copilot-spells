@@ -1,10 +1,33 @@
 # 用 AutoHotkey 設定快捷鍵叫出 Claude Desktop
 
+```mermaid
+flowchart LR
+    A["安裝 AutoHotkey v2"] --> B["查 Claude Desktop AppID"]
+    B --> C["建立 .ahk 腳本"]
+    C --> D["雙擊執行並測試快捷鍵"]
+    D --> E["可選：加入開機啟動"]
+```
+
+## Quick Navigation
+
+- [1. 安裝 AutoHotkey](#1-安裝-autohotkey)
+- [2. 查詢 Claude Desktop 的 AppID](#2-查詢-claude-desktop-的-appid)
+- [3. 建立腳本](#3-建立腳本)
+- [4. 使用方式](#4-使用方式)
+- [5. 開機自動啟動（選用）](#5-開機自動啟動選用)
+- [附註](#附註)
+
+[Back to top](#quick-navigation)
+
+---
+
 ## 1. 安裝 AutoHotkey
 
-1. 前往 [https://www.autohotkey.com](https://www.autohotkey.com) 下載
+1. 前往 [AutoHotkey 官網](https://www.autohotkey.com) 下載
 2. 選擇 **AutoHotkey v2** 版本安裝
 3. 安裝完成後不需要額外設定
+
+[Back to top](#quick-navigation)
 
 ---
 
@@ -27,6 +50,8 @@ Claude Claude_pzs8sxrjxfjjc!Claude
 ```
 
 記下 `AppID` 欄位的值，下一步會用到。
+
+[Back to top](#quick-navigation)
 
 ---
 
@@ -62,6 +87,8 @@ Claude Claude_pzs8sxrjxfjjc!Claude
 
 3. 儲存檔案
 
+[Back to top](#quick-navigation)
+
 ---
 
 ## 4. 使用方式
@@ -80,6 +107,8 @@ Claude Claude_pzs8sxrjxfjjc!Claude
 | Claude Desktop 已開啟但未 focus | 將視窗叫到前景並 focus |
 | Claude Desktop 已經是 focus | 關閉視窗（等同按右上角叉叉） |
 
+[Back to top](#quick-navigation)
+
 ---
 
 ## 5. 開機自動啟動（選用）
@@ -92,6 +121,8 @@ Claude Claude_pzs8sxrjxfjjc!Claude
 
 之後每次開機，腳本就會自動執行。
 
+[Back to top](#quick-navigation)
+
 ---
 
 ## 附註
@@ -99,3 +130,5 @@ Claude Claude_pzs8sxrjxfjjc!Claude
 - 本腳本適用於從 **Microsoft Store** 安裝的 Claude Desktop
 - 若是從官網下載安裝的版本，`Run` 的路徑需改為實際的 `Claude.exe` 路徑
 - 如需更換快捷鍵，修改 `^!Space::` 這行即可（`!` 代表 Alt，`#` 代表 Win，`^` 代表 Ctrl，`+` 代表 Shift）
+
+[Back to top](#quick-navigation)

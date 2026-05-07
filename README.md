@@ -28,7 +28,7 @@ flowchart LR
     P -.->|"協議"| S
 ```
 
-## 快速導覽
+## Quick Navigation
 
 - [首次初始化 submodule](#首次初始化-submodule)
 - [同步上游更新](#同步上游更新)
@@ -42,6 +42,8 @@ flowchart LR
 - [個人自製 Skills](#個人自製-skills)
 - [目錄結構](#目錄結構)
 
+[Back to top](#quick-navigation)
+
 ---
 
 ## 首次初始化 submodule
@@ -50,6 +52,8 @@ flowchart LR
 git submodule update --init --recursive
 ```
 
+[Back to top](#quick-navigation)
+
 ---
 
 ## 同步上游更新
@@ -57,6 +61,8 @@ git submodule update --init --recursive
 [GitHub Dependabot](.github/dependabot.yml) 每日自動偵測上游 submodule 變更並開 PR。收到通知 email 後，`sync-all` 一個 skill 即完成全部同步：
 
 > Dependabot 開 PR → email 通知 → invoke `sync-all` → pull + AI 摘要 + commit + push + 關閉 PR
+
+[Back to top](#quick-navigation)
 
 ---
 
@@ -164,7 +170,7 @@ flowchart TD
     ws["writing-skills"]
 ```
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ---
 
@@ -179,7 +185,7 @@ flowchart TD
 
 其他工具操作文件索引：[`tool/README.md`](tool/README.md)
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ---
 
@@ -242,7 +248,7 @@ flowchart TD
 3. 如果未來要新增可分發的 plugin / marketplace，cc 與 gc 都做得到，但不應假設一份 agent 定義可直接跨兩邊共用。
 4. 如果你在設計新能力時猶豫該做 agent 還是 skill，先問自己一句：**我要的是專家，還是手冊？** 要專家就做 agent；要手冊就做 skill。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ---
 
@@ -256,7 +262,7 @@ Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/READM
 
 之後若 `scripts/` 目錄新增腳本，也應同步補充到 [`scripts/README.md`](scripts/README.md)。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ---
 
@@ -270,7 +276,7 @@ Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/READM
 
 這些 skills 的用途是讓本 repo 的維護規則可以被 AI 工具即時載入，而不是對外發佈成可安裝 plugin。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ---
 
@@ -320,5 +326,5 @@ ai-research/
         └── plans/            # 實作計畫
 ```
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 

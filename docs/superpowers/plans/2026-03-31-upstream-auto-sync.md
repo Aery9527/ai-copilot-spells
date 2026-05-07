@@ -8,6 +8,27 @@
 
 **Tech Stack:** GitHub Dependabot（gitsubmodule）、gh CLI、YAML frontmatter、Markdown skill files
 
+```mermaid
+flowchart LR
+    A["Dependabot 開 submodule PR"] --> B["使用者執行 sync-all"]
+    B --> C["掃描 sync skill frontmatter"]
+    C --> D["依序執行各 sync skill"]
+    D --> E["關閉對應 PR"]
+```
+
+---
+
+## Quick Navigation
+
+- [File Structure](#file-structure)
+- [Task 1: Add `submodule-path` frontmatter to existing sync skills](#task-1-add-submodule-path-frontmatter-to-existing-sync-skills)
+- [Task 2: Create `.github/dependabot.yml`](#task-2-create-githubdependabotyml)
+- [Task 3: Create `sync-all` skill](#task-3-create-sync-all-skill)
+- [Task 4: Update `AGENTS.md`](#task-4-update-agentsmd)
+- [驗收確認](#驗收確認)
+
+[Back to top](#quick-navigation)
+
 ---
 
 ## File Structure
@@ -19,6 +40,8 @@
 | Modify | `.claude/skills/anthropic-skills-sync/SKILL.md` | 加 `submodule-path` frontmatter |
 | Modify | `.claude/skills/superpowers-skills-sync/SKILL.md` | 加 `submodule-path` frontmatter |
 | Modify | `AGENTS.md` | 加 sync-all 至 Skill 維護表與 Skill Locations 表 |
+
+[Back to top](#quick-navigation)
 
 ---
 
@@ -84,6 +107,8 @@
   Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
   ```
 
+[Back to top](#quick-navigation)
+
 ---
 
 ## Task 2: Create `.github/dependabot.yml`
@@ -121,6 +146,8 @@
 
   Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
   ```
+
+[Back to top](#quick-navigation)
 
 ---
 
@@ -260,6 +287,8 @@
   Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
   ```
 
+[Back to top](#quick-navigation)
+
 ---
 
 ## Task 4: Update `AGENTS.md`
@@ -311,6 +340,8 @@
   Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
   ```
 
+[Back to top](#quick-navigation)
+
 ---
 
 ## 驗收確認
@@ -322,3 +353,5 @@
 - [ ] `Select-String -Path ".claude\skills\*\SKILL.md" -Pattern "submodule-path:"` 輸出 2 行（anthropic-skills-sync、superpowers-skills-sync）
 - [ ] `.claude/skills/sync-all/SKILL.md` 存在，且包含 6 個 Step section
 - [ ] `Select-String -Path "AGENTS.md" -Pattern "sync-all"` 輸出 ≥ 2 行
+
+[Back to top](#quick-navigation)

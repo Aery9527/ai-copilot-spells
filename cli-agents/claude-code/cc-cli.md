@@ -1,6 +1,6 @@
 # Claude Code CLI
 
-## 快速導覽
+## Quick Navigation
 
 - [更新時間與差異總結](#更新時間與差異總結)
 - [常用 CLI 參數](#常用-cli-參數)
@@ -9,16 +9,29 @@
 - [內建 Skills](#內建-skills)
 - [互動式特殊功能](#互動式特殊功能)
 
+[Back to top](#quick-navigation)
+
+---
+
 - 安裝：`npm install -g @anthropic-ai/claude-code`
 - 更新：`claude update`；若為 npm 全域安裝，也可用 `npm update -g @anthropic-ai/claude-code`，或重新執行 `npm install -g @anthropic-ai/claude-code`
 - 移除：`npm uninstall -g @anthropic-ai/claude-code`
 - 來源：
-  - <https://code.claude.com/docs/en/cli-reference>
-  - <https://code.claude.com/docs/en/commands>
-  - <https://code.claude.com/docs/en/interactive-mode>
-  - <https://code.claude.com/docs/en/skills>
+  - [CLI Reference](https://code.claude.com/docs/en/cli-reference)
+  - [Commands](https://code.claude.com/docs/en/commands)
+  - [Interactive Mode](https://code.claude.com/docs/en/interactive-mode)
+  - [Skills](https://code.claude.com/docs/en/skills)
 - 在 prompt 中加入 `ultrathink`（或 `think`、`think hard`、`think harder`）可觸發不同深度的推理模式。也可使用 `Alt+T` 直接切換。
 - 普遍 allow 的 tool 啟動指令 `claude --allowedTools "Bash(find:*)" "Bash(cd:*)" "Bash(powershell:*)"`
+
+```mermaid
+flowchart LR
+    A["啟動 Claude Code"] --> B{"工作模式"}
+    B -->|"互動式"| C["claude / slash commands"]
+    B -->|"一次性或 CI"| D["claude -p / print mode"]
+    C --> E["agents / skills / hooks / plugins"]
+    D --> E
+```
 
 ---
 
@@ -34,7 +47,7 @@
   - 補上 `/autofix-pr`、`/focus`、`/heapdump`、`/powerup`、`/recap`、`/setup-bedrock`、`/setup-vertex`、`/teleport`、`/tui`、`/ultraplan`、`/ultrareview`、`/web-setup`、`/team-onboarding`，以及內建 skill `/fewer-permission-prompts`。
   - 修正 `--enable-auto-mode`、`/review`、`/cost`、`/stats` 的過時描述，讓內容回到目前官方行為。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 常用 CLI 參數
 
@@ -140,7 +153,7 @@
 | `--init-only` | `claude --init-only` | 執行初始化 hooks 後直接退出（不啟動互動 session）。 | 低 |
 | `--maintenance` | `claude --maintenance` | 執行 maintenance hooks 後退出。 | 低 |
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## CLI 內建指令
 
@@ -167,7 +180,7 @@
 | `claude remote-control` | `claude remote-control --name "My Project"` | 啟動 Remote Control server。 | 讓 claude.ai 或 Claude app 可控制本機 session。 |
 | `claude ultrareview [target]` | `claude ultrareview 1234 --json` | 以非互動模式執行 ultrareview。 | 成功回傳 0、失敗回傳 1；可用 `--json` 與 `--timeout <minutes>`。 |
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 互動式 slash commands
 
@@ -280,7 +293,7 @@
 | `/upgrade` | 開啟升級頁面。 | 方案升級入口。 |
 | `/exit` | 離開 CLI。 | alias：`/quit`。 |
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 內建 Skills
 
@@ -295,7 +308,7 @@ Bundled skills 隨 Claude Code 出貨，是 prompt-based 的指令，可協調�
 | `/loop [interval] <prompt>` | 以固定間隔重複執行 prompt，直到 session 結束。 | 適合輪詢部署或追蹤 PR，例如 `/loop 5m check deploy status`。 |
 | `/simplify [focus]` | 複查最近修改的檔案，找出程式碼重用、品質、效率問題並修正。 | 同時會產生多個 review agents 並行處理。 |
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 互動式特殊功能
 
@@ -351,4 +364,4 @@ Bundled skills 隨 Claude Code 出貨，是 prompt-based 的指令，可協調�
 | 支援的 terminal（iTerm2、WezTerm、Ghostty、Kitty） | `Shift+Enter` |
 | Line feed | `Ctrl+J` |
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)

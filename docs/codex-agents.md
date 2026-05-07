@@ -1,6 +1,6 @@
 # Codex Agent 使用指南
 
-## 快速導覽
+## Quick Navigation
 
 - [概覽](#概覽)
 - [內建與自訂 Agent](#內建與自訂-agent)
@@ -10,6 +10,10 @@
 - [自訂 Agent 可以做到什麼](#自訂-agent-可以做到什麼)
 - [注意事項](#注意事項)
 - [參考文件](#參考文件)
+
+[Back to top](#quick-navigation)
+
+---
 
 ## 概覽
 
@@ -22,7 +26,15 @@ Codex 官方把這套能力主要稱為 **subagents**。主 agent 不會自動�
 
 如果你要查完整 CLI flags、slash commands、sandbox / approval 與 TUI 操作，請先搭配 [Codex CLI 參考](../cli-agents/codex/cx-cli.md) 一起看。
 
-[返回開頭](#快速導覽)
+```mermaid
+flowchart LR
+    A["主 agent"] --> B{"你有沒有明確要求派工？"}
+    B -->|"有"| C["spawn / delegate subagent"]
+    B -->|"沒有"| D["維持在主 thread"]
+    C --> E["custom agent 或 built-in agent"]
+```
+
+[Back to top](#quick-navigation)
 
 ## 內建與自訂 Agent
 
@@ -39,7 +51,7 @@ Codex 官方把這套能力主要稱為 **subagents**。主 agent 不會自動�
 2. **subagents 會繼承父 agent 的 sandbox 與 approval 狀態**；如果你在 session 中途改過權限，child agent 也會沿用。
 3. 如果 custom agent 名稱和 built-in agent 同名，例如你自己也叫 `explorer`，**你的 custom agent 會覆蓋 built-in agent**。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 建立自訂 Agent
 
@@ -117,7 +129,7 @@ job_max_runtime_seconds = 1800
 - `max_depth`：允許遞迴派工的深度；預設 `1`
 - `job_max_runtime_seconds`：CSV fan-out worker 的預設 timeout
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 使用 Agent 的方法
 
@@ -143,7 +155,7 @@ Spawn one subagent for security risks, one for test gaps, and one for maintainab
 Wait for all three, then summarize the findings by category with file references.
 ```
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## AGENTS.md 與 Custom Agent 的差異
 
@@ -179,7 +191,7 @@ Codex 啟動時會組 instruction chain，順序如下：
 
 所以在 Codex 生態裡，`AGENTS.md` 比較接近 **persistent repo guidance**，不是 agent manifest。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 自訂 Agent 可以做到什麼
 
@@ -205,7 +217,7 @@ Codex 的 custom agent 本質上是一層 **session config overlay**。它不是
 
 這套設計的優點是：**把 noisy work 從主 thread 拆出去，主對話只保留需求、決策與最後摘要**。官方文件把這件事稱作避免 `context pollution` 與 `context rot`。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 注意事項
 
@@ -216,7 +228,7 @@ Codex 的 custom agent 本質上是一層 **session config overlay**。它不是
 5. **`AGENTS.md` 不是 custom agent 定義檔**：它是全域 / 專案指引，兩者用途不要混。
 6. **approval request 可能來自背景 agent thread**：在互動模式下，即使你現在看的是主 thread，也可能跳出 child thread 的 approval overlay。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 參考文件
 
@@ -228,4 +240,4 @@ Codex 的 custom agent 本質上是一層 **session config overlay**。它不是
 - [OpenAI Developers：Config basics](https://developers.openai.com/codex/config-basic)
 - [OpenAI Developers：Advanced config](https://developers.openai.com/codex/config-advanced)
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)

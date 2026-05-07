@@ -2,16 +2,25 @@
 
 > 這裡集中管理 `ai-research` 內的維護腳本文件。之後若新增 `.ps1`、`.cmd`、`.py` 或其他自動化工具，請一律先在這份文件補上索引與使用說明。
 
+```mermaid
+flowchart LR
+    A["新增或修改腳本"] --> B["更新 scripts/README.md 索引"]
+    B --> C["確認用途、參數、風險、範例"]
+    C --> D["再執行或分享腳本"]
+```
+
 ---
 
-## 快速導覽
+## Quick Navigation
 
 - [用途與維護原則](#用途與維護原則)
 - [腳本索引](#腳本索引)
 - [腳本詳述](#腳本詳述)
   - [`remove-local-git-user.ps1`](#remove-local-git-userps1)
-  - [`setup-statusline.ps1`](#setup-statuslineps1)
+- [`setup-statusline.ps1`](#setup-statuslineps1)
 - [新增腳本時建議補充的欄位](#新增腳本時建議補充的欄位)
+
+[Back to top](#quick-navigation)
 
 ---
 
@@ -28,6 +37,8 @@
 1. **索引入口**：快速知道目前有哪些腳本。
 2. **操作文件**：知道每支腳本會改什麼、怎麼跑、有哪些風險。
 
+[Back to top](#quick-navigation)
+
 ---
 
 ## 腳本索引
@@ -36,6 +47,8 @@
 |------|------|------|--------------|------|
 | [`remove-local-git-user.ps1`](./remove-local-git-user.ps1) | PowerShell | 遞迴掃描指定路徑下的 Git repository / worktree，移除 local git config 中的 `[user]` section | 會，直接覆寫 Git config | 不建立 backup；遇到異常 config 會跳過 |
 | [`setup-statusline.ps1`](./setup-statusline.ps1) | PowerShell | 將 statusLine 設定與狀態追蹤 hooks 寫入 `~/.claude/settings.json`，並將 [`statusline-command.sh`](../cli-agents/claude-code/statusline-command.sh) 及 [`hooks/`](../cli-agents/claude-code/hooks/) 部署至 `~/.claude/` | 會，更新 `~/.claude/settings.json` 並複製 sh 腳本 | 若目標 sh 已是最新版則略過複製；`-Force` 強制覆寫；hooks 合併不覆蓋既有設定 |
+
+[Back to top](#quick-navigation)
 
 ---
 
@@ -204,6 +217,8 @@ Updated: hooks in C:\Users\..\.claude\settings.json
 Done. Status line and state-tracking hooks are now active for all Claude Code sessions.
 ```
 
+[Back to top](#quick-navigation)
+
 ---
 
 ## 新增腳本時建議補充的欄位
@@ -224,4 +239,6 @@ Done. Status line and state-tracking hooks are now active for all Claude Code se
 - `scripts/some-future-script.md`
 
 但在拆分之前，仍應保留這份 `scripts/README.md` 作為唯一入口。
+
+[Back to top](#quick-navigation)
 

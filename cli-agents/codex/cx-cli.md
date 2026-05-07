@@ -1,6 +1,6 @@
 # Codex CLI
 
-## 快速導覽
+## Quick Navigation
 
 - [更新時間與差異總結](#更新時間與差異總結)
 - [安裝與登入](#安裝與登入)
@@ -10,16 +10,29 @@
 - [設定與安全邊界](#設定與安全邊界)
 - [互動式特殊功能](#互動式特殊功能)
 
+[Back to top](#quick-navigation)
+
+---
+
 - 安裝：`npm install -g @openai/codex`，或 `brew install --cask codex`
 - 更新：`codex update`；若為 npm 全域安裝，也可用 `npm update -g @openai/codex`
 - 移除：若為 npm 全域安裝可用 `npm uninstall -g @openai/codex`；若為 Homebrew 安裝可用 `brew uninstall --cask codex`
 - 來源：
-  - <https://developers.openai.com/codex>
-  - <https://developers.openai.com/codex/cli/reference>
-  - <https://developers.openai.com/codex/cli/slash-commands>
-  - <https://developers.openai.com/codex/cli/features>
-  - <https://developers.openai.com/codex/auth>
-  - <https://github.com/openai/codex>
+  - [Codex Overview](https://developers.openai.com/codex)
+  - [CLI Reference](https://developers.openai.com/codex/cli/reference)
+  - [Slash Commands](https://developers.openai.com/codex/cli/slash-commands)
+  - [CLI Features](https://developers.openai.com/codex/cli/features)
+  - [Auth](https://developers.openai.com/codex/auth)
+  - [openai/codex](https://github.com/openai/codex)
+
+```mermaid
+flowchart LR
+    A["啟動 Codex CLI"] --> B{"場景"}
+    B -->|"互動式"| C["codex / TUI"]
+    B -->|"自動化"| D["codex exec"]
+    C --> E["slash commands / approvals / sandbox"]
+    D --> E
+```
 
 ---
 
@@ -35,7 +48,7 @@
   - 目前涵蓋安裝、登入、approval / sandbox、`codex exec`、`resume`、`cloud`、slash commands、config 與 TUI 快捷操作。
   - Codex 版本迭代很快；某些 flags、subcommands 與 slash commands 可能只在較新版本可見，**遇到差異時以 `codex --help` / `codex <subcommand> --help` 為準**。若你需要的是遠端瀏覽器版工作流，應改查 OpenAI 的 Codex Web 文件；關於 subagents、custom agents 與 `AGENTS.md`，請搭配 [Codex Agent 使用指南](../../docs/codex-agents.md) 一起看。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 安裝與登入
 
@@ -74,7 +87,7 @@ codex login --device-auth
 - `cli_auth_credentials_store = "keyring"` 可改成優先走系統 credential store。
 - `~/.codex/auth.json` 內含 access token，**要把它當密碼看待**，不能 commit、不能貼到 issue、不能傳到聊天紀錄。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 常用 CLI 參數
 
@@ -98,7 +111,7 @@ codex login --device-auth
 | `--dangerously-bypass-approvals-and-sandbox`, `--yolo` | `codex --yolo` | 跳過 approvals 與 sandbox。 | **極高** | 只可在外部已強化的受控環境使用。 |
 | `--no-alt-screen` | `codex --no-alt-screen` | 停用 TUI 的 alternate screen。 | 低 | 部分 terminal 相容性較好。 |
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## CLI 內建指令
 
@@ -124,7 +137,7 @@ codex login --device-auth
 | `codex plugin marketplace` | `codex plugin marketplace list` | 管理 plugin marketplace。 | 目前屬 experimental。 |
 | `codex sandbox` | `codex sandbox --help` | 在 Codex sandbox 內跑任意命令。 | 目前屬 experimental。 |
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 互動式 slash commands
 
@@ -177,7 +190,7 @@ codex login --device-auth
 | `/title` | 調整 terminal title 顯示項目。 | 可顯示 project、branch、thread 等。 |
 | `/keymap` | 重新綁定 TUI 快捷鍵。 | 寫入 `tui.keymap`。 |
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 設定與安全邊界
 
@@ -216,7 +229,7 @@ shell_snapshot = true
 2. **`--yolo` 不是只是少問一次而已**：它是直接繞過 approvals 與 sandbox，風險等級和一般 `workspace-write` 完全不同。
 3. **web search 預設值要看版本**：官方新文件描述較新的本地工作流預設偏向 cached mode；若你本機版本較舊，仍可能需要明確加 `--search`。真的要最新資料時，顯式指定最穩。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 互動式特殊功能
 
@@ -239,4 +252,4 @@ shell_snapshot = true
 - 如果 code / credentials 在遠端主機，但你想保留本機 TUI 體驗，可以用 `codex app-server` + `codex --remote ...`。
 - 圖片可直接貼進 composer，或用 `-i` / `--image` 在啟動時附上 screenshot、設計稿、圖表。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)

@@ -1,6 +1,6 @@
 # GitHub Copilot CLI
 
-## 快速導覽
+## Quick Navigation
 
 - [更新時間與差異總結](#更新時間與差異總結)
 - [常用 CLI 參數](#常用-cli-參數)
@@ -8,12 +8,25 @@
 - [互動式 slash commands](#互動式-slash-commands)
 - [互動式特殊功能](#互動式特殊功能)
 
+[Back to top](#quick-navigation)
+
+---
+
 - 安裝：`npm install -g @github/copilot@latest`
 - 更新：`copilot update`；若為 npm 全域安裝，也可用 `npm update -g @github/copilot`，或重新執行 `npm install -g @github/copilot@latest`
 - 移除：`npm uninstall -g @github/copilot`
 - 來源：
-  - <https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference>
-  - <https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli>
+  - [CLI Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference)
+  - [Using GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli)
+
+```mermaid
+flowchart LR
+    A["啟動 Copilot CLI"] --> B{"模式"}
+    B -->|"prompt / script"| C["copilot -p"]
+    B -->|"互動式"| D["copilot / slash commands"]
+    D --> E["agents / MCP / plugins / remote"]
+    C --> E
+```
 
 ---
 
@@ -29,7 +42,7 @@
   - 修正 `/mcp`、`/session`、`/share`、`/theme` 等已過時描述，補上目前官方列出的 subcommands 與支援格式。
   - 保留這次官方 command reference 未明列、但本地仍記錄的進階 flags / commands，避免因文件分散而過度刪減。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 常用 CLI 參數
 
@@ -99,7 +112,7 @@
 | `--plain-diff` | `copilot --plain-diff` | 停用 diff 的語法高亮顯示（改用 git config 的 diff tool）。 | 低 | 純文字環境或偏好外部 diff tool 時使用。 |
 | `--screen-reader` | `copilot --screen-reader` | 啟用無障礙螢幕閱讀器最佳化。 | 低 | 搭配 NVDA、JAWS 等輔助技術。 |
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## CLI 內建指令
 
@@ -116,7 +129,7 @@
 | `copilot mcp` | `copilot mcp` | 從命令列管理 MCP server 設定。 | 與互動模式的 `/mcp` 對應。 |
 | `copilot plugin` | `copilot plugin` | 管理 plugins 與 plugin marketplace。 | 也可在互動模式用 `/plugin`。 |
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 互動式 slash commands
 
@@ -203,7 +216,7 @@
 | `/version` | 顯示版本資訊並檢查更新。 | 可快速確認目前版本。 |
 | `/exit`, `/quit` | 離開 CLI。 | 正常結束互動 session。 |
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 互動式特殊功能
 
@@ -249,4 +262,4 @@
 | `Meta+← / →` | 以單字為單位移動游標。 |
 | `↑ / ↓` | 瀏覽指令歷史。 |
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)

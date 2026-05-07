@@ -1,6 +1,6 @@
 # Claude Code Agent 使用指南
 
-## 快速導覽
+## Quick Navigation
 
 - [概覽](#概覽)
 - [內建與自訂 Agent](#內建與自訂-agent)
@@ -10,13 +10,25 @@
 - [注意事項](#注意事項)
 - [參考文件](#參考文件)
 
+[Back to top](#quick-navigation)
+
+---
+
 ## 概覽
 
 Claude Code 的 agent 在官方文件中主要稱為 **subagent**。主 session 會依任務描述與 agent 的 `description` 自動判斷是否委派，讓探索、測試、review、實作等工作在各自的 context window 中進行，避免主對話被雜訊塞滿。
 
 這份文件聚焦在「如何在 Claude Code 使用 agent」與「自訂 agent 能做到哪些事」。如果你想查完整 CLI flags、slash commands 與快捷鍵，請先看 [Claude Code CLI 參考](../cli-agents/claude-code/cc-cli.md)。
 
-[返回開頭](#快速導覽)
+```mermaid
+flowchart LR
+    A["主 session"] --> B{"任務類型"}
+    B -->|"探索 / 規劃"| C["built-in agent"]
+    B -->|"需要固定規範"| D["custom agent"]
+    D --> E["skills / tools / MCP / permissions"]
+```
+
+[Back to top](#quick-navigation)
 
 ## 內建與自訂 Agent
 
@@ -29,7 +41,7 @@ Claude Code 的 agent 在官方文件中主要稱為 **subagent**。主 session 
 
 如果同名 agent 同時存在多個層級，優先序由高到低大致是：**managed settings > `--agents` > project (`.claude/agents/`) > user (`~/.claude/agents/`) > plugin**。也就是說，專案內定義的 agent 會覆蓋使用者層級同名 agent。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 建立自訂 Agent
 
@@ -75,7 +87,7 @@ claude --agents '{
 
 這種方式只存在於當前 session，不會寫回檔案。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 使用 Agent 的方法
 
@@ -90,7 +102,7 @@ claude --agents '{
 
 如果你只是想使用 built-in agents，通常不需要手動指定名稱；Claude 會依任務特性自動派出 `Explore`、`Plan` 或 `general-purpose`。真正需要手動選擇的，多半是你自己定義了明確規範的 custom agent。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 自訂 Agent 可以做到什麼
 
@@ -111,7 +123,7 @@ Claude Code 的自訂 agent 不只是 persona；它比較接近一個可編排�
 
 如果你要做的是高控制度的工程工作流，例如「安全審查只能唯讀」「資料庫查詢只能 SELECT」「測試 agent 一律在背景跑」「特定 agent 要帶 project memory」，Claude Code 的 agent 系統會很有優勢。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 注意事項
 
@@ -120,7 +132,7 @@ Claude Code 的自訂 agent 不只是 persona；它比較接近一個可編排�
 3. Subagent 本身不能再生 subagent；只有作為主執行緒的 agent 才能用 `Agent` 工具繼續分派。
 4. 背景 subagent 適合長任務，但如果工作中途需要大量澄清問題，前景模式通常更穩。
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
 
 ## 參考文件
 
@@ -128,4 +140,4 @@ Claude Code 的自訂 agent 不只是 persona；它比較接近一個可編排�
 - [Claude Code 官方文件：Subagents](https://code.claude.com/docs/en/sub-agents)
 - [Claude Code 官方文件：CLI Reference](https://code.claude.com/docs/en/cli-reference)
 
-[返回開頭](#快速導覽)
+[Back to top](#quick-navigation)
