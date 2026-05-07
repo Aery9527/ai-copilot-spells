@@ -297,26 +297,25 @@ else
     state_part="${DIM}◉ 等待指示${RESET}"
 fi
 
-# --- Extract last N messages (any role) from transcript ---
-# Usage: extract_last_n_msgs <transcript_path> <n>
-# Output: JSON array [ {role, text}, ... ] ordered oldest→newest (length <= n)
-extract_last_n_msgs() {
+# --- Extract last message by role from transcript ---
+# Usage: extract_last_msg_by_role <transcript_path> <role>
+# role: "user" or "assistant"
+extract_last_msg_by_role() {
     local tpath="$1"
-    local n="$2"
+    local role="$2"
     node -e "
-const n = parseInt('${n}', 10);
+const role = '${role}';
 let d=''; process.stdin.on('data',c=>d+=c);
 process.stdin.on('end',()=>{
   try {
     const lines = d.trim().split('\n');
-    const results = [];
-    for (let i = lines.length - 1; i >= 0 && results.length < n; i--) {
+    for (let i = lines.length - 1; i >= 0; i--) {
       try {
         const obj = JSON.parse(lines[i]);
-        const role = (obj.role === 'assistant' || obj.type === 'assistant' || obj.message?.role === 'assistant') ? 'assistant'
-                   : (obj.type === 'user' || obj.role === 'user' || obj.message?.role === 'user') ? 'user'
-                   : null;
-        if (!role) continue;
+        const isRole = role === 'assistant'
+          ? (obj.role === 'assistant' || obj.type === 'assistant' || obj.message?.role === 'assistant')
+          : (obj.type === 'user' || obj.role === 'user' || obj.message?.role === 'user');
+        if (!isRole) continue;
         let text = '';
         if (typeof obj.message === 'string') { text = obj.message; }
         else if (obj.message && Array.isArray(obj.message.content)) {
@@ -330,12 +329,10 @@ process.stdin.on('end',()=>{
         } else if (typeof obj.content === 'string') {
           text = obj.content;
         }
-        if (text.trim()) results.push({ role, text: text.trim() });
+        if (text.trim()) { process.stdout.write(text.trim()); break; }
       } catch(e2) {}
     }
-    results.reverse();
-    process.stdout.write(JSON.stringify(results));
-  } catch(e) { process.stdout.write('[]'); }
+  } catch(e) {}
 });" < "$tpath" 2>/dev/null
 }
 
@@ -350,35 +347,21 @@ truncate_line() {
     printf '%s' "$_single"
 }
 
-# --- row3 (倒數第二則) / row4 (最後一則)：依角色著色 ---
+# --- row3 (最後一則 user) / row4 (最後一則 assistant) ---
 row3_part=""
 row4_part=""
 if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
-    _msgs_json=$(extract_last_n_msgs "$transcript_path" 2)
-    _len=$(node -e "try{const a=JSON.parse(process.argv[1]);process.stdout.write(String(a.length));}catch(e){process.stdout.write('0');}" "$_msgs_json" 2>/dev/null)
+    _user_text=$(extract_last_msg_by_role "$transcript_path" "user")
+    _asst_text=$(extract_last_msg_by_role "$transcript_path" "assistant")
 
-    if [ "${_len:-0}" -ge 2 ]; then
-        _r3_role=$(node -e "try{const a=JSON.parse(process.argv[1]);process.stdout.write(a[0].role);}catch(e){}" "$_msgs_json" 2>/dev/null)
-        _r3_text=$(node -e "try{const a=JSON.parse(process.argv[1]);process.stdout.write(a[0].text);}catch(e){}" "$_msgs_json" 2>/dev/null)
-        _r4_role=$(node -e "try{const a=JSON.parse(process.argv[1]);process.stdout.write(a[1].role);}catch(e){}" "$_msgs_json" 2>/dev/null)
-        _r4_text=$(node -e "try{const a=JSON.parse(process.argv[1]);process.stdout.write(a[1].text);}catch(e){}" "$_msgs_json" 2>/dev/null)
-    elif [ "${_len:-0}" -eq 1 ]; then
-        _r3_role=""
-        _r3_text=""
-        _r4_role=$(node -e "try{const a=JSON.parse(process.argv[1]);process.stdout.write(a[0].role);}catch(e){}" "$_msgs_json" 2>/dev/null)
-        _r4_text=$(node -e "try{const a=JSON.parse(process.argv[1]);process.stdout.write(a[0].text);}catch(e){}" "$_msgs_json" 2>/dev/null)
+    if [ -n "$_user_text" ]; then
+        _line=$(truncate_line "$_user_text")
+        row3_part="${ESC}[38;5;245m▶ ${_line}${RESET}"
     fi
 
-    # row3：倒數第二則
-    if [ -n "$_r3_text" ]; then
-        _line=$(truncate_line "$_r3_text")
-        row3_part="${ESC}[38;5;245m◀ ${_line}${RESET}"
-    fi
-
-    # row4：最後一則
-    if [ -n "$_r4_text" ]; then
-        _line=$(truncate_line "$_r4_text")
-        row4_part="${ESC}[38;5;245m▶ ${_line}${RESET}"
+    if [ -n "$_asst_text" ]; then
+        _line=$(truncate_line "$_asst_text")
+        row4_part="${ESC}[38;5;245m◀ ${_line}${RESET}"
     fi
 fi
 
