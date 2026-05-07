@@ -297,45 +297,88 @@ else
     state_part="${DIM}◉ 等待指示${RESET}"
 fi
 
-# --- Last user prompt (from transcript) ---
-last_prompt_part=""
-if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
-    _raw_prompt=$(node -e "
+# --- Extract last N messages (any role) from transcript ---
+# Usage: extract_last_n_msgs <transcript_path> <n>
+# Output: JSON array [ {role, text}, ... ] ordered oldest→newest (length <= n)
+extract_last_n_msgs() {
+    local tpath="$1"
+    local n="$2"
+    node -e "
+const n = parseInt('${n}', 10);
 let d=''; process.stdin.on('data',c=>d+=c);
 process.stdin.on('end',()=>{
   try {
     const lines = d.trim().split('\n');
-    for (let i = lines.length - 1; i >= 0; i--) {
+    const results = [];
+    for (let i = lines.length - 1; i >= 0 && results.length < n; i--) {
       try {
         const obj = JSON.parse(lines[i]);
-        if (obj.type === 'user' || obj.role === 'user') {
-          let text = '';
-          if (typeof obj.message === 'string') { text = obj.message; }
-          else if (obj.message && Array.isArray(obj.message.content)) {
-            const t = obj.message.content.find(c => c.type === 'text');
-            if (t) text = t.text;
-          } else if (obj.message && typeof obj.message.content === 'string') {
-            text = obj.message.content;
-          } else if (Array.isArray(obj.content)) {
-            const t = obj.content.find(c => c.type === 'text');
-            if (t) text = t.text;
-          } else if (typeof obj.content === 'string') {
-            text = obj.content;
-          }
-          if (text.trim()) { process.stdout.write(text.trim()); break; }
+        const role = (obj.role === 'assistant' || obj.type === 'assistant' || obj.message?.role === 'assistant') ? 'assistant'
+                   : (obj.type === 'user' || obj.role === 'user' || obj.message?.role === 'user') ? 'user'
+                   : null;
+        if (!role) continue;
+        let text = '';
+        if (typeof obj.message === 'string') { text = obj.message; }
+        else if (obj.message && Array.isArray(obj.message.content)) {
+          const t = obj.message.content.find(c => c.type === 'text');
+          if (t) text = t.text;
+        } else if (obj.message && typeof obj.message.content === 'string') {
+          text = obj.message.content;
+        } else if (Array.isArray(obj.content)) {
+          const t = obj.content.find(c => c.type === 'text');
+          if (t) text = t.text;
+        } else if (typeof obj.content === 'string') {
+          text = obj.content;
         }
+        if (text.trim()) results.push({ role, text: text.trim() });
       } catch(e2) {}
     }
-  } catch(e) {}
-});" < "$transcript_path" 2>/dev/null)
-    if [ -n "$_raw_prompt" ]; then
-        # Collapse newlines into space, then truncate to 80 chars
-        _single=$(echo "$_raw_prompt" | tr '\n\r' '  ' | sed 's/  */ /g')
-        _max=80
-        if [ "${#_single}" -gt "$_max" ]; then
-            _single="${_single:0:$_max}…"
-        fi
-        last_prompt_part="${ESC}[38;5;111m»${RESET} ${ESC}[38;5;245m${_single}${RESET}"
+    results.reverse();
+    process.stdout.write(JSON.stringify(results));
+  } catch(e) { process.stdout.write('[]'); }
+});" < "$tpath" 2>/dev/null
+}
+
+# --- Truncate to single line, max 120 chars ---
+truncate_line() {
+    local raw="$1"
+    local _single
+    _single=$(printf '%s' "$raw" | tr '\n\r' '  ' | sed 's/  */ /g')
+    if [ "${#_single}" -gt 120 ]; then
+        _single="${_single:0:120}…"
+    fi
+    printf '%s' "$_single"
+}
+
+# --- row3 (倒數第二則) / row4 (最後一則)：依角色著色 ---
+row3_part=""
+row4_part=""
+if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
+    _msgs_json=$(extract_last_n_msgs "$transcript_path" 2)
+    _len=$(node -e "try{const a=JSON.parse(process.argv[1]);process.stdout.write(String(a.length));}catch(e){process.stdout.write('0');}" "$_msgs_json" 2>/dev/null)
+
+    if [ "${_len:-0}" -ge 2 ]; then
+        _r3_role=$(node -e "try{const a=JSON.parse(process.argv[1]);process.stdout.write(a[0].role);}catch(e){}" "$_msgs_json" 2>/dev/null)
+        _r3_text=$(node -e "try{const a=JSON.parse(process.argv[1]);process.stdout.write(a[0].text);}catch(e){}" "$_msgs_json" 2>/dev/null)
+        _r4_role=$(node -e "try{const a=JSON.parse(process.argv[1]);process.stdout.write(a[1].role);}catch(e){}" "$_msgs_json" 2>/dev/null)
+        _r4_text=$(node -e "try{const a=JSON.parse(process.argv[1]);process.stdout.write(a[1].text);}catch(e){}" "$_msgs_json" 2>/dev/null)
+    elif [ "${_len:-0}" -eq 1 ]; then
+        _r3_role=""
+        _r3_text=""
+        _r4_role=$(node -e "try{const a=JSON.parse(process.argv[1]);process.stdout.write(a[0].role);}catch(e){}" "$_msgs_json" 2>/dev/null)
+        _r4_text=$(node -e "try{const a=JSON.parse(process.argv[1]);process.stdout.write(a[0].text);}catch(e){}" "$_msgs_json" 2>/dev/null)
+    fi
+
+    # row3：倒數第二則
+    if [ -n "$_r3_text" ]; then
+        _line=$(truncate_line "$_r3_text")
+        row3_part="${ESC}[38;5;245m◀ ${_line}${RESET}"
+    fi
+
+    # row4：最後一則
+    if [ -n "$_r4_text" ]; then
+        _line=$(truncate_line "$_r4_text")
+        row4_part="${ESC}[38;5;245m▶ ${_line}${RESET}"
     fi
 fi
 
@@ -354,10 +397,17 @@ line2=""
 [ -n "$state_part" ] && line2+="${SEP}${state_part}"
 
 line3=""
-[ -n "$last_prompt_part" ] && line3="${last_prompt_part}"
+[ -n "$row3_part" ] && line3="${row3_part}"
 
-if [ -n "$line3" ]; then
+line4=""
+[ -n "$row4_part" ] && line4="${row4_part}"
+
+if [ -n "$line3" ] && [ -n "$line4" ]; then
+    printf "%s\n%s\n%s\n%s" "$line1" "$line2" "$line3" "$line4"
+elif [ -n "$line3" ]; then
     printf "%s\n%s\n%s" "$line1" "$line2" "$line3"
+elif [ -n "$line4" ]; then
+    printf "%s\n%s\n%s" "$line1" "$line2" "$line4"
 else
     printf "%s\n%s" "$line1" "$line2"
 fi
