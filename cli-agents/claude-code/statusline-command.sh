@@ -31,6 +31,7 @@ cache_creation_tokens=$(read_json "j?.context_window?.current_usage?.cache_creat
 turn_count=$(read_json "j?.turn_count")
 session_state=$(read_json "j?.session_state")
 session_id=$(read_json "j?.session_id")
+transcript_path=$(read_json "j?.transcript_path")
 
 # --- Format number as Xk / X.Xk ---
 format_k() {
@@ -296,6 +297,48 @@ else
     state_part="${DIM}◉ 等待指示${RESET}"
 fi
 
+# --- Last user prompt (from transcript) ---
+last_prompt_part=""
+if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
+    _raw_prompt=$(node -e "
+let d=''; process.stdin.on('data',c=>d+=c);
+process.stdin.on('end',()=>{
+  try {
+    const lines = d.trim().split('\n');
+    for (let i = lines.length - 1; i >= 0; i--) {
+      try {
+        const obj = JSON.parse(lines[i]);
+        if (obj.type === 'user' || obj.role === 'user') {
+          let text = '';
+          if (typeof obj.message === 'string') { text = obj.message; }
+          else if (obj.message && Array.isArray(obj.message.content)) {
+            const t = obj.message.content.find(c => c.type === 'text');
+            if (t) text = t.text;
+          } else if (obj.message && typeof obj.message.content === 'string') {
+            text = obj.message.content;
+          } else if (Array.isArray(obj.content)) {
+            const t = obj.content.find(c => c.type === 'text');
+            if (t) text = t.text;
+          } else if (typeof obj.content === 'string') {
+            text = obj.content;
+          }
+          if (text.trim()) { process.stdout.write(text.trim()); break; }
+        }
+      } catch(e2) {}
+    }
+  } catch(e) {}
+});" < "$transcript_path" 2>/dev/null)
+    if [ -n "$_raw_prompt" ]; then
+        # Collapse newlines into space, then truncate to 80 chars
+        _single=$(echo "$_raw_prompt" | tr '\n\r' '  ' | sed 's/  */ /g')
+        _max=80
+        if [ "${#_single}" -gt "$_max" ]; then
+            _single="${_single:0:$_max}…"
+        fi
+        last_prompt_part="${ESC}[38;5;111m»${RESET} ${ESC}[38;5;245m${_single}${RESET}"
+    fi
+fi
+
 # --- Assemble ---
 line1=""
 [ -n "$model_part"          ] && line1+="${model_part}"
@@ -310,4 +353,11 @@ line2=""
 [ -n "$week_part"  ] && line2+="${SEP}${week_part}"
 [ -n "$state_part" ] && line2+="${SEP}${state_part}"
 
-printf "%s\n%s" "$line1" "$line2"
+line3=""
+[ -n "$last_prompt_part" ] && line3="${last_prompt_part}"
+
+if [ -n "$line3" ]; then
+    printf "%s\n%s\n%s" "$line1" "$line2" "$line3"
+else
+    printf "%s\n%s" "$line1" "$line2"
+fi
