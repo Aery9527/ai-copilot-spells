@@ -1,7 +1,6 @@
 ---
 name: writing-skills
 description: Use when creating new skills, editing existing skills, or verifying skills work before deployment
-source: superpowers/skills/writing-skills/SKILL.md
 ---
 
 ## 概述

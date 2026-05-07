@@ -7,141 +7,78 @@ description: >-
 
 # Skills Governance
 
-## 快速導覽
+治理本 repo 內的 project-specific custom skills，特別是 [`.agents/skills/`](../) 下的內容，以及與其直接相關的文件同步、目錄邊界與 commit slice 規則。
 
-- [Overview](#overview)
-- [目錄邊界](#目錄邊界)
-- [何時放到哪裡](#何時放到哪裡)
-- [repo-local skills 維護流程](#repo-local-skills-維護流程)
-- [Conventional Commit 類型選擇](#conventional-commit-類型選擇)
-- [文件與 metadata 同步清單](#文件與-metadata-同步清單)
-- [驗證清單](#驗證清單)
-- [Rationalizations 與 Red Flags](#rationalizations-與-red-flags)
+## Directory Boundaries
 
-## Overview
+- [`.agents/skills/`](../) — project-specific custom skills — 只放本 repo 專用的治理規則、內部 workflow、維護政策。
+- [`.claude/skills/`](../../../.claude/skills/) — project skill routers and maintenance skills — 放 Claude Code 專案級 router、sync skill 與共用協議。
+- [`anthropic-skills/`](../../../anthropic-skills/) — upstream submodule — 放上游 skills 原始內容；除同步任務外，不承擔本 repo 治理規則。
+- [`superpowers/`](../../../superpowers/) — upstream submodule — 放上游 workflow skills 原始內容；除同步任務外，不承擔本 repo 治理規則。
 
-這個 skill 專門治理本 repo 內仍然存在的 **project-specific custom skills**。  
-`.agents/skills/` 只放本 repo 自己的治理規則、維護政策與客製 workflow。
+## Placement Rules
 
-凡是修改 `.agents/skills/` 的任務，都必須把所有已經變成過期資訊的文件、索引與 metadata 在同一個 change slice 內同步補齊，並在該 slice 可獨立驗證後立刻 commit，不得拖到之後與不相關修改混批。
+- 如果規則只對這個 repo 有效，必須放在 [`.agents/skills/`](../)。
+- 如果內容是在調整 Claude Code 專案級 router、sync 流程或 shared protocol，必須放在 [`.claude/skills/`](../../../.claude/skills/)。
+- 如果規則離開此 repo 就失去意義，嚴禁塞進 upstream submodule。
 
-[返回開頭](#快速導覽)
+## Workflow
 
-## 目錄邊界
+1. 先搜尋影響面。必須用舊名稱、舊路徑、新名稱、新路徑與主題關鍵字掃描整個 repo。
+2. 在同一個 change slice 內修完所有過期資訊。嚴禁只改 skill 本體卻把 [`README.md`](../../../README.md)、[`AGENTS.md`](../../../AGENTS.md) 或 router 文件留到之後。
+3. 定義 commit 邊界。一個 slice 必須只有單一目的，且可獨立 review、獨立回滾。
+4. Slice 一完成就 commit。若 worktree 有不相關修改，必須用 selective staging 或先 stash；嚴禁等待大雜燴 commit。
+5. 完成一個 slice 後，才能進下一個主題。
 
-| 路徑 | 定位 | 應放內容 |
-|------|------|----------|
-| `.agents/skills/` | project-specific custom skills | 只對本 repo 有效的治理規則、內部 workflow、維護政策 |
-| `.claude/skills/` | project skill routers / maintenance skills | Claude Code 專案級 router、sync skill 與共用協議 |
-| `anthropic-skills/` | upstream submodule | 上游 skills 原始內容；除同步任務外不直接承擔本 repo 治理規則 |
-| `superpowers/` | upstream submodule | 上游 workflow skills 原始內容；除同步任務外不直接承擔本 repo 治理規則 |
+## Slice Completion Rules
 
-- **本 repo 專用規則**，放 `.agents/skills/`。
-- **Claude Code 的 router / sync / shared protocol**，放 `.claude/skills/`。
-- **上游 skills 內容** 維持在 submodule；不要把本 repo 的治理規則直接塞進 upstream 目錄。
+- 如果變更目的單一，例如修 frontmatter parse error、rename skill、補同步文件，則可視為一個 slice。
+- 如果相關文件與 metadata 仍有過期資訊，則 slice 尚未完成。
+- 如果只靠簡單搜尋與 diff 就能驗證沒有遺漏，則 slice 可提交；否則先補齊。
 
-[返回開頭](#快速導覽)
+## Conventional Commit Rules
 
-## 何時放到哪裡
+- 預設格式：`<type>(<scope>): <summary>`。
+- 建議 scope：
+  - `agents-skills` — 修改 [`.agents/skills/`](../) 內的治理 skill。
+  - `claude-skills` — 修改 [`.claude/skills/`](../../../.claude/skills/) router、sync skill 或 shared protocol。
+  - `docs` — 以文件索引與說明同步為主。
+- 類型選擇：
+  - `feat` — 新增 skill、擴充能力、擴大規則覆蓋面。
+  - `fix` — 修正壞掉的 frontmatter、錯誤規則、錯誤路徑、錯誤觸發條件。
+  - `refactor` — 重新命名、搬移、重組結構，但不改行為語意。
+  - `docs` — 純文件同步、說明澄清、索引補充。
+  - `chore` — 純 metadata 或維護雜項，沒有行為或文件語意變更。
+- 優先序：`feat > fix > refactor > docs > chore`。如果同一 slice 同時包含多種變更，必須以最高影響層級決定 type。
 
-- 任務是在規範這個 repo 自己怎麼維護 skills、怎麼 commit、怎麼同步文件 → 放 `.agents/skills/`。
-- 任務是在調整 Claude Code 專案級 router、sync 流程或 shared protocol → 放 `.claude/skills/`。
-- 若一條規則離開這個 repo 就失去意義，它就應該留在 `.agents/skills/`，而不是 upstream 或其他可分發位置。
+## Documentation And Metadata Sync
 
-[返回開頭](#快速導覽)
+- 修改 [`.agents/skills/`](../) 或相關治理邊界時，至少檢查這些位置是否因本次變更而過期：
+  - [`README.md`](../../../README.md)
+  - [`AGENTS.md`](../../../AGENTS.md)
+  - [`CLAUDE.md`](../../../CLAUDE.md)，如果專案級使用指引受影響
+  - [`.claude/skills/`](../../../.claude/skills/) 下的 router 或 sync skill，如果入口或引用名稱受影響
+  - [`.gitignore`](../../../.gitignore)、[`scripts/README.md`](../../../scripts/README.md)、migration docs、舊計畫文件，如果名稱或路徑變更讓它們過期
+- 原則不是每次全改，而是所有被這次修改弄成不準確的地方都必須在同一個 slice 內修完。
 
-## repo-local skills 維護流程
+## Verification Checklist
 
-1. **先 search 影響面**：用舊名稱、舊路徑、新名稱、新路徑、主題關鍵字掃整個 repo。
-2. **同一個 slice 內修完所有過期資訊**：不要只改 skill 本體，卻把 README、AGENTS、router 或其他索引留到之後。
-3. **定義 commit 邊界**：一個 slice 必須是單一目的、可獨立 review、可獨立回滾的變更。
-4. **slice 一完成就 commit**：若 worktree 有不相關修改，使用 selective staging 或先 stash；不要把完成的 slice 留著等待大雜燴 commit。
-5. **再進下一個主題**：commit 完前，不要切去做不相關的新任務。
+- 用 `rg` 搜舊名稱與舊路徑，確認沒有殘留過期引用。
+- 檢查 `git diff --staged`，確認 commit 只包含同一個 slice 的檔案。
+- 若動到 JSON metadata，必須先 parse 一次再 commit。
+- 若動到 `SKILL.md` frontmatter，必須確認 `name` 與 `description` 合法且沒有 YAML parse 風險。
 
-### Slice 判斷標準
+## Red Flags
 
-符合以下三點，就視為一個可提交的完成 slice：
+- 「README / AGENTS 晚點再補」。
+- 「這次只有改 skill 本體，索引文件不用動」。
+- 「先做下一件事，commit 最後再說」。
+- 「先全部混在一起，之後再拆 commit」。
 
-- 變更目的單一，例如「修 frontmatter parse error」或「rename skill」
-- 相關文件／metadata 已同步到不再過期
-- 用簡單搜尋與 diff 就能驗證沒有遺漏
+以上任一條成立時，表示 slice 尚未完成。必須先同步文件與 metadata，確認類型，再 commit。
 
-[返回開頭](#快速導覽)
+## Invalid Rationalizations
 
-## Conventional Commit 類型選擇
-
-預設格式：
-
-```text
-<type>(<scope>): <summary>
-```
-
-建議 scope：
-
-- `agents-skills`：修改 `.agents/skills/` 內部治理 skill
-- `claude-skills`：修改 `.claude/skills/` router、sync skill 或 shared protocol
-- `docs`：以文件索引與說明為主的同步更新
-
-| 修改內容 | type | 例子 |
-|----------|------|------|
-| 新增 skill、擴充既有 skill 能力或規則覆蓋面 | `feat` | `feat(agents-skills): add repo review checklist skill` |
-| 修正錯誤規則、壞掉的 frontmatter、錯誤路徑、錯誤觸發條件 | `fix` | `fix(agents-skills): repair invalid skill frontmatter` |
-| 重新命名、搬移、重組結構，但不改行為語意 | `refactor` | `refactor(agents-skills): rename governance skill sections` |
-| 純文件同步、說明澄清、索引補充 | `docs` | `docs(agents-skills): define custom skill boundaries` |
-| 純 metadata／維護雜項，沒有行為或文件語意變更 | `chore` | `chore(claude-skills): align router descriptions` |
-
-若同一個 slice 同時碰到多種類型，**以最高影響層級決定 type**：
-
-```text
-feat > fix > refactor > docs > chore
-```
-
-也就是說，若一個 slice 同時改了 skill 行為與 README，同步文件不會把它降成 `docs` commit。
-
-[返回開頭](#快速導覽)
-
-## 文件與 metadata 同步清單
-
-修改 `.agents/skills/` 或相關治理邊界時，至少檢查以下位置是否因本次變更而過期：
-
-- [`README.md`](../../../README.md)
-- [`AGENTS.md`](../../../AGENTS.md)
-- [`CLAUDE.md`](../../../CLAUDE.md)（若專案級使用指引受影響）
-- `.claude/skills/` 內的 router / sync skill（若入口或引用名稱受影響）
-- [`\.gitignore`](../../../.gitignore)、[`scripts/README.md`](../../../scripts/README.md)、migration docs、舊計畫文件（若名稱／路徑變更導致它們過期）
-
-原則不是「每次全改」，而是：**凡是被你這次修改弄成不準確的地方，都要在同一個 slice 內修完。**
-
-[返回開頭](#快速導覽)
-
-## 驗證清單
-
-- 用 `rg` 搜舊名稱／舊路徑，確認沒有殘留過期引用
-- 檢查 `git diff --staged`，確認 commit 只包含同一個 slice 的檔案
-- 若動到 JSON metadata，先 parse 一次再 commit
-- 若動到 `SKILL.md` frontmatter，確認 `name` / `description` 合法且沒有 YAML parse 風險
-
-[返回開頭](#快速導覽)
-
-## Rationalizations 與 Red Flags
-
-### Rationalization Table
-
-| 藉口 | 為什麼不成立 |
-|------|--------------|
-| `SKILL.md` 才是 source of truth，README / AGENTS 之後再補 | README、AGENTS、router 文件與 repo 指引都是正式 discovery surface；只要被這次變更弄到過期，就必須同步更新 |
-| 先把 skill 改完，等所有雜項收尾後再一起 commit | 一個已經完整、可驗證的 slice 就應立刻 commit；拖著只會增加混批與漏改風險 |
-| 我之後再決定要用 `feat`、`fix` 還是 `docs` | type 是 slice 邊界的一部分；開始 stage 前就應能說清楚這次在改哪一層 |
-
-### Red Flags
-
-看到以下念頭時，先停下來把 slice 收斂完：
-
-- 「README / AGENTS 晚點再補」
-- 「這次只有改 skill 本體，索引文件不用動」
-- 「先做下一件事，commit 最後再說」
-- 「先全部混在一起，之後再拆 commit」
-
-**以上任一條成立，都表示你還沒完成這個 slice。先同步文件／metadata、確認類型，再 commit。**
-
-[返回開頭](#快速導覽)
+- 如果你認為 `SKILL.md` 才是唯一 source of truth，因此 README 或 AGENTS 之後再補，那是錯的；README、AGENTS、router 文件與 repo 指引都是正式 discovery surface。
+- 如果你認為先把 skill 改完、等所有雜項收尾後再一起 commit 比較省事，那是錯的；完整且可驗證的 slice 應立刻 commit。
+- 如果你認為可以等到最後再決定 `feat`、`fix`、`docs`，那是錯的；type 是 slice 邊界的一部分，開始 stage 前就應明確。

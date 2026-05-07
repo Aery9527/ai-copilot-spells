@@ -1,76 +1,55 @@
 # AGENTS.md — Skill Combination Lookup
 
-Purpose: **quickly find the right skill combination for the task at hand**. Follow the skill links for details; this file stays at the first routing layer only.
+Purpose: quickly find the right skill combination for the current task. Follow the linked skill files for details. This file stays at the first routing layer only.
 
-## Quick Navigation
-
-- [Task → Skill Combination](#task--skill-combination)
-- [Repository Governance](#repository-governance)
-- [Top-Level Router Entry Points](#top-level-router-entry-points)
-- [Skill Locations](#skill-locations)
-
----
-
-## Task → Skill Combination
+## Task Routing
 
 ### Development Flow
 
-| I want to... | Use Skills (in order) |
-|--------------|-----------------------|
-| Build a new feature end-to-end | `brainstorming` → `writing-plans` → `test-driven-development` → `subagent-driven-development` → `requesting-code-review` |
-| Debug a bug | `systematic-debugging` |
-| Declare completion / prepare before commit / PR | `verification-before-completion` |
-| Execute a plan in a new session | `executing-plans` |
-| Execute a plan in the current session task-by-task with subagents | `subagent-driven-development` |
-| Run multiple independent subtasks in parallel | `dispatching-parallel-agents` |
-| Isolate the workspace before starting work | `using-git-worktrees` |
+- If the user wants to build a new feature end-to-end, use `brainstorming` -> `writing-plans` -> `test-driven-development` -> `subagent-driven-development` -> `requesting-code-review`.
+- If the user wants to debug a bug, use `systematic-debugging`.
+- If the user wants to declare completion or prepare before commit or PR, use `verification-before-completion`.
+- If the user wants to execute a plan in a new session, use `executing-plans`.
+- If the user wants to execute a plan in the current session task-by-task with subagents, use `subagent-driven-development`.
+- If the user wants to run multiple independent subtasks in parallel, use `dispatching-parallel-agents`.
+- If the user wants to isolate the workspace before starting work, use `using-git-worktrees`.
 
 ### Review And Wrap-Up
 
-| I want to... | Use Skills |
-|--------------|------------|
-| Evaluate code review feedback before implementing changes | `receiving-code-review` |
-| Request a review after finishing a feature | `requesting-code-review` |
-| Choose a wrap-up path after all tasks are done | `finishing-a-development-branch` |
+- If the user wants to evaluate code review feedback before implementing changes, use `receiving-code-review`.
+- If the user wants to request a review after finishing a feature, use `requesting-code-review`.
+- If the user wants to choose a wrap-up path after all tasks are done, use `finishing-a-development-branch`.
 
 ### Creative, Frontend, And Docs
 
-| I want to... | Use Skills |
-|--------------|------------|
-| Build a Web UI / landing page | `brainstorming` → `frontend-design` |
-| Build a complex Claude artifact (React + shadcn) | `web-artifacts-builder` |
-| Test a local web app (Playwright) | `webapp-testing` |
-| Generate posters / static visuals (PNG/PDF) | `canvas-design` |
-| Generate algorithmic art (flow fields, particles, geometry) | `algorithmic-art` |
-| Theme an artifact | `theme-factory` |
-| Apply Anthropic brand colors | `brand-guidelines` |
-| Create an animated Slack GIF | `slack-gif-creator` |
+- If the user wants to build a Web UI or landing page, use `brainstorming` -> `frontend-design`.
+- If the user wants to build a complex Claude artifact with React and shadcn, use `web-artifacts-builder`.
+- If the user wants to test a local web app with Playwright, use `webapp-testing`.
+- If the user wants to generate posters or static visuals in PNG or PDF, use `canvas-design`.
+- If the user wants to generate algorithmic art such as flow fields, particles, or geometry, use `algorithmic-art`.
+- If the user wants to theme an artifact, use `theme-factory`.
+- If the user wants to apply Anthropic brand colors, use `brand-guidelines`.
+- If the user wants to create an animated Slack GIF, use `slack-gif-creator`.
 
 ### AI Engineering, Document Operations, And Writing
 
-| I want to... | Use Skills |
-|--------------|------------|
-| Build a Claude API app / Anthropic SDK integration | `brainstorming` → `claude-api` |
-| Build an MCP server | `brainstorming` → `mcp-builder` |
-| Work with PDFs | `pdf` |
-| Work with Word documents | `docx` |
-| Work with Excel files | `xlsx` |
-| Work with PowerPoint files | `pptx` |
-| Write technical specs / design docs | `doc-coauthoring` |
-| Write internal communications (3P updates, incident reports) | `internal-comms` |
+- If the user wants to build a Claude API app or Anthropic SDK integration, use `brainstorming` -> `claude-api`.
+- If the user wants to build an MCP server, use `brainstorming` -> `mcp-builder`.
+- If the user wants to work with PDFs, use `pdf`.
+- If the user wants to work with Word documents, use `docx`.
+- If the user wants to work with Excel files, use `xlsx`.
+- If the user wants to work with PowerPoint files, use `pptx`.
+- If the user wants to write technical specs or design docs, use `doc-coauthoring`.
+- If the user wants to write internal communications such as 3P updates or incident reports, use `internal-comms`.
 
 ### Skill Maintenance
 
-| I want to... | Use Skills |
-|--------------|------------|
-| Create or improve an AI skill | `brainstorming` → `writing-skills` |
-| Maintain governance rules for this repo's custom skills | `skills-governance` |
-| Sync Anthropic skills upstream | `anthropic-skills-sync` |
-| Sync superpowers upstream | `superpowers-skills-sync` |
-| Sync CLI docs (Claude Code / Copilot) | `cli-doc-sync` |
-| Sync all upstream changes in one pass (Dependabot PR trigger) | `sync-all` |
-
----
+- If the user wants to create or improve an AI skill, use `brainstorming` -> `writing-skills`.
+- If the user wants to maintain governance rules for this repo's custom skills, use `skills-governance`.
+- If the user wants to sync Anthropic skills upstream, use `anthropic-skills-sync`.
+- If the user wants to sync superpowers upstream, use `superpowers-skills-sync`.
+- If the user wants to sync CLI docs for Claude Code or GitHub Copilot, use `cli-doc-sync`.
+- If the user wants to sync all upstream changes in one pass from Dependabot PRs, use `sync-all`.
 
 ## Repository Governance
 
@@ -78,40 +57,31 @@ Purpose: **quickly find the right skill combination for the task at hand**. Foll
 
 - `AGENTS.md` is the English primary version.
 - `AGENTS_zhTW.md` is the Traditional Chinese mirror.
-- Any addition, deletion, rename, or semantic change to either file must update both language versions in the same change slice.
-- Do not leave one language temporarily stale with a plan to sync it later.
+- Any addition, deletion, rename, or semantic change to either file MUST update both language versions in the same change slice.
+- The agent MUST NOT leave one language temporarily stale with a plan to sync it later.
 
 ### `scripts/` Documentation Sync Rule
 
-- When adding, removing, renaming, or materially changing scripts under `scripts/`, you **must** update [`scripts/README.md`](scripts/README.md) in the same slice.
-- [`scripts/README.md`](scripts/README.md) is the single index for `scripts/`; new scripts must document at least purpose, arguments, behavior, risks / side effects, and a minimal usage example.
-- If root [`README.md`](README.md) already lists script entries or summaries, check whether it also needs to be updated.
-
----
+- When adding, removing, renaming, or materially changing scripts under [`scripts/`](scripts/), the agent MUST update [`scripts/README.md`](scripts/README.md) in the same slice.
+- [`scripts/README.md`](scripts/README.md) is the single index for [`scripts/`](scripts/); new scripts MUST document at least purpose, arguments, behavior, risks or side effects, and a minimal usage example.
+- If [`README.md`](README.md) already lists script entries or summaries, the agent MUST check whether it also needs to be updated.
 
 ## Top-Level Router Entry Points
 
-Enter only as needed; do not expand everything at once:
-
-| Scope | Router |
-|-------|--------|
-| Creative design, frontend engineering, AI engineering, Office docs, technical writing | [anthropic-skill](.claude/skills/anthropic-skill/SKILL.md) |
-| Development workflow, code review, parallel collaboration, git workflow, maintenance | [superpowers-skill](.claude/skills/superpowers-skill/SKILL.md) |
-
----
+- If the task is about creative design, frontend engineering, AI engineering, Office docs, or technical writing, read [anthropic-skill](.claude/skills/anthropic-skill/SKILL.md).
+- If the task is about development workflow, code review, parallel collaboration, git workflow, or maintenance, read [superpowers-skill](.claude/skills/superpowers-skill/SKILL.md).
+- The agent MUST enter only the needed router. The agent MUST NOT expand every router by default.
 
 ## Skill Locations
 
-| Directory | Source | Description |
-|-----------|--------|-------------|
-| `anthropic-skills/` | Anthropic upstream | Original skill definitions; do not modify directly |
-| `superpowers/` | superpowers upstream | Original workflow skill definitions; do not modify directly |
-| `.claude/skills/anthropic-skill/` | Local router | Top-level category entry point for Anthropic skills |
-| `.claude/skills/superpowers-skill/` | Local router | Top-level category entry point for superpowers skills |
-| `.claude/skills/_shared/` | Shared protocol | `upstream-sync-protocol.md` referenced by sync skills |
-| `.claude/skills/anthropic-skills-sync/` | Maintenance skill | Sync Anthropic skills upstream |
-| `.claude/skills/superpowers-skills-sync/` | Maintenance skill | Sync superpowers upstream |
-| `.claude/skills/cli-doc-sync/` | Maintenance skill | Sync CLI documentation for Claude Code and GitHub Copilot |
-| `.claude/skills/sync-all/` | Local custom skill | Unified orchestrator: detect Dependabot PRs and invoke sync skills |
-| `.agents/skills/` | Local project-specific custom skills | Internal governance and repo-specific workflows such as `skills-governance` |
-| `scripts/` | Local maintenance scripts | Repo maintenance and automation; documentation index lives in [`scripts/README.md`](scripts/README.md) |
+- [`anthropic-skills/`](anthropic-skills/) — Anthropic upstream — Original skill definitions; do not modify directly.
+- [`superpowers/`](superpowers/) — superpowers upstream — Original workflow skill definitions; do not modify directly.
+- [`.claude/skills/anthropic-skill/`](.claude/skills/anthropic-skill/) — Local router — Top-level category entry point for Anthropic skills.
+- [`.claude/skills/superpowers-skill/`](.claude/skills/superpowers-skill/) — Local router — Top-level category entry point for superpowers skills.
+- [`.claude/skills/_shared/`](.claude/skills/_shared/) — Shared protocol — Contains [`upstream-sync-protocol.md`](.claude/skills/_shared/upstream-sync-protocol.md) referenced by sync skills.
+- [`.claude/skills/anthropic-skills-sync/`](.claude/skills/anthropic-skills-sync/) — Maintenance skill — Sync Anthropic skills upstream.
+- [`.claude/skills/superpowers-skills-sync/`](.claude/skills/superpowers-skills-sync/) — Maintenance skill — Sync superpowers upstream.
+- [`.claude/skills/cli-doc-sync/`](.claude/skills/cli-doc-sync/) — Maintenance skill — Sync CLI documentation for Claude Code and GitHub Copilot.
+- [`.claude/skills/sync-all/`](.claude/skills/sync-all/) — Local custom skill — Unified orchestrator that detects Dependabot PRs and invokes sync skills.
+- [`.agents/skills/`](.agents/skills/) — Local project-specific custom skills — Internal governance and repo-specific workflows such as [`skills-governance`](.agents/skills/skills-governance/SKILL.md).
+- [`scripts/`](scripts/) — Local maintenance scripts — Repo maintenance and automation; document index lives in [`scripts/README.md`](scripts/README.md).

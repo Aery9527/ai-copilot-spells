@@ -1,45 +1,24 @@
 # Office Documents
 
-## 快速導覽
+## Purpose
 
-- [何時讀這份](#何時讀這份)
-- [問題 → Skill](#問題--skill)
-- [Skill 細節入口](#skill-細節入口)
-- [注意事項](#注意事項)
+Use this file to route Office-document and document-adjacent requests inside the Anthropic skill catalog.
 
-## 何時讀這份
+## Trigger Conditions
 
-當需求直接涉及 PDF、Word、PowerPoint、Excel，或是 Office 文件中的配圖 / 視覺內容時，先讀這份分類檔。
+- The task involves PDF, Word, PowerPoint, or Excel files.
+- The task involves creating supporting visuals for Office documents.
 
-[返回開頭](#快速導覽)
+## Skill Mapping
 
-## 問題 → Skill
+- If the user wants PDF reading, merging, splitting, OCR, or creation, read [pdf](../skills/pdf/SKILL.md).
+- If the user wants Word or `.docx` creation, editing, or reading, read [docx](../skills/docx/SKILL.md).
+- If the user wants PowerPoint or `.pptx` creation, editing, or reading, read [pptx](../skills/pptx/SKILL.md).
+- If the user wants Excel, `.xlsx`, or spreadsheet manipulation, read [xlsx](../skills/xlsx/SKILL.md).
+- If the user wants static design visuals for Office documents, read [canvas-design](../skills/canvas-design/SKILL.md).
+- If the user wants generative-art visuals for Office documents, read [algorithmic-art](../skills/algorithmic-art/SKILL.md).
 
-| 情境 | 建議 Skill |
-|------|-------------|
-| PDF 讀取、合併、分割、OCR、建立 | [pdf](../skills/pdf/SKILL.md) |
-| Word / `.docx` 創建、編輯、讀取 | [docx](../skills/docx/SKILL.md) |
-| PowerPoint / `.pptx` 建立、讀取、編輯 | [pptx](../skills/pptx/SKILL.md) |
-| Excel / `.xlsx` / 表格分析與整理 | [xlsx](../skills/xlsx/SKILL.md) |
-| Office 文件需要靜態設計圖 | [canvas-design](../skills/canvas-design/SKILL.md) |
-| Office 文件需要生成式藝術圖 | [algorithmic-art](../skills/algorithmic-art/SKILL.md) |
+## Decision Logic
 
-[返回開頭](#快速導覽)
-
-## Skill 細節入口
-
-- [pdf](../skills/pdf/SKILL.md) — PDF 工作流與工具鏈
-- [docx](../skills/docx/SKILL.md) — Word 文件操作
-- [pptx](../skills/pptx/SKILL.md) — PowerPoint 建立與編輯
-- [xlsx](../skills/xlsx/SKILL.md) — 試算表分析與格式化
-- [canvas-design](../skills/canvas-design/SKILL.md) — 靜態配圖 / 封面 / 裝飾圖
-- [algorithmic-art](../skills/algorithmic-art/SKILL.md) — 生成式藝術配圖
-
-[返回開頭](#快速導覽)
-
-## 注意事項
-
-- 若需求核心是文件格式操作，先選 document skill；若是文件內圖像風格，先選 design / art skill。
-- `canvas-design` 和 `algorithmic-art` 只負責圖像生成，後續仍需回到 document skill 把圖嵌入文件。
-
-[返回開頭](#快速導覽)
+- If the primary deliverable is a document file, choose the matching document skill first.
+- If the document already exists and the user wants embedded or companion visuals, add `canvas-design` or `algorithmic-art` only after the document skill is chosen.

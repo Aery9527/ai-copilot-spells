@@ -8,256 +8,104 @@ description: >-
 
 # CLI Doc Sync
 
-從官方文件抓取最新 CLI 參考資訊，與本地 Markdown 做結構化差異比對，補缺刪多。
-
-## 快速導覽
-
-- [觸發條件](#觸發條件)
-- [工具呼叫](#工具呼叫)
-- [工作流程](#工作流程)
-- [更新規則](#更新規則)
-- [更新摘要章節](#更新摘要章節)
-- [目標配置](#目標配置)
-- [品質 Checklist](#品質-checklist)
-
-## 觸發條件
-
-以下關鍵詞或意圖應觸發此 skill：
-
-- 「同步 CLI 文件」「更新 CLI 參考」「檢查 CLI 變更」
-- 「cc-cli.md」「gc-cli.md」「cx-cli.md」 + 更新 / 同步 / 對比
-- 「看看官方文件有沒有新的 flag / command / shortcut」
-- 明確指定要更新某個工具的 CLI 參考文件
-
-[返回開頭](#快速導覽)
-
-## 工具呼叫
-
-### fetch_docs.py
-
-位置：[`.claude/skills/cli-doc-sync/fetch_docs.py`](fetch_docs.py)
-
-```bash
-# 安裝依賴（首次使用）
-pip install requests markdownify
-
-# 列出可用目標
-python .claude/skills/cli-doc-sync/fetch_docs.py --list
-
-# 抓取指定目標
-python .claude/skills/cli-doc-sync/fetch_docs.py claude-code
-python .claude/skills/cli-doc-sync/fetch_docs.py github-copilot
-python .claude/skills/cli-doc-sync/fetch_docs.py codex-cli
-
-# 抓取單一 URL
-python .claude/skills/cli-doc-sync/fetch_docs.py --url "https://..."
-```
-
-### JSON 輸出結構
-
-```json
-{
-  "target": "claude-code",
-  "md_path": "cli-agents/claude-code/cc-cli.md",
-  "fetched_at": "2026-03-28T12:00:00+00:00",
-  "sources": [
-    {
-      "url": "https://...",
-      "label": "CLI 參數、CLI 內建指令",
-      "content_md": "# CLI Reference\n\n## Flags\n..."
-    }
-  ]
-}
-```
-
-每個 source 的 `content_md` 是官方頁面轉換後的 Markdown。若抓取失敗，會有 `error` 欄位而非 `content_md`。
-
-[返回開頭](#快速導覽)
-
-## 工作流程
-
-### Step 1：選擇目標
-
-確認要同步的工具。若使用者未指定，列出可用目標讓其選擇。
-
-### Step 2：執行抓取
-
-用 Bash 執行 `fetch_docs.py <target>`，取得 JSON 輸出。確認所有 source 都成功（無 `error` 欄位）。
-
-### Step 3：讀取現有 md
-
-讀取目標的 md 檔案（路徑在 JSON 的 `md_path`），解析每個表格 section 的項目清單。
-
-另外，必須讀取並定位目標 md 內的 `## 更新時間與差異總結` 章節。這是此 skill 維護的 managed content，用來記錄本次同步時間，以及相較上一版本地文件的差異摘要。
-
-**解析方式**：
-- 以 H2/H3 標題分隔 section
-- 每個表格的第一欄（flag / command / 快捷鍵）作為 **項目識別符**
-- 去除識別符的格式差異（backtick、空白）後正規化
-- 保留現有 `## 更新時間與差異總結` 章節內容，作為「跟上次比」摘要的上下文基準
-
-### Step 4：差異比對
-
-以**識別符**為錨點，逐 section 比對官方 Markdown 與現有 md。
-
-三類差異：
-
-| 類型 | 定義 | 處理方式 |
-|------|------|---------|
-| **缺少** | 官方有，md 無 | 報告後新增 |
-| **多出** | md 有，官方無 | 報告後由使用者決定是否移除 |
-| **描述過時** | 兩邊都有，但官方描述語意明顯不同 | 報告差異，使用者確認後更新 |
-
-**重要**：比對以識別符（flag 名、command 名）為準，**不做中英文描述文字的直接比對**。判斷「描述過時」時，需理解英文官方描述的語意是否與中文現有描述一致。
-
-除了表格差異，也要整理一份 2–4 點的「跟上次比」摘要，內容歸納本次新增、移除候選、描述更新、來源/結構修正等重點。這份摘要稍後要寫回目標 md 的 `## 更新時間與差異總結` 章節。
-
-### Step 5：呈現差異報告
-
-使用以下格式向使用者呈現：
-
-```markdown
-## 同步報告：{tool-name}
-
-> 比對日期：{date}
-> 來源：{URLs}
-
-### 缺少項目（官方有，文件無）
-
-| 分類 | 項目 | 官方說明 |
-|------|------|---------|
-| CLI 參數 | `--new-flag` | Does something new |
-
-### 多出項目（文件有，官方無）
-
-| 分類 | 項目 | 目前說明 | 判斷 |
-|------|------|---------|------|
-| slash commands | `/old-cmd` | 舊指令說明 | 疑似已移除 |
-
-### 描述可能過時
-
-| 分類 | 項目 | 目前說明 | 官方說明 |
-|------|------|---------|---------|
-| CLI 參數 | `--model` | 目前中文描述 | Updated English desc |
-
-### 無變更
-
-共 {N} 個項目與官方一致，無需更新。
-
-### 建議更新到文件的「更新時間與差異總結」
-
-- 更新時間：{timestamp}
-- 比較基準：上一版本地文件（本次同步前）
-- 差異摘要：
-  - 新增 ...
-  - 移除候選 ...
-  - 描述更新 ...
-```
-
-### Step 6：使用者確認後更新
-
-**等待使用者確認**後才執行變更。更新時遵循下方「更新規則」。
-
-獲得確認後，除表格更新外，也要同步刷新目標 md 的 `## 更新時間與差異總結` 章節。
-
-[返回開頭](#快速導覽)
-
-## 更新規則
-
-### 新增項目
-
-- 插入到對應 H3 section 的表格中，維持既有欄位結構
-- 英文描述翻譯為**繁體中文**
-- 專有術語維持英文：flag 名、command 名、model 名、tool 名、檔名、路徑
-- 參考同 section 既有項目的寫作風格和詳細程度
-
-### 移除項目
-
-- **永不自動移除**
-- 在差異報告中標記「多出」，由使用者決定
-- 使用者確認後才刪除對應表格行
-
-### 更新描述
-
-- 舊描述和新描述並列呈現
-- 使用者確認後，以新的繁體中文翻譯取代
-
-### 更新摘要章節
-
-- 每個目標 md 都必須有 `## 更新時間與差異總結` 章節，預設放在開頭 metadata 區塊之後、主要參考章節之前。
-- 這一節是 **skill-managed content**，每次實際同步完成後都要更新。
-- 章節至少包含以下三項：
-  - `- 更新時間：{YYYY-MM-DD HH:mm UTC}`
-  - `- 比較基準：上一版本地文件（本次同步前）`
-  - `- 差異摘要：` 與其下 2–4 個 bullet，摘要本次相較上一版的變更
-- 差異摘要應聚焦於**使用者看得懂的文件變更**：新增哪些 flags / commands / shortcuts、哪些舊項目被移除或標成候選移除、哪些描述被修正、哪些來源配置被調整。
-- 若本次與上一版比對後沒有實質內容變更，仍要更新 `更新時間`，並在摘要中明寫「本次與上一版比對後無實質差異，僅重新確認官方文件仍一致」。
-
-### 自訂內容保護
-
-以下內容**永不修改**，即使官方文件中不存在：
-
-- md 開頭的安裝/更新/來源 metadata 區塊
-- 使用者自行加入的提示或備註（如 `ultrathink` 提示、`普遍 allow 的 tool 啟動指令`）
-- 非表格的散文段落（除非使用者明確要求）
-- 例外：`## 更新時間與差異總結` 是此 skill 維護的章節，可依同步結果更新
-
-### 結構保留
-
-- 維持既有 H2/H3 階層和排列順序
-- 維持既有表格欄位名稱和欄序
-- 不重新格式化未變更的內容
-
-[返回開頭](#快速導覽)
-
-## 更新摘要章節
-
-建議目標 md 採用以下結構：
-
-```markdown
-## 更新時間與差異總結
-
-- 更新時間：`2026-03-29 12:14 UTC`
-- 比較基準：上一版本地文件（本次同步前）
-- 差異摘要：
-  - 新增官方目前已列出的高影響 flags / commands。
-  - 移除或標記官方未列出的舊項目。
-  - 修正描述過時或來源配置不正確的內容。
-
-[返回開頭](#快速導覽)
-```
-
-寫這一節時，優先用「對讀者有用的變化」而不是流水帳。不要只寫「同步官方文件」這種空話，要點出這次到底多了什麼、修了什麼、刪了什麼。
-
-[返回開頭](#快速導覽)
-
-## 目標配置
-
-工具清單定義在 [`targets.json`](targets.json)（與本 SKILL.md 同目錄）。新增工具只需在 JSON 加一筆 entry。
-
-目前支援的目標：
-
-| 目標 | md 路徑 | 來源數量 |
-|------|---------|---------|
-| `claude-code` | `cli-agents/claude-code/cc-cli.md` | 4 個 URL |
-| `github-copilot` | `cli-agents/github-copilot/gc-cli.md` | 2 個 URL |
-| `codex-cli` | `cli-agents/codex/codex-cli.md` | 5 個 URL |
-
-注意：`claude-code` 目前拆成 `cli-reference`、`commands`、`interactive-mode`、`skills` 四個官方來源，因為舊的 `slash-commands` 頁面已不再提供可直接同步的指令表。
-
-注意：`codex-cli` 目前拆成 `codex overview`、`cli reference`、`slash commands`、`features`、`auth` 五個來源，用來覆蓋 CLI flags / commands、互動式 commands、approval / sandbox / remote 功能與登入流程。
-
-[返回開頭](#快速導覽)
-
-## 品質 Checklist
-
-- [ ] 所有來源 URL 都已成功抓取（JSON 無 `error` 欄位）
-- [ ] 差異報告已呈現給使用者並獲得確認
-- [ ] 新增項目已翻譯為繁體中文（專有術語維持英文）
-- [ ] 表格欄位與既有格式一致
-- [ ] 沒有動到使用者自訂的備註或額外內容
-- [ ] 目標 md 的 `## 更新時間與差異總結` 章節已更新，且內容與本次差異報告一致
-- [ ] H2/H3 結構與原文件一致
-- [ ] 告知使用者官方文件可能遺漏的項目（如 beta flag、實驗功能）
-
-[返回開頭](#快速導覽)
+從官方文件抓取最新 CLI 參考資訊，與本地 Markdown 做結構化差異比對，補缺、刪多、更新描述，並維護目標文件中的 managed summary section。
+
+## Tools
+
+### `fetch_docs.py`
+
+- 位置：[fetch_docs.py](fetch_docs.py)
+- 首次使用可安裝依賴：`pip install requests markdownify`
+- 列出可用目標：`python .claude/skills/cli-doc-sync/fetch_docs.py --list`
+- 抓取目標：
+  - `python .claude/skills/cli-doc-sync/fetch_docs.py claude-code`
+  - `python .claude/skills/cli-doc-sync/fetch_docs.py github-copilot`
+  - `python .claude/skills/cli-doc-sync/fetch_docs.py codex-cli`
+- 抓取單一 URL：`python .claude/skills/cli-doc-sync/fetch_docs.py --url "https://..."`
+
+### JSON Output Contract
+
+- `target` — 目標名稱。
+- `md_path` — 本地 Markdown 路徑。
+- `fetched_at` — 抓取時間。
+- `sources` — 來源陣列。
+- 每個 source 若成功，會有 `url`、`label`、`content_md`。
+- 每個 source 若失敗，會有 `error`，而不是 `content_md`。
+
+## Workflow
+
+1. 選擇目標。如果使用者未指定，列出可用目標並要求選擇。
+2. 執行抓取。用 Bash 執行 `fetch_docs.py <target>`，取得 JSON 輸出，並確認所有 source 都成功。
+3. 讀取現有 Markdown。用 JSON 內的 `md_path` 讀取目標檔，並定位 `## 更新時間與差異總結` 章節。
+4. 解析差異。以 H2/H3 區段分隔，並以每個表格或條列區段的識別符作為比對錨點。識別符通常是 flag 名、command 名、快捷鍵或 slash command 名稱。
+5. 產生差異報告。必須分成缺少項目、多出項目、描述可能過時，以及無變更摘要。
+6. 等待使用者確認。嚴禁在未確認前直接修改文件。
+7. 獲得確認後更新目標文件，並同步刷新 `## 更新時間與差異總結` 章節。
+
+## Difference Classes
+
+- 缺少：官方有，本地文件沒有。必須列入報告，確認後新增。
+- 多出：本地文件有，官方沒有。必須列入報告，但嚴禁自動刪除；必須等待使用者決定。
+- 描述過時：兩邊都有相同識別符，但官方語意與本地中文描述不一致。必須列出舊說明與官方說明，再等待確認後更新。
+- 無變更：官方與本地一致。可在報告中只做總量摘要。
+
+## Comparison Rules
+
+- 比對必須以識別符為準，嚴禁直接把中英文整段文字做字面比對。
+- 解析識別符時，必須去除 backtick 與多餘空白，做正規化後再比對。
+- 若判斷為描述過時，必須基於語意，而不是字面差異。
+- `## 更新時間與差異總結` 是 skill-managed content。每次實際同步後都必須更新。
+
+## Reporting Format Requirements
+
+- 報告標題必須包含目標工具名稱。
+- 報告必須包含比對日期與來源 URL。
+- 報告必須分開列出缺少項目、多出項目、描述可能過時、無變更。
+- 報告必須額外給出 2 到 4 點「建議更新到文件的更新摘要」。
+
+## Update Rules
+
+- 新增項目時，必須插入到對應 section，維持既有欄位語意與詳細程度。
+- 新增或更新描述時，必須翻譯為繁體中文；flag、command、model、tool、檔名、路徑等專有術語維持英文。
+- 移除項目時，嚴禁自動刪除；只有在使用者明確確認後才能移除。
+- 只要本次同步完成，就必須更新目標 md 內的 `## 更新時間與差異總結` 章節。
+
+## Managed Summary Section Rules
+
+- 每個目標 md 都必須有 `## 更新時間與差異總結`。
+- 預設位置是開頭 metadata 區塊之後、主要參考章節之前。
+- 此章節至少必須包含：
+  - `更新時間`
+  - `比較基準`
+  - `差異摘要`
+- 若本次與上一版比對後沒有實質內容變更，仍必須更新時間，並明寫「本次與上一版比對後無實質差異，僅重新確認官方文件仍一致」。
+
+## Protected Content
+
+- 嚴禁修改目標 md 開頭的安裝、更新、來源 metadata 區塊。
+- 嚴禁修改使用者自行加入的提示、備註或散文段落，除非使用者明確要求。
+- `## 更新時間與差異總結` 是唯一例外；它是此 skill 管理的區塊，可依同步結果更新。
+
+## Structure Preservation Rules
+
+- 必須保留既有 H2/H3 階層與排列順序。
+- 必須保留既有欄位語意；若原文件使用表格，更新時保持該 section 的結構風格一致。
+- 嚴禁重新格式化未變更內容。
+
+## Target Configuration
+
+- 工具清單定義在 [targets.json](targets.json)。
+- 新增工具時，只需在 [targets.json](targets.json) 新增一筆 entry。
+- 目前支援的目標：
+  - `claude-code` -> [`cli-agents/claude-code/cc-cli.md`](../../../cli-agents/claude-code/cc-cli.md) -> 4 個來源 URL。
+  - `github-copilot` -> [`cli-agents/github-copilot/gc-cli.md`](../../../cli-agents/github-copilot/gc-cli.md) -> 2 個來源 URL。
+- `codex-cli` -> [`cli-agents/codex/cx-cli.md`](../../../cli-agents/codex/cx-cli.md) -> 5 個來源 URL。
+
+## Quality Checklist
+
+- 所有來源 URL 都成功抓取，JSON 中沒有 `error` 欄位。
+- 差異報告已呈現給使用者並獲得確認。
+- 新增項目已翻譯為繁體中文，專有術語維持英文。
+- 沒有動到使用者自訂的備註或額外內容。
+- 目標 md 的 `## 更新時間與差異總結` 已更新，且內容與本次差異報告一致。
+- 已提醒使用者官方文件可能遺漏的 beta flag 或實驗功能。

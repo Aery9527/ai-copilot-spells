@@ -1,39 +1,27 @@
 # AI Engineering
 
-## 快速導覽
+## Purpose
 
-- [何時讀這份](#何時讀這份)
-- [問題 → Skill](#問題--skill)
-- [Skill 細節入口](#skill-細節入口)
-- [注意事項](#注意事項)
+Use this file to route AI-engineering requests inside the Anthropic skill catalog.
 
-## 何時讀這份
+## Trigger Conditions
 
-當需求涉及 Claude API、Anthropic SDK、MCP server、或建立 / 評估 skill 本身時，先讀這份分類檔。
+- The task involves Claude API or Anthropic SDK usage.
+- The task involves building an MCP server.
+- The task involves creating, evaluating, or improving a skill.
 
-[返回開頭](#快速導覽)
+## Skill Mapping
 
-## 問題 → Skill
+- If the user wants to build an application with Claude API or Anthropic SDK, read [claude-api](../skills/claude-api/SKILL.md).
+- If the user wants to build an MCP server for LLM use, read [mcp-builder](../skills/mcp-builder/SKILL.md).
+- If the user wants to create or improve a skill, run evals, or optimize trigger descriptions, read [skill-creator](../skills/skill-creator/SKILL.md).
 
-| 情境 | 建議 Skill |
-|------|-------------|
-| 用 Claude API / Anthropic SDK 建構應用 | [claude-api](../skills/claude-api/SKILL.md) |
-| 建 MCP server 給 LLM 使用 | [mcp-builder](../skills/mcp-builder/SKILL.md) |
-| 建 skill、改 skill、跑 eval、優化觸發描述 | [skill-creator](../skills/skill-creator/SKILL.md) |
+## Decision Logic
 
-[返回開頭](#快速導覽)
+- If the request explicitly mentions Claude API imports, Anthropic SDK usage, or Agent SDK patterns, choose `claude-api`.
+- If the request is about exposing external services or APIs as tools for LLMs, choose `mcp-builder`.
+- If the request is about skill engineering itself, choose `skill-creator`.
 
-## Skill 細節入口
+## Notes
 
-- [claude-api](../skills/claude-api/SKILL.md) — Claude API / Anthropic SDK、多語言範例與 Agent SDK
-- [mcp-builder](../skills/mcp-builder/SKILL.md) — MCP server 設計、實作、測試與評估
-- [skill-creator](../skills/skill-creator/SKILL.md) — skill 工程方法論、eval、描述優化
-
-[返回開頭](#快速導覽)
-
-## 注意事項
-
-- `skill-creator` 在這個架構中只是一般第二層 skill 細節，不再享有獨立的特殊同步規則。
-- 如果需求明確提到 Claude API / Anthropic SDK import 或 Agent SDK，通常直接展開 `claude-api`。
-
-[返回開頭](#快速導覽)
+- `skill-creator` is a normal second-layer skill in this architecture and does not have special sync behavior.

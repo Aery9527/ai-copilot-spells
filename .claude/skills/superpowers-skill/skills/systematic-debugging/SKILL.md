@@ -1,7 +1,6 @@
 ---
 name: systematic-debugging
 description: Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes
-source: superpowers/skills/systematic-debugging/SKILL.md
 ---
 
 ## 概述

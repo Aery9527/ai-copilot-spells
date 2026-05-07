@@ -1,7 +1,6 @@
 ---
 name: subagent-driven-development
 description: Use when executing implementation plans with independent tasks in the current session
-source: superpowers/skills/subagent-driven-development/SKILL.md
 ---
 
 ## 概述

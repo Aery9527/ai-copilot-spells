@@ -1,7 +1,6 @@
 ---
 name: brainstorming
 description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation."
-source: superpowers/skills/brainstorming/SKILL.md
 ---
 
 ## 概述
@@ -16,17 +15,6 @@ source: superpowers/skills/brainstorming/SKILL.md
 - Spec 自我審查（佔位符掃描、內部一致性、範疇檢查）
 - 視覺 companion 輔助（mockups、diagram，需使用者同意）
 - 確認 spec 後移交 `writing-plans` skill
-
-## 解決什麼問題
-
-「我以為知道要做什麼，做了一半才發現方向錯了」這種浪費。強制在實作前對齊理解，讓後續計畫與執行方向確定。
-
-## 何時使用（觸發條件）
-
-- 建新功能、加組件、修改行為之前
-- 看到「從頭開始」「重新設計」「加功能」「建 X」類需求時
-- 需要 2-3 個方案比較時
-- 任何實作前有超過 1% 機率需要設計決策時
 
 ## 關鍵技術棧
 

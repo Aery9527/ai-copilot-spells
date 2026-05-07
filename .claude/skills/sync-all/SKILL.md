@@ -3,7 +3,7 @@ name: sync-all
 description: >-
   Use when Dependabot has opened PRs for submodule updates and you want to sync
   all pending upstream skill libraries in one step. Reads open Dependabot PRs,
-  auto-discovers corresponding sync skills via SKILL.md frontmatter, runs them
+  matches them to the local sync-skill map, runs them
   in sequence, then closes the PRs. Triggers on: "sync all", "update all
   skills", "process Dependabot PRs", "run sync-all".
 ---
@@ -50,13 +50,12 @@ dependabot/submodules/anthropic-skills  →  anthropic-skills
 dependabot/submodules/superpowers       →  superpowers
 ```
 
-## Step 3 — Auto-discover sync skills（runtime）
+## Step 3 — 使用固定 sync skill 對應表
 
-掃描 `.claude/skills/*/SKILL.md`，讀取每個檔案開頭的 YAML frontmatter（`---` 區塊）。
-找出含有 `submodule-path` 欄位的 skill，建立動態映射表：
+使用 repo 內固定映射表，不要從 frontmatter 動態發現：
 
 ```
-submodule-path 值    →  skill 目錄名稱
+submodule path       →  skill 目錄名稱
 "anthropic-skills"   →  "anthropic-skills-sync"
 "superpowers"        →  "superpowers-skills-sync"
 ```

@@ -1,23 +1,19 @@
 ---
 name: superpowers-skills-sync
-submodule-path: superpowers
 description: Use this skill when the user asks to sync, update, refresh, or check for updates to the superpowers skills library. Triggers when user says "sync superpowers", "update superpowers skills", "check superpowers upstream", "pull latest superpowers", or any variation of keeping superpowers local descriptions in sync with the upstream repo.
 ---
 
 # Superpowers Skills Sync
 
-## 庫設定
+## Library Configuration
 
-| 欄位 | 值 |
-|------|-----|
-| 庫名稱 | `superpowers` |
-| 上游 URL | `https://github.com/obra/superpowers.git` |
-| Submodule 路徑 | `superpowers/` |
-| 本地 Router 路徑 | `.claude/skills/superpowers-skill/` |
-| Skill 來源模式 | `skills/<name>/SKILL.md` |
-| CO_AUTHOR | `Claude Sonnet 4.6 <noreply@anthropic.com>` |
+- `LIBRARY_NAME` -> `superpowers`
+- `UPSTREAM_URL` -> [obra/superpowers.git](https://github.com/obra/superpowers.git)
+- `SUBMODULE_PATH` -> `superpowers/`
+- `LOCAL_ROUTER_PATH` -> `.claude/skills/superpowers-skill/`
+- `SKILL_SOURCE_PATTERN` -> `skills/<name>/SKILL.md`
+- `CO_AUTHOR` -> `Claude Sonnet 4.6 <noreply@anthropic.com>`
 
-## Sync 流程
+## Workflow
 
-參閱 [_shared/upstream-sync-protocol.md](../_shared/upstream-sync-protocol.md)，
-以上方「庫設定」填入對應的 `{{變數}}` 後執行。
+Read [upstream-sync-protocol.md](../_shared/upstream-sync-protocol.md), substitute the library configuration above into the protocol variables, and execute the shared sync workflow in order.

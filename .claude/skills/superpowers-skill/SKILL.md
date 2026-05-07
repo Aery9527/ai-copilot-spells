@@ -5,89 +5,53 @@ description: Use this skill when a user asks which superpowers skill fits a task
 
 # Superpowers Skill Router
 
-## 快速導覽
+Route requests to the smallest sufficient category file and then to the smallest sufficient skill summary.
 
-- [定位原則](#定位原則)
-- [快速查詢：問題 → Skill](#快速查詢問題--skill)
-- [第二層讀取規則](#第二層讀取規則)
-- [分類入口](#分類入口)
-- [注意事項](#注意事項)
+## Routing Rules
 
-## 定位原則
+1. First determine the dominant category.
+2. Then read only the matching file under [`categories/`](categories/).
+3. Finally, read only the needed file under [`skills/`](skills/).
+4. If a category file is sufficient, stop there.
+5. If the task spans categories, read the primary category first and add secondary categories only as needed.
 
-`superpowers-skill` 是本 repo 針對 superpowers skills 整理後的唯一第一層入口。它的工作不是一次把所有 skill 細節載入，而是先做路由，再按需揭露第二層內容。
+## Category Selection
 
-執行順序固定如下：
+### Development Workflow
 
-1. 先用本檔的「快速查詢：問題 → Skill」判斷需求落在哪個類別。
-2. 再讀對應的分類檔（`categories/`）。
-3. 最後只讀需要的 skill 細節檔（`skills/<name>/SKILL.md`）。
-4. 除非任務真的跨類別，否則不要一口氣讀完整個 `skills/` 目錄。
+- If the user needs design clarification before starting a feature, component, or behavior change, use `brainstorming`.
+- If the user needs to turn an approved spec into an implementation plan, use `writing-plans`.
+- If the user needs to execute an approved plan in a new session, use `executing-plans`.
+- If the user is writing any feature or bug fix and must start with failing tests, use `test-driven-development`.
+- If the user is facing a bug, test failure, or unexpected behavior, use `systematic-debugging`.
+- If the user is about to declare completion or prepare for commit or PR, use `verification-before-completion`.
 
-[返回開頭](#快速導覽)
+### Review And Wrap-Up
 
-## 快速查詢：問題 → Skill
+- If the user needs to evaluate code review feedback before implementing it, use `receiving-code-review`.
+- If the user needs a reviewer subagent after finishing a feature, use `requesting-code-review`.
+- If the user needs to choose a merge or PR wrap-up path after finishing all tasks, use `finishing-a-development-branch`.
 
-### 🔄 開發流程
+### Collaboration
 
-| 我需要... | 使用 Skill |
-|----------|-----------|
-| 開始任何新功能、組件或修改前，先釐清需求與設計 | **brainstorming** |
-| 把確認好的 spec 轉成逐步實作計畫 | **writing-plans** |
-| 在新 session 按計畫逐步執行（含 checkpoint） | **executing-plans** |
-| 寫任何功能或 bug fix 時，強制先寫失敗測試 | **test-driven-development** |
-| 遇到 bug、測試失敗、非預期行為，先找根因 | **systematic-debugging** |
-| 宣告工作完成、準備 commit 或 PR 前，強制先驗證 | **verification-before-completion** |
+- If the task splits into two or more independent subtasks, use `dispatching-parallel-agents`.
+- If the user wants one subagent per planned task in the current session, use `subagent-driven-development`.
+- If the user needs an isolated git worktree before feature work, use `using-git-worktrees`.
 
-### 👀 Review 與收尾
+### System And Meta
 
-| 我需要... | 使用 Skill |
-|----------|-----------|
-| 收到 code review 意見，先技術評估再決定是否實作 | **receiving-code-review** |
-| 完成功能後，派遣 reviewer subagent 進行 review | **requesting-code-review** |
-| 所有 task 完成、測試通過，選擇收尾方式（merge/PR） | **finishing-a-development-branch** |
+- If the task begins and the agent must establish the habit of checking skills first, use `using-superpowers`.
+- If the task is about creating, editing, or validating a skill, use `writing-skills`.
 
-### 🤝 協作與並行
+## Category Entry Points
 
-| 我需要... | 使用 Skill |
-|----------|-----------|
-| 面對 2+ 個獨立任務，並行派遣多個 subagent | **dispatching-parallel-agents** |
-| 在當前 session 中，為每個計畫 task 派遣新 subagent | **subagent-driven-development** |
-| 開始功能開發前，建立隔離的 git worktree 工作空間 | **using-git-worktrees** |
+- Development workflow -> [development-process.md](categories/development-process.md)
+- Review and wrap-up -> [review-and-wrap-up.md](categories/review-and-wrap-up.md)
+- Collaboration -> [collaboration.md](categories/collaboration.md)
+- System and meta -> [system-and-meta.md](categories/system-and-meta.md)
 
-### ⚙️ 系統與維運
+## Notes
 
-| 我需要... | 使用 Skill |
-|----------|-----------|
-| 對話開始，建立「先查 skill 再動手」的使用習慣 | **using-superpowers** |
-| 創建新 skill、修改 skill、部署前驗證 skill 有效性 | **writing-skills** |
-
-[返回開頭](#快速導覽)
-
-## 第二層讀取規則
-
-- 若需求涉及 brainstorming、planning、TDD、debugging、verification，讀 [categories/development-process.md](categories/development-process.md)
-- 若需求涉及 code review 或 branch 收尾，讀 [categories/review-and-wrap-up.md](categories/review-and-wrap-up.md)
-- 若需求涉及平行 agent、subagent 執行、worktree，讀 [categories/collaboration.md](categories/collaboration.md)
-- 若需求涉及 skill 使用紀律或 skill 工程，讀 [categories/system-and-meta.md](categories/system-and-meta.md)
-
-若分類檔已足夠回答，就不要再展開更多 skill 細節；只有在需要具體 Iron Law、觸發條件或注意事項時，才往 `skills/<name>/SKILL.md` 深入。
-
-[返回開頭](#快速導覽)
-
-## 分類入口
-
-- [Development Process](categories/development-process.md)
-- [Review & Wrap-up](categories/review-and-wrap-up.md)
-- [Collaboration](categories/collaboration.md)
-- [System & Meta](categories/system-and-meta.md)
-
-[返回開頭](#快速導覽)
-
-## 注意事項
-
-- Superpowers skills 在 Claude Code plugin 系統中有 `superpowers:` prefix，透過 `Skill` 工具呼叫（例：`Skill("superpowers:brainstorming")`）。
-- `superpowers-skills-sync` 是獨立的維運 skill，位於 [`.claude/skills/superpowers-skills-sync/SKILL.md`](../superpowers-skills-sync/SKILL.md)，不屬於這個 router 的第二層內容。
-- 若需求跨多個 skill，先找主 skill，再只補讀必要的次要 skill，避免一開始就把所有內容灌進 context。
-
-[返回開頭](#快速導覽)
+- Superpowers skills are invoked with the `superpowers:` prefix inside Claude Code plugin routing, for example `Skill("superpowers:brainstorming")`.
+- [`superpowers-skills-sync`](../superpowers-skills-sync/SKILL.md) is a maintenance skill and is not part of this router's second-layer task catalog.
+- The agent MUST prefer the smallest sufficient read set. The agent MUST NOT load the whole [`skills/`](skills/) directory by default.
