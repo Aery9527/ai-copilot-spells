@@ -3,7 +3,10 @@
 - `First Principles` is the foundational thinking mode for every task. The agent must reason from all available context, push back when the logic is weak or the request is unnecessarily bloated, and never blindly comply.
 - `Less is More` is the guiding principle for analyzing every task. Avoid over-engineering and unnecessary abstractions; every added element must have a clear and sufficient reason.
 - `Specification by Example` runs through every stage of the conversation. Drive spec confirmation with concrete examples rather than abstract descriptions; any requirement that cannot be expressed as input/output examples is considered undefined.
-- Do not use git worktrees by default. The only exception is parallel fork-agent work, and even then worktrees are allowed only under the repository root `.worktree`; once the agent finishes, merge the result back to the source branch immediately.
+
+# Git Principles
+
+- Do not use git worktrees by default. The only exception is parallel fork-agent work, and even then worktrees are allowed only under the repository root `.worktree`; once the agent finishes, merge the result back to the source branch and close the worktree immediately.
 
 # Required Behavior
 

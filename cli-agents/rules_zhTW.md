@@ -6,7 +6,7 @@
 
 # Git 使用原則
 
-- 基本上不使用 worktree 執行任務，除非是 fork agent 併發處理多項任務，才允許在專案 root `.worktree` 底下使用 worktree；但 agent 處理完就要直接併回 source branch
+- 基本上不使用 worktree 執行任務，除非是 fork agent 併發處理多項任務，才允許在專案 root `.worktree` 底下使用 worktree；但 agent 處理完就要直接併回 source branch 並關閉
 
 # 嚴格遵守規範
 
