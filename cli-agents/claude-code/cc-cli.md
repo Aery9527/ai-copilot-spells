@@ -7,6 +7,7 @@
 - [CLI 內建指令](#cli-內建指令)
 - [互動式 slash commands](#互動式-slash-commands)
 - [內建 Skills](#內建-skills)
+- [常見 plugin](#常見-plugin)
 - [互動式特殊功能](#互動式特殊功能)
 
 [Back to top](#quick-navigation)
@@ -37,15 +38,12 @@ flowchart LR
 
 ## 更新時間與差異總結
 
-- 更新時間：`2026-05-07 04:23 UTC`
-- 比較基準：上一版本地文件（本次同步前）
+- 更新時間：`2026-05-08 10:03 UTC`
+- 比較基準：上一版本地文件（本次重構 `常見 plugin` 導引前）
 - 差異摘要：
-  - 補上透過 npm 全域安裝時可直接移除的寫法：`npm uninstall -g @anthropic-ai/claude-code`。
-  - 補上透過 npm 全域安裝時可直接升級的寫法：`npm update -g @anthropic-ai/claude-code`。
-  - 新增 `--dangerously-load-development-channels`、`--debug-file`、`--exclude-dynamic-system-prompt-sections`、`--include-hook-events`、`--remote-control-session-name-prefix`、`--replay-user-messages` 等近期補上的高影響 CLI flags，並把 `--debug` 對齊官方現行寫法。
-  - 補上 `claude install`、`claude project purge`、`claude setup-token`、`claude ultrareview` 等官方已列出的 CLI 內建指令。
-  - 補上 `/autofix-pr`、`/focus`、`/heapdump`、`/powerup`、`/recap`、`/setup-bedrock`、`/setup-vertex`、`/teleport`、`/tui`、`/ultraplan`、`/ultrareview`、`/web-setup`、`/team-onboarding`，以及內建 skill `/fewer-permission-prompts`。
-  - 修正 `--enable-auto-mode`、`/review`、`/cost`、`/stats` 的過時描述，讓內容回到目前官方行為。
+  - 將 `## 常見 plugin` 重構成可擴充的子導覽形式，方便後續新增更多 plugin。
+  - 把 `Codex` 改成獨立 plugin 條目，拆成「用途 / 安裝步驟 / 初次檢查 / 可先試」四個固定子段。
+  - 保留原本 `codex` 安裝資訊，但讓閱讀順序更明確。
 
 [Back to top](#quick-navigation)
 
@@ -309,6 +307,52 @@ Bundled skills 隨 Claude Code 出貨，是 prompt-based 的指令，可協調�
 | `/simplify [focus]` | 複查最近修改的檔案，找出程式碼重用、品質、效率問題並修正。 | 同時會產生多個 review agents 並行處理。 |
 
 [Back to top](#quick-navigation)
+
+---
+
+## 常見 plugin
+
+這一章整理值得額外安裝的 plugin。後續若新增其他 plugin，建議沿用相同結構：先寫用途，再寫安裝、檢查與最小可用命令。
+
+### 章內導覽
+
+- [Codex](#codex)
+
+### Codex
+
+在 Claude Code 內使用 `codex` plugin 後，實際可用的是 `/codex:*` 指令，例如 `/codex:setup`、`/codex:review`、`/codex:rescue`，不是單獨一個內建 `/codex`。
+
+#### 用途
+
+- 想在 Claude Code 內直接呼叫 Codex 做 review 或委派任務。
+- 不想來回切換 Claude Code 與獨立 Codex CLI。
+
+#### 安裝步驟
+
+1. 加入 marketplace：`/plugin marketplace add openai/codex-plugin-cc`
+2. 安裝 plugin：`/plugin install codex@openai-codex`
+3. 重新載入：`/reload-plugins`
+
+如果本機還沒裝 Codex CLI，也可以先執行 `npm install -g @openai/codex`，再回到 Claude Code 跑 `/codex:setup`。
+
+#### 初次檢查
+
+1. 檢查 plugin 是否可用：`/codex:setup`
+2. 若尚未登入 Codex：`!codex login`
+
+#### 可先試
+
+- `/codex:review --background`
+- `/codex:rescue investigate why the tests started failing`
+
+來源：
+- [Codex plugin for Claude Code](https://github.com/openai/codex-plugin-cc)
+- [Discover and install prebuilt plugins through marketplaces](https://code.claude.com/docs/en/discover-plugins)
+- [Codex CLI](https://developers.openai.com/codex/cli)
+
+[Back to top](#quick-navigation)
+
+---
 
 ## 互動式特殊功能
 
