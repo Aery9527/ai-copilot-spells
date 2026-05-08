@@ -1,6 +1,6 @@
 {
   "permissions": {
-    "defaultMode": "default",
+    "defaultMode": "bypassPermissions",
     "allow": [
       "Read",
       "Glob",
