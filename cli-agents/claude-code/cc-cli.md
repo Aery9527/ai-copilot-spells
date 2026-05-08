@@ -38,12 +38,12 @@ flowchart LR
 
 ## 更新時間與差異總結
 
-- 更新時間：`2026-05-08 10:03 UTC`
-- 比較基準：上一版本地文件（本次重構 `常見 plugin` 導引前）
+- 更新時間：`2026-05-08 10:08 UTC`
+- 比較基準：上一版本地文件（本次將 `Codex` 條目改為 table 前）
 - 差異摘要：
-  - 將 `## 常見 plugin` 重構成可擴充的子導覽形式，方便後續新增更多 plugin。
-  - 把 `Codex` 改成獨立 plugin 條目，拆成「用途 / 安裝步驟 / 初次檢查 / 可先試」四個固定子段。
-  - 保留原本 `codex` 安裝資訊，但讓閱讀順序更明確。
+  - 將 `Codex` 說明改成 table 呈現，讓用途、安裝、檢查與範例更容易掃描。
+  - 新增「指定模型」表格，補上單次任務與預設模型兩種設定方式。
+  - 明確標出 `/codex:rescue` 可用 `--model` / `--effort` 單次覆蓋，而 `/codex:review`、`/codex:adversarial-review` 較適合走 `config.toml` 預設。
 
 [Back to top](#quick-navigation)
 
@@ -312,7 +312,7 @@ Bundled skills 隨 Claude Code 出貨，是 prompt-based 的指令，可協調�
 
 ## 常見 plugin
 
-這一章整理值得額外安裝的 plugin。後續若新增其他 plugin，建議沿用相同結構：先寫用途，再寫安裝、檢查與最小可用命令。
+這一章整理值得額外安裝的 plugin。後續若新增其他 plugin，建議沿用相同 table 結構，固定呈現用途、安裝、檢查、模型設定與最小可用命令。
 
 ### 章內導覽
 
@@ -322,28 +322,24 @@ Bundled skills 隨 Claude Code 出貨，是 prompt-based 的指令，可協調�
 
 在 Claude Code 內使用 `codex` plugin 後，實際可用的是 `/codex:*` 指令，例如 `/codex:setup`、`/codex:review`、`/codex:rescue`，不是單獨一個內建 `/codex`。
 
-#### 用途
+| 項目 | 內容 |
+|---|---|
+| 用途 | 想在 Claude Code 內直接呼叫 Codex 做 review 或委派任務。<br>不想來回切換 Claude Code 與獨立 Codex CLI。 |
+| 安裝步驟 | 1. `/plugin marketplace add openai/codex-plugin-cc`<br>2. `/plugin install codex@openai-codex`<br>3. `/reload-plugins` |
+| 補充安裝 | 如果本機還沒裝 Codex CLI，可先執行 `npm install -g @openai/codex`，再回到 Claude Code 跑 `/codex:setup`。 |
+| 初次檢查 | 1. `/codex:setup`<br>2. 若尚未登入 Codex：`!codex login` |
+| 常用指令 | `/codex:review`：唯讀 review。<br>`/codex:adversarial-review`：挑戰方案與風險。<br>`/codex:rescue`：委派調查、修 bug、續做任務。 |
+| 可先試 | `/codex:review --background`<br>`/codex:rescue investigate why the tests started failing` |
 
-- 想在 Claude Code 內直接呼叫 Codex 做 review 或委派任務。
-- 不想來回切換 Claude Code 與獨立 Codex CLI。
+#### 指定模型
 
-#### 安裝步驟
-
-1. 加入 marketplace：`/plugin marketplace add openai/codex-plugin-cc`
-2. 安裝 plugin：`/plugin install codex@openai-codex`
-3. 重新載入：`/reload-plugins`
-
-如果本機還沒裝 Codex CLI，也可以先執行 `npm install -g @openai/codex`，再回到 Claude Code 跑 `/codex:setup`。
-
-#### 初次檢查
-
-1. 檢查 plugin 是否可用：`/codex:setup`
-2. 若尚未登入 Codex：`!codex login`
-
-#### 可先試
-
-- `/codex:review --background`
-- `/codex:rescue investigate why the tests started failing`
+| 情境 | 寫法 | 說明 |
+|---|---|---|
+| 單次指定模型 | `/codex:rescue --model gpt-5.4-mini --effort medium investigate the flaky test` | 只影響這一次 `rescue` 任務。 |
+| 單次快速模型 | `/codex:rescue --model spark fix the issue quickly` | `spark` 會對應到 `gpt-5.3-codex-spark`。 |
+| 專案預設模型 | `.codex/config.toml` 內加入 `model = "gpt-5.4-mini"`<br>`model_reasoning_effort = "high"` | 影響目前專案；只在 trusted project 載入。 |
+| 全機預設模型 | `~/.codex/config.toml` 內加入同樣設定 | 影響這台機器上的所有專案。 |
+| `review` / `adversarial-review` 指定模型 | 建議走 `config.toml` 預設 | 目前明確文件化的單次 `--model` override 主要是 `/codex:rescue`。 |
 
 來源：
 - [Codex plugin for Claude Code](https://github.com/openai/codex-plugin-cc)
