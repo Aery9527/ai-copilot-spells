@@ -2,7 +2,10 @@ model = "gpt-5.4"
 model_reasoning_effort = "medium"
 
 [tui]
-status_line = ["model-with-reasoning", "fast-mode", "current-dir", "git-branch", "thread-title", "task-progress", "five-hour-limit", "weekly-limit", "used-tokens", "context-window-size", "context-used", "run-state"]
+status_line = ["model-with-reasoning", "fast-mode", "task-progress", "current-dir", "git-branch", "branch-changes", "thread-title", "five-hour-limit", "weekly-limit", "total-input-tokens", "total-output-tokens", "context-window-size", "context-used", "used-tokens", "run-state"]
+status_line_use_colors = true
+theme = "base16-eighties-dark"
 
 [windows]
-sandbox = "unelevated"
+sandbox = "elevated"   # 建議用。首次執行需要管理員授權，會建立專屬低權限 sandbox 使用者、設定 ACL 邊界、防火牆規則，隔離最完整
+sandbox = "unelevated" # 無管理員權限時用。用當前帳號衍生出的 restricted Windows token 來執行，靠 ACL 做檔案邊界，但網路隔離是 environment-level，沒有獨立 sandbox user，隔離強度較弱
