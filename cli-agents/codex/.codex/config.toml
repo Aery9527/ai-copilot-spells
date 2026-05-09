@@ -2,7 +2,7 @@ model = "gpt-5.4"
 model_reasoning_effort = "medium"
 
 [tui]
-status_line = ["model-with-reasoning", "task-progress", "current-dir", "git-branch", "branch-changes", "thread-title", "five-hour-limit", "weekly-limit", "total-input-tokens", "total-output-tokens", "context-window-size", "context-used", "used-tokens", "fast-mode", "run-state"]
+status_line = ["current-dir", "git-branch", "branch-changes", "task-progress", "thread-title", "model-with-reasoning", "context-window-size", "context-used", "five-hour-limit", "weekly-limit", "fast-mode", "run-state"]
 status_line_use_colors = true
 theme = "base16-eighties-dark"
 
