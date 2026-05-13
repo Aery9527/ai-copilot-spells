@@ -34,10 +34,10 @@ flowchart LR
 
 ## 更新時間與差異總結
 
-- 更新時間：`2026-05-13 08:26 UTC`
+- 更新時間：`2026-05-13 10:09 UTC`
 - 比較基準：上一版本地文件（補 `Hook 機制` 前）
 - 差異摘要：
-  - 新增「Hook 機制」章節，整理 Copilot CLI hooks、設定來源、支援事件與 command / HTTP / prompt hook 類型。
+  - 新增「Hook 機制」章節，整理 Copilot CLI hooks、設定來源、官方完整事件清單與 command / HTTP / prompt hook 類型。
 
 [Back to top](#quick-navigation)
 
@@ -225,10 +225,28 @@ GitHub Copilot CLI 有正式 hook 機制，可在 session lifecycle 的固定時
 |---|---|
 | 設定位置 | repository hook files：`.github/hooks/*.json`。使用者層：`~/.copilot/hooks/*.json`，Windows 為 `%USERPROFILE%\.copilot\hooks\*.json`；若設定 `COPILOT_HOME`，則使用 `$COPILOT_HOME/hooks/`。也可放在 `.github/copilot/settings.json`、`.github/copilot/settings.local.json`、`~/.copilot/settings.json` 的 top-level `hooks`，或由 plugin 提供。 |
 | 載入規則 | user、project、plugin hooks 會合併；同一事件來自多個來源時，所有 hook entries 都會執行。 |
-| 支援事件 | `sessionStart`、`sessionEnd`、`userPromptSubmitted`、`preToolUse`、`postToolUse`、`postToolUseFailure`、`permissionRequest`、`agentStop`、`subagentStart`、`subagentStop`、`errorOccurred`、`notification`、`preCompact`。 |
+| 官方事件 | 下表列出官方文件提到的所有 hook events；Copilot CLI 支援全部，cloud agent 只觸發其中子集且部分行為不同。 |
 | hook type | `command` 可指定 `bash`、`powershell` 或 cross-platform `command`；`http` 會送 JSON `POST`；`prompt` 只支援 `sessionStart`，且只在新的互動式 session 觸發。 |
 | 決策控制 | `preToolUse` 可 allow / deny / modify；`permissionRequest` 可 allow / deny；`agentStop` / `subagentStop` 可 block 並要求繼續；`postToolUseFailure` 可提供 recovery context。 |
 | CLI / cloud 差異 | Copilot CLI hooks 在開發者本機、同一 shell 執行，支援 reference 內所有事件。Copilot cloud agent 只從 `.github/hooks/*.json` 讀設定，並在 ephemeral Linux sandbox 內執行，部分事件不觸發或行為不同。 |
+
+官方事件清單：
+
+| event | 觸發時機 / 用途 |
+|---|---|
+| `agentStop` | main agent 完成一個 turn 時觸發；可用 `decision: "block"` 強制再跑一輪。 |
+| `errorOccurred` | 執行期間發生錯誤時觸發，payload 會包含錯誤訊息、錯誤來源與是否可恢復。 |
+| `notification` | CLI 發出 system notification 時非同步觸發，例如 shell 完成、agent 完成或 idle、permission prompt、elicitation dialog；不會阻擋 session。 |
+| `permissionRequest` | permission service 執行前觸發，早於 rules engine、session approvals、auto allow / deny 與 user prompt；可 allow / deny 以短路正常權限流程。 |
+| `postToolUse` | tool 成功完成後觸發，適合記錄結果或做非阻擋式後處理。 |
+| `postToolUseFailure` | tool 失敗後觸發，可透過 additional context 提供 recovery guidance。 |
+| `preCompact` | context compaction 即將開始時觸發，可依 `manual` 或 `auto` trigger matcher 做壓縮前處理。 |
+| `preToolUse` | 每次 tool 執行前觸發，可 allow、deny 或修改 tool arguments。 |
+| `sessionEnd` | session 結束時觸發，reason 可能是 `complete`、`error`、`abort`、`timeout` 或 `user_exit`。 |
+| `sessionStart` | 新 session 或 resumed session 開始時觸發，可注入 additional context；prompt hook 只支援此事件。 |
+| `subagentStart` | subagent 產生、尚未執行前觸發，可依 agent name matcher 補充 subagent prompt context。 |
+| `subagentStop` | subagent 完成時觸發，可 block 並要求 subagent 繼續。 |
+| `userPromptSubmitted` | 使用者送出 prompt 時觸發；cloud agent 最多只會對 job 初始 prompt 觸發一次。 |
 
 最小 `preToolUse` 範例：
 

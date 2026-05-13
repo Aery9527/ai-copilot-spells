@@ -40,10 +40,10 @@ flowchart LR
 
 ## 更新時間與差異總結
 
-- 更新時間：`2026-05-13 08:26 UTC`
+- 更新時間：`2026-05-13 10:09 UTC`
 - 比較基準：上一版本地文件（補 `Hook 機制` 前）
 - 差異摘要：
-  - 新增「Hook 機制」章節，整理 Codex CLI hook feature flag、設定位置、支援事件與目前攔截限制。
+  - 新增「Hook 機制」章節，整理 Codex CLI hook feature flag、設定位置、官方完整事件清單與目前攔截限制。
 
 [Back to top](#quick-navigation)
 
@@ -204,10 +204,21 @@ codex_hooks = true
 |---|---|
 | 設定位置 | Codex 會從 active config layer 旁邊讀取 `hooks.json`，也支援 `config.toml` 內 inline `[hooks]` table。常見位置是 `~/.codex/hooks.json`、`~/.codex/config.toml`、`<repo>/.codex/hooks.json`、`<repo>/.codex/config.toml`。 |
 | 載入規則 | 多個來源的 matching hooks 會全部執行；高優先序 config 不會覆蓋低優先序 hook。專案層 `.codex/` hooks 只會在 trusted project 載入。 |
-| 支援事件 | `SessionStart`、`PreToolUse`、`PermissionRequest`、`PostToolUse`、`UserPromptSubmit`、`Stop`。 |
+| 官方事件 | 下表列出官方文件目前提到的所有 hook events；Codex hooks 仍在 feature flag 後面，事件數量比 Claude Code 與 Copilot 少。 |
 | matcher | `PreToolUse`、`PermissionRequest`、`PostToolUse` 主要 match tool name，例如 `Bash`、`apply_patch`、`Edit`、`Write` 或 MCP tool name；`SessionStart` match `startup`、`resume`、`clear`。 |
 | 決策控制 | `PreToolUse` 可 deny Bash command；`PermissionRequest` 可 allow / deny approval request；`UserPromptSubmit` 可 block prompt；`Stop` 的 block 代表要求 Codex 繼續跑下一輪。 |
 | 限制 | `PreToolUse` / `PostToolUse` 目前只是不完整攔截層；`PostToolUse` 發生在 tool 已執行後，不能回復副作用。 |
+
+官方事件清單：
+
+| event | 觸發時機 / 用途 |
+|---|---|
+| `SessionStart` | session 啟動、恢復或清空後觸發；可依 `startup`、`resume`、`clear` matcher 載入工作區慣例或追加 developer context。 |
+| `PreToolUse` | 支援的工具執行前觸發，目前可攔截 Bash、`apply_patch` 與 MCP tool calls；可阻擋部分 Bash command，但不是完整 enforcement boundary。 |
+| `PermissionRequest` | Codex 即將要求 approval 時觸發，例如 shell escalation 或 managed-network approval；可 allow、deny 或不決策交回正常 approval flow。 |
+| `PostToolUse` | 支援的工具產生 output 後觸發，包含 Bash、`apply_patch` 與 MCP tool calls；可補充 developer context，但不能復原已發生的副作用。 |
+| `UserPromptSubmit` | 使用者 prompt 即將送出時觸發；可加入 additional context，也可 block prompt 以要求補充資訊或避免敏感操作。 |
+| `Stop` | turn 結束、Codex 準備停止時觸發；`decision: "block"` 代表要求 Codex 以 hook reason 建立 continuation prompt 繼續下一輪。 |
 
 最小 `hooks.json` 範例：
 

@@ -40,10 +40,10 @@ flowchart LR
 
 ## 更新時間與差異總結
 
-- 更新時間：`2026-05-13 08:26 UTC`
+- 更新時間：`2026-05-13 10:09 UTC`
 - 比較基準：上一版本地文件（補 `Hook 機制` 前）
 - 差異摘要：
-  - 新增「Hook 機制」章節，整理 Claude Code lifecycle hooks、設定位置、常見事件與風險邊界。
+  - 新增「Hook 機制」章節，整理 Claude Code lifecycle hooks、設定位置、官方完整事件清單與風險邊界。
 
 [Back to top](#quick-navigation)
 
@@ -303,10 +303,44 @@ Claude Code 有正式 hook 機制，可在 session lifecycle 的固定時點執�
 |---|---|
 | 設定位置 | 使用者層：`~/.claude/settings.json`。專案層：`.claude/settings.json`。本機專案層：`.claude/settings.local.json`。也可來自 managed policy、plugin `hooks/hooks.json`、skill 或 agent frontmatter。 |
 | 檢視方式 | 在互動模式輸入 `/hooks`，可用唯讀介面檢查目前載入的 hook event、matcher、type、來源檔與完整 handler。 |
-| 常見事件 | `SessionStart`、`UserPromptSubmit`、`PreToolUse`、`PermissionRequest`、`PostToolUse`、`PostToolUseFailure`、`PostToolBatch`、`Stop`、`SubagentStop`、`Notification`、`ConfigChange`、`CwdChanged`、`FileChanged`。 |
+| 官方事件 | 下表列出官方文件提到的所有 hook events；不同自動化場景會用到 setup、compaction、worktree、elicitation 等較少見事件。 |
 | 決策控制 | `PreToolUse` 可 allow / deny / ask / defer；`PermissionRequest` 可 allow / deny；`Stop`、`SubagentStop`、`UserPromptSubmit` 等可用 `decision: "block"` 影響流程。 |
 | 非同步 | `type: "command"` 可設定 `async: true`，適合長時間測試、部署通知或外部 API 呼叫；非同步 hook 不能阻擋原始動作。 |
 | 風險 | command hooks 以目前系統使用者權限執行，能讀寫該使用者可存取的檔案；加入前要審查 command 與 timeout。 |
+
+官方事件清單：
+
+| event | 觸發時機 / 用途 |
+|---|---|
+| `SessionStart` | session 開始或恢復時觸發，常用來載入工作區慣例、初始化環境或補充 context。 |
+| `Setup` | 使用 `--init-only`，或在 `-p` 模式搭配 `--init` / `--maintenance` 時觸發，適合 CI / scripts 的一次性準備。 |
+| `UserPromptSubmit` | 使用者送出 prompt、Claude 處理前觸發，可做 prompt 稽核、阻擋敏感資料或追加 context。 |
+| `UserPromptExpansion` | 使用者輸入的 command 展開成 prompt、送到 Claude 前觸發，可阻擋或檢查 command expansion。 |
+| `PreToolUse` | tool call 執行前觸發，可阻擋、允許、要求確認或延後工具呼叫。 |
+| `PermissionRequest` | 權限對話出現時觸發，可自動 allow / deny 或交回正常權限流程。 |
+| `PermissionDenied` | auto mode classifier 拒絕 tool call 時觸發，可回傳 `retry: true` 讓 model 嘗試改用其他方式。 |
+| `PostToolUse` | tool call 成功後觸發，常用於 lint、格式化、記錄工具輸出或加入後續 context。 |
+| `PostToolUseFailure` | tool call 失敗後觸發，適合補充錯誤診斷、建議 recovery path 或記錄失敗。 |
+| `PostToolBatch` | 一批 parallel tool calls 全部完成後、下一次 model call 前觸發，適合批次檢查與彙整結果。 |
+| `Notification` | Claude Code 發出 notification 時觸發，可接通知系統或處理 permission / idle 類通知。 |
+| `SubagentStart` | subagent 產生時觸發，可依 agent type 注入額外 context 或做啟動紀錄。 |
+| `SubagentStop` | subagent 完成時觸發，可檢查產出並用 block 要求 subagent 繼續處理。 |
+| `TaskCreated` | 透過 `TaskCreate` 建立 task 時觸發，適合稽核 task 建立或補充 task context。 |
+| `TaskCompleted` | task 被標記完成時觸發，適合驗收、統計或要求補做收尾檢查。 |
+| `Stop` | Claude 完成回應時觸發，可做最後驗證；block 代表要求 Claude 繼續下一輪。 |
+| `StopFailure` | turn 因 API error 結束時觸發；官方說明此事件的 output 與 exit code 會被忽略，主要用於記錄。 |
+| `TeammateIdle` | agent team teammate 即將進入 idle 時觸發，可用於團隊型 agent 的接續或提醒。 |
+| `InstructionsLoaded` | `CLAUDE.md` 或 `.claude/rules/*.md` 載入 context 時觸發，包含 session start 與 session 中 lazy load。 |
+| `ConfigChange` | session 期間設定檔變更時觸發，可用來重新載入或驗證設定。 |
+| `CwdChanged` | 工作目錄改變時觸發，例如 Claude 執行 `cd`；適合 direnv 類 reactive environment 管理。 |
+| `FileChanged` | 被 matcher 監看的檔案在磁碟上變更時觸發，適合監看 `.envrc`、設定檔或生成檔。 |
+| `WorktreeCreate` | 透過 `--worktree` 或 `isolation: "worktree"` 建立 worktree 時觸發，可取代預設 git 行為。 |
+| `WorktreeRemove` | session 結束或 subagent 完成並移除 worktree 時觸發，適合清理隔離工作區資源。 |
+| `PreCompact` | context compaction 開始前觸發，適合保留關鍵資訊或稽核壓縮前狀態。 |
+| `PostCompact` | context compaction 完成後觸發，適合檢查壓縮結果或補上必要 context。 |
+| `Elicitation` | MCP server 在 tool call 中要求使用者輸入時觸發，可審核或處理 elicitation request。 |
+| `ElicitationResult` | 使用者回覆 MCP elicitation 後、送回 server 前觸發，可驗證或轉換回覆。 |
+| `SessionEnd` | session 終止時觸發，常用於收尾、清理、記錄 transcript 或送出 analytics。 |
 
 最小 `PreToolUse` 範例：
 
