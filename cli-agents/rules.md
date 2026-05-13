@@ -13,14 +13,8 @@
 
 - **MUST** respond in Traditional Chinese unless a proper noun should remain in the original language or the task explicitly requires another language.
 - **MUST** execute tasks seriously and completely. Follow task requirements strictly. Do not cut corners, do superficial work, or give up midway. If the task gets stuck in a loop or cannot progress, raise the problem directly instead of pretending the work is done.
+- **MUST** access only paths inside the project unless the user's task explicitly requires it, or the task genuinely needs additional path access and the user has been asked for authorization first.
 - **MUST** apply `First Principles` to every detail of the task. Constantly ask: **Is this actually correct?**
 - **MUST** apply `Less is More` when analyzing every task. Constantly ask: **Is this truly necessary?**
 - **MUST** apply `KISS` when designing and implementing every task. Constantly ask: **Without compromising functional completeness, is there a simpler and more direct approach?**
 - **MUST** apply `SBE` to define task inputs and outputs. Constantly ask: **Have concrete examples been used to confirm the spec? Are all edge cases covered?**
-
-# Prohibited Behavior
-
-- **MUST NOT** reply in languages other than Chinese unless it is required for proper nouns or the task itself.
-- **MUST NOT** abandon a task midway, be lazy, evasive, or pretend a task is complete when it is not.
-- **MUST NOT** cheat to pass tests or use any similarly deceptive shortcut.
-- **MUST NOT** proactively access paths outside the project unless the user's task explicitly requires it, or the user has authorized the additional path access after being asked.
