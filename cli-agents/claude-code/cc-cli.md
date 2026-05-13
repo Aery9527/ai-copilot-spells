@@ -6,6 +6,7 @@
 - [常用 CLI 參數](#常用-cli-參數)
 - [CLI 內建指令](#cli-內建指令)
 - [互動式 slash commands](#互動式-slash-commands)
+- [Hook 機制](#hook-機制)
 - [內建 Skills](#內建-skills)
 - [常見 plugin](#常見-plugin)
 - [互動式特殊功能](#互動式特殊功能)
@@ -21,6 +22,7 @@
   - [CLI Reference](https://code.claude.com/docs/en/cli-reference)
   - [Commands](https://code.claude.com/docs/en/commands)
   - [Interactive Mode](https://code.claude.com/docs/en/interactive-mode)
+  - [Hooks reference](https://code.claude.com/docs/en/hooks)
   - [Skills](https://code.claude.com/docs/en/skills)
 - 在 prompt 中加入 `ultrathink`（或 `think`、`think hard`、`think harder`）可觸發不同深度的推理模式。也可使用 `Alt+T` 直接切換。
 - 普遍 allow 的 tool 啟動指令 `claude --allowedTools "Bash(find:*)" "Bash(cd:*)" "Bash(powershell:*)"`
@@ -38,12 +40,10 @@ flowchart LR
 
 ## 更新時間與差異總結
 
-- 更新時間：`2026-05-08 10:08 UTC`
-- 比較基準：上一版本地文件（本次將 `Codex` 條目改為 table 前）
+- 更新時間：`2026-05-13 08:26 UTC`
+- 比較基準：上一版本地文件（補 `Hook 機制` 前）
 - 差異摘要：
-  - 將 `Codex` 說明改成 table 呈現，讓用途、安裝、檢查與範例更容易掃描。
-  - 新增「指定模型」表格，補上單次任務與預設模型兩種設定方式。
-  - 明確標出 `/codex:rescue` 可用 `--model` / `--effort` 單次覆蓋，而 `/codex:review`、`/codex:adversarial-review` 較適合走 `config.toml` 預設。
+  - 新增「Hook 機制」章節，整理 Claude Code lifecycle hooks、設定位置、常見事件與風險邊界。
 
 [Back to top](#quick-navigation)
 
@@ -292,6 +292,50 @@ flowchart LR
 | `/exit` | 離開 CLI。 | alias：`/quit`。 |
 
 [Back to top](#quick-navigation)
+
+---
+
+## Hook 機制
+
+Claude Code 有正式 hook 機制，可在 session lifecycle 的固定時點執行 shell command、HTTP endpoint、MCP tool、prompt hook 或 agent hook。適合做自動化檢查、稽核紀錄、權限決策、環境初始化與工具呼叫前後的 guardrail；如果只是固定專案規則或靜態背景資訊，優先放在 [CLAUDE.md](https://code.claude.com/docs/en/memory)。
+
+| 面向 | 說明 |
+|---|---|
+| 設定位置 | 使用者層：`~/.claude/settings.json`。專案層：`.claude/settings.json`。本機專案層：`.claude/settings.local.json`。也可來自 managed policy、plugin `hooks/hooks.json`、skill 或 agent frontmatter。 |
+| 檢視方式 | 在互動模式輸入 `/hooks`，可用唯讀介面檢查目前載入的 hook event、matcher、type、來源檔與完整 handler。 |
+| 常見事件 | `SessionStart`、`UserPromptSubmit`、`PreToolUse`、`PermissionRequest`、`PostToolUse`、`PostToolUseFailure`、`PostToolBatch`、`Stop`、`SubagentStop`、`Notification`、`ConfigChange`、`CwdChanged`、`FileChanged`。 |
+| 決策控制 | `PreToolUse` 可 allow / deny / ask / defer；`PermissionRequest` 可 allow / deny；`Stop`、`SubagentStop`、`UserPromptSubmit` 等可用 `decision: "block"` 影響流程。 |
+| 非同步 | `type: "command"` 可設定 `async: true`，適合長時間測試、部署通知或外部 API 呼叫；非同步 hook 不能阻擋原始動作。 |
+| 風險 | command hooks 以目前系統使用者權限執行，能讀寫該使用者可存取的檔案；加入前要審查 command 與 timeout。 |
+
+最小 `PreToolUse` 範例：
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/check-bash.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+來源：
+- [Hooks reference](https://code.claude.com/docs/en/hooks)
+- [Automate workflows with hooks](https://code.claude.com/docs/en/hooks-guide)
+
+[Back to top](#quick-navigation)
+
+---
 
 ## 內建 Skills
 

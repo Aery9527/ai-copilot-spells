@@ -6,6 +6,7 @@
 - [常用 CLI 參數](#常用-cli-參數)
 - [CLI 內建指令](#cli-內建指令)
 - [互動式 slash commands](#互動式-slash-commands)
+- [Hook 機制](#hook-機制)
 - [互動式特殊功能](#互動式特殊功能)
 
 [Back to top](#quick-navigation)
@@ -18,6 +19,7 @@
 - 來源：
   - [CLI Command Reference](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference)
   - [Using GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli)
+  - [GitHub Copilot hooks reference](https://docs.github.com/en/copilot/reference/hooks-reference)
 
 ```mermaid
 flowchart LR
@@ -32,15 +34,10 @@ flowchart LR
 
 ## 更新時間與差異總結
 
-- 更新時間：`2026-05-07 04:23 UTC`
-- 比較基準：上一版本地文件（本次同步前）
+- 更新時間：`2026-05-13 08:26 UTC`
+- 比較基準：上一版本地文件（補 `Hook 機制` 前）
 - 差異摘要：
-  - 補上透過 npm 全域安裝時可直接移除的寫法：`npm uninstall -g @github/copilot`。
-  - 補上透過 npm 全域安裝時可直接升級的寫法：`npm update -g @github/copilot`。
-  - 補上 `--connect`、`--effort` / `--reasoning-effort`、`--enable-reasoning-summaries`、`--mode`、`--mouse`、`--no-mouse`、`--no-remote`、`--plan`、`--plugin-dir`、`--remote` 等官方目前已列出的高影響 flags。
-  - 補上 `copilot completion`、`copilot mcp`，以及 `/ask`、`/changelog`、`/chronicle`、`/copy`、`/downgrade`、`/env`、`/instructions`、`/keep-alive`、`/pr`、`/remote`、`/research`、`/restart`、`/statusline`、`/version` 等互動式 commands。
-  - 修正 `/mcp`、`/session`、`/share`、`/theme` 等已過時描述，補上目前官方列出的 subcommands 與支援格式。
-  - 保留這次官方 command reference 未明列、但本地仍記錄的進階 flags / commands，避免因文件分散而過度刪減。
+  - 新增「Hook 機制」章節，整理 Copilot CLI hooks、設定來源、支援事件與 command / HTTP / prompt hook 類型。
 
 [Back to top](#quick-navigation)
 
@@ -217,6 +214,48 @@ flowchart LR
 | `/exit`, `/quit` | 離開 CLI。 | 正常結束互動 session。 |
 
 [Back to top](#quick-navigation)
+
+---
+
+## Hook 機制
+
+GitHub Copilot CLI 有正式 hook 機制，可在 session lifecycle 的固定時點執行自訂 shell command、HTTP request 或 session start prompt。它適合做工具 guardrails、prompt / session 稽核、錯誤處理政策、subagent 完成後驗證與 team policy enforcement。
+
+| 面向 | 說明 |
+|---|---|
+| 設定位置 | repository hook files：`.github/hooks/*.json`。使用者層：`~/.copilot/hooks/*.json`，Windows 為 `%USERPROFILE%\.copilot\hooks\*.json`；若設定 `COPILOT_HOME`，則使用 `$COPILOT_HOME/hooks/`。也可放在 `.github/copilot/settings.json`、`.github/copilot/settings.local.json`、`~/.copilot/settings.json` 的 top-level `hooks`，或由 plugin 提供。 |
+| 載入規則 | user、project、plugin hooks 會合併；同一事件來自多個來源時，所有 hook entries 都會執行。 |
+| 支援事件 | `sessionStart`、`sessionEnd`、`userPromptSubmitted`、`preToolUse`、`postToolUse`、`postToolUseFailure`、`permissionRequest`、`agentStop`、`subagentStart`、`subagentStop`、`errorOccurred`、`notification`、`preCompact`。 |
+| hook type | `command` 可指定 `bash`、`powershell` 或 cross-platform `command`；`http` 會送 JSON `POST`；`prompt` 只支援 `sessionStart`，且只在新的互動式 session 觸發。 |
+| 決策控制 | `preToolUse` 可 allow / deny / modify；`permissionRequest` 可 allow / deny；`agentStop` / `subagentStop` 可 block 並要求繼續；`postToolUseFailure` 可提供 recovery context。 |
+| CLI / cloud 差異 | Copilot CLI hooks 在開發者本機、同一 shell 執行，支援 reference 內所有事件。Copilot cloud agent 只從 `.github/hooks/*.json` 讀設定，並在 ephemeral Linux sandbox 內執行，部分事件不觸發或行為不同。 |
+
+最小 `preToolUse` 範例：
+
+```json
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": "./.github/hooks/check-tool.sh",
+        "powershell": ".\\.github\\hooks\\check-tool.ps1",
+        "timeoutSec": 30
+      }
+    ]
+  }
+}
+```
+
+來源：
+- [GitHub Copilot hooks reference](https://docs.github.com/en/copilot/reference/hooks-reference)
+- [Using hooks with GitHub Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/use-hooks)
+- [Comparing GitHub Copilot CLI customization features](https://docs.github.com/en/copilot/concepts/agents/copilot-cli/comparing-cli-features)
+
+[Back to top](#quick-navigation)
+
+---
 
 ## 互動式特殊功能
 

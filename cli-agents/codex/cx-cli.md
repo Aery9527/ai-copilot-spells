@@ -7,6 +7,7 @@
 - [常用 CLI 參數](#常用-cli-參數)
 - [CLI 內建指令](#cli-內建指令)
 - [互動式 slash commands](#互動式-slash-commands)
+- [Hook 機制](#hook-機制)
 - [設定與安全邊界](#設定與安全邊界)
 - [互動式特殊功能](#互動式特殊功能)
 
@@ -22,6 +23,7 @@
   - [CLI Reference](https://developers.openai.com/codex/cli/reference)
   - [Slash Commands](https://developers.openai.com/codex/cli/slash-commands)
   - [CLI Features](https://developers.openai.com/codex/cli/features)
+  - [Hooks](https://developers.openai.com/codex/hooks)
   - [Auth](https://developers.openai.com/codex/auth)
   - [openai/codex](https://github.com/openai/codex)
 
@@ -38,15 +40,10 @@ flowchart LR
 
 ## 更新時間與差異總結
 
-- 更新時間：`2026-05-07 04:23 UTC`
-- 比較基準：導入 `cli-doc-sync` 支援前的初版文件（現檔名 `cx-cli.md`，原名 `codex-cli.md`）
+- 更新時間：`2026-05-13 08:26 UTC`
+- 比較基準：上一版本地文件（補 `Hook 機制` 前）
 - 差異摘要：
-  - 補上對應安裝來源的移除方式：`npm uninstall -g @openai/codex` 與 `brew uninstall --cask codex`。
-  - 補上透過 npm 全域安裝時可直接升級的寫法：`npm update -g @openai/codex`。
-  - 將文件開頭摘要章節統一為 `cli-doc-sync` 管理的 `## 更新時間與差異總結`，避免後續同步需要為 `codex-cli` 加特例分支。
-  - 保留原本首次建立時的重點：本文件聚焦 **Codex CLI / TUI 本地工作流**，不是 Codex Web。
-  - 目前涵蓋安裝、登入、approval / sandbox、`codex exec`、`resume`、`cloud`、slash commands、config 與 TUI 快捷操作。
-  - Codex 版本迭代很快；某些 flags、subcommands 與 slash commands 可能只在較新版本可見，**遇到差異時以 `codex --help` / `codex <subcommand> --help` 為準**。若你需要的是遠端瀏覽器版工作流，應改查 OpenAI 的 Codex Web 文件；關於 subagents、custom agents 與 `AGENTS.md`，請搭配 [Codex Agent 使用指南](../../docs/codex-agents.md) 一起看。
+  - 新增「Hook 機制」章節，整理 Codex CLI hook feature flag、設定位置、支援事件與目前攔截限制。
 
 [Back to top](#quick-navigation)
 
@@ -191,6 +188,55 @@ codex login --device-auth
 | `/keymap` | 重新綁定 TUI 快捷鍵。 | 寫入 `tui.keymap`。 |
 
 [Back to top](#quick-navigation)
+
+---
+
+## Hook 機制
+
+Codex CLI 有正式 hook 機制，但目前需要在 `config.toml` 啟用 feature flag。它適合做提示檢查、稽核紀錄、approval policy、工具呼叫前後檢查與停止前驗證；不要把它當成完整安全邊界，因為官方文件明確指出部分 shell 路徑、`WebSearch` 與其他非 shell / 非 MCP tools 目前不一定都會被攔截。
+
+```toml
+[features]
+codex_hooks = true
+```
+
+| 面向 | 說明 |
+|---|---|
+| 設定位置 | Codex 會從 active config layer 旁邊讀取 `hooks.json`，也支援 `config.toml` 內 inline `[hooks]` table。常見位置是 `~/.codex/hooks.json`、`~/.codex/config.toml`、`<repo>/.codex/hooks.json`、`<repo>/.codex/config.toml`。 |
+| 載入規則 | 多個來源的 matching hooks 會全部執行；高優先序 config 不會覆蓋低優先序 hook。專案層 `.codex/` hooks 只會在 trusted project 載入。 |
+| 支援事件 | `SessionStart`、`PreToolUse`、`PermissionRequest`、`PostToolUse`、`UserPromptSubmit`、`Stop`。 |
+| matcher | `PreToolUse`、`PermissionRequest`、`PostToolUse` 主要 match tool name，例如 `Bash`、`apply_patch`、`Edit`、`Write` 或 MCP tool name；`SessionStart` match `startup`、`resume`、`clear`。 |
+| 決策控制 | `PreToolUse` 可 deny Bash command；`PermissionRequest` 可 allow / deny approval request；`UserPromptSubmit` 可 block prompt；`Stop` 的 block 代表要求 Codex 繼續跑下一輪。 |
+| 限制 | `PreToolUse` / `PostToolUse` 目前只是不完整攔截層；`PostToolUse` 發生在 tool 已執行後，不能回復副作用。 |
+
+最小 `hooks.json` 範例：
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^Bash$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/pre_tool_use_policy.py\"",
+            "timeout": 30,
+            "statusMessage": "Checking Bash command"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+來源：
+- [Hooks](https://developers.openai.com/codex/hooks)
+
+[Back to top](#quick-navigation)
+
+---
 
 ## 設定與安全邊界
 
