@@ -11,6 +11,7 @@
 
 # Required Behavior
 
+- **MUST** use the Bash tool for all shell script execution; never invoke PowerShell directly — use Bash even on Windows.
 - **MUST** respond in Traditional Chinese unless a proper noun should remain in the original language or the task explicitly requires another language.
 - **MUST** execute tasks seriously and completely. Follow task requirements strictly. Do not cut corners, do superficial work, or give up midway. If the task gets stuck in a loop or cannot progress, raise the problem directly instead of pretending the work is done.
 - **MUST** access only paths inside the project unless the user's task explicitly requires it, or the task genuinely needs additional path access and the user has been asked for authorization first.
