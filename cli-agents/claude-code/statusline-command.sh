@@ -348,17 +348,32 @@ truncate_line() {
 }
 
 # --- row3 (最後一則 user) / row4 (最後一則 assistant) ---
+# row3 優先讀 UserPromptSubmit hook 寫的暫存檔（即時），找不到才退回 transcript。
+# row4 若看到 hook 留下的空 marker（提交當下建立、Stop 時刪除），就抑制顯示，
+# 表示「agent 尚未回應這則 row3」；否則照常從 transcript 讀最後一則 assistant。
 row3_part=""
 row4_part=""
-if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
+
+_user_text=""
+if [ -n "$session_id" ]; then
+    _uf="${TMPDIR:-/tmp}/claude_last_user_${session_id}"
+    [ -f "$_uf" ] && _user_text=$(cat "$_uf" 2>/dev/null)
+fi
+if [ -z "$_user_text" ] && [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
     _user_text=$(extract_last_msg_by_role "$transcript_path" "user")
+fi
+if [ -n "$_user_text" ]; then
+    _line=$(truncate_line "$_user_text")
+    row3_part="${ESC}[38;5;245m▶ ${_line}${RESET}"
+fi
+
+_suppress_row4=0
+if [ -n "$session_id" ]; then
+    _af="${TMPDIR:-/tmp}/claude_last_asst_${session_id}"
+    [ -f "$_af" ] && [ ! -s "$_af" ] && _suppress_row4=1
+fi
+if [ "$_suppress_row4" -eq 0 ] && [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
     _asst_text=$(extract_last_msg_by_role "$transcript_path" "assistant")
-
-    if [ -n "$_user_text" ]; then
-        _line=$(truncate_line "$_user_text")
-        row3_part="${ESC}[38;5;245m▶ ${_line}${RESET}"
-    fi
-
     if [ -n "$_asst_text" ]; then
         _line=$(truncate_line "$_asst_text")
         row4_part="${ESC}[38;5;245m◀ ${_line}${RESET}"
