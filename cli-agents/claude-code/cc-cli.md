@@ -406,8 +406,20 @@ Bundled skills 隨 Claude Code 出貨，是 prompt-based 的指令，可協調�
 | 安裝步驟 | 1. `/plugin marketplace add openai/codex-plugin-cc`<br>2. `/plugin install codex@openai-codex`<br>3. `/reload-plugins` |
 | 補充安裝 | 如果本機還沒裝 Codex CLI，可先執行 `npm install -g @openai/codex`，再回到 Claude Code 跑 `/codex:setup`。 |
 | 初次檢查 | 1. `/codex:setup`<br>2. 若尚未登入 Codex：`!codex login` |
-| 常用指令 | `/codex:review`：唯讀 review。<br>`/codex:adversarial-review`：挑戰方案與風險。<br>`/codex:rescue`：委派調查、修 bug、續做任務。 |
-| 可先試 | `/codex:review --background`<br>`/codex:rescue investigate why the tests started failing` |
+
+#### 指令列表
+
+下表整理 codex plugin v1.0.4 提供的所有 `/codex:*` 指令；參數欄沿用各指令的 `argument-hint` 原始定義。
+
+| 指令 | 說明 | 參數 | 範例 |
+|---|---|---|---|
+| `/codex:setup` | 檢查本機 Codex CLI 是否就緒，並可開關 stop-time review gate。若偵測到尚未安裝 Codex，會詢問是否用 `npm install -g @openai/codex` 安裝；若已安裝但未登入，會提示執行 `!codex login`。 | `[--enable-review-gate \| --disable-review-gate]` | `/codex:setup --enable-review-gate` |
+| `/codex:rescue` | 把任務委派給 `codex:codex-rescue` subagent：調查、修 bug、或續做先前 rescue 工作。會偵測同 session 內可恢復的 rescue thread 並詢問是否繼續。 | `[--background \| --wait]`<br>`[--resume \| --fresh]`<br>`[--model <model\|spark>]`<br>`[--effort <none\|minimal\|low\|medium\|high\|xhigh>]`<br>`[要 Codex 做的事]` | `/codex:rescue --background investigate the failing test` |
+| `/codex:review` | 對本機 git 狀態執行 Codex code review；read-only，不會動程式碼。未指定 `--wait` / `--background` 時會先估算 review 規模再詢問。 | `[--wait \| --background]`<br>`[--base <ref>]`<br>`[--scope auto\|working-tree\|branch]` | `/codex:review --background --base main` |
+| `/codex:adversarial-review` | 挑戰式 review：質疑當前實作方向、設計選擇、取捨與假設，而非只挑語法/缺陷。與 `/codex:review` 共用 target 選擇邏輯，但**可在旗標後附 focus 文字**。 | 同 `/codex:review`，並可在尾端附帶 `[focus ...]` 文字 | `/codex:adversarial-review --background challenge whether the caching design is correct` |
+| `/codex:status` | 顯示目前 repo 進行中與最近的 Codex jobs，包含 review-gate 狀態。不帶 `job-id` 時輸出單一 Markdown table。 | `[job-id]`<br>`[--wait]`<br>`[--timeout-ms <ms>]`<br>`[--all]` | `/codex:status` |
+| `/codex:result` | 顯示已完成 Codex job 的完整儲存輸出（verdict、summary、findings、artifacts、next steps 等），不會壓縮或摘要。 | `[job-id]` | `/codex:result task-abc123` |
+| `/codex:cancel` | 取消本 repo 內某個進行中的背景 Codex job。 | `[job-id]` | `/codex:cancel task-abc123` |
 
 #### 指定模型
 
