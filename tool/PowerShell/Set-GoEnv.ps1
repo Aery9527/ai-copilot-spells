@@ -1,0 +1,4 @@
+$env:GO_BIN_HOME = "C:\Users\User\go\bin"
+if ($env:PATH -notlike "*$env:GO_BIN_HOME*") {
+    $env:PATH = "$env:GO_BIN_HOME;$env:PATH"
+}
