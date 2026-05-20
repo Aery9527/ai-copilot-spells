@@ -1,1 +1,1 @@
-claude --permission-mode auto @args
+claude --permission-mode bypassPermissions @args
