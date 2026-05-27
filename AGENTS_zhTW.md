@@ -66,18 +66,18 @@
 - [`scripts/README.md`](scripts/README.md) 是 [`scripts/`](scripts/) 的唯一總索引；新增腳本必須至少補上用途、參數、行為、風險或副作用，以及最小使用範例。
 - 若 [`README.md`](README.md) 已列出腳本入口或摘要，agent 必須檢查是否也需要同步更新。
 
-## 第一層 Router 入口
+## Skill Catalog 參考文件
 
-- 如果任務屬於創意設計、前端工程、AI 工程、Office 文件或技術寫作，讀 [anthropic-skill](.claude/skills/anthropic-skill/SKILL.md)。
-- 如果任務屬於開發流程、Code Review、並行協作、Git 工作流或維運，讀 [superpowers-skill](.claude/skills/superpowers-skill/SKILL.md)。
-- Agent 必須只進入需要的 router；嚴禁預設一次展開全部 router。
+- 如果使用者詢問哪個 Anthropic upstream skill 適合某任務，讀 [Anthropic Skills Catalog](docs/skills/anthropic-skills-catalog.md)。
+- 如果使用者詢問哪個 superpowers upstream skill 適合某任務，讀 [Superpowers Skills Catalog](docs/skills/superpowers-skills-catalog.md)。
+- Catalog 文件只用於協助回答問題，不是可執行 skill。
 
 ## Skill Locations
 
 - [`anthropic-skills/`](anthropic-skills/) — Anthropic 上游 — 原始 skill 定義；不要直接修改。
 - [`superpowers/`](superpowers/) — superpowers 上游 — 原始 workflow skill 定義；不要直接修改。
-- [`.claude/skills/anthropic-skill/`](.claude/skills/anthropic-skill/) — 本地 router — Anthropic skills 第一層分類入口。
-- [`.claude/skills/superpowers-skill/`](.claude/skills/superpowers-skill/) — 本地 router — superpowers skills 第一層分類入口。
+- [`docs/skills/anthropic-skills-catalog.md`](docs/skills/anthropic-skills-catalog.md) — 協助選擇 Anthropic upstream skills 的人類可讀 catalog。
+- [`docs/skills/superpowers-skills-catalog.md`](docs/skills/superpowers-skills-catalog.md) — 協助選擇 superpowers upstream skills 的人類可讀 catalog。
 - [`.claude/skills/_shared/`](.claude/skills/_shared/) — 共用協議 — 包含 [`upstream-sync-protocol.md`](.claude/skills/_shared/upstream-sync-protocol.md)，供各 sync skill 引用。
 - [`.claude/skills/anthropic-skills-sync/`](.claude/skills/anthropic-skills-sync/) — 維運 skill — 同步 Anthropic skills 上游。
 - [`.claude/skills/superpowers-skills-sync/`](.claude/skills/superpowers-skills-sync/) — 維運 skill — 同步 superpowers 上游。

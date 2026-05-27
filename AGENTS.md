@@ -66,18 +66,18 @@ Purpose: quickly find the right skill combination for the current task. Follow t
 - [`scripts/README.md`](scripts/README.md) is the single index for [`scripts/`](scripts/); new scripts MUST document at least purpose, arguments, behavior, risks or side effects, and a minimal usage example.
 - If [`README.md`](README.md) already lists script entries or summaries, the agent MUST check whether it also needs to be updated.
 
-## Top-Level Router Entry Points
+## Skill Catalog References
 
-- If the task is about creative design, frontend engineering, AI engineering, Office docs, or technical writing, read [anthropic-skill](.claude/skills/anthropic-skill/SKILL.md).
-- If the task is about development workflow, code review, parallel collaboration, git workflow, or maintenance, read [superpowers-skill](.claude/skills/superpowers-skill/SKILL.md).
-- The agent MUST enter only the needed router. The agent MUST NOT expand every router by default.
+- If the user asks which Anthropic upstream skill fits a task, read [Anthropic Skills Catalog](docs/skills/anthropic-skills-catalog.md).
+- If the user asks which superpowers upstream skill fits a task, read [Superpowers Skills Catalog](docs/skills/superpowers-skills-catalog.md).
+- Catalog documents are references for answering questions. They are not executable skills.
 
 ## Skill Locations
 
 - [`anthropic-skills/`](anthropic-skills/) — Anthropic upstream — Original skill definitions; do not modify directly.
 - [`superpowers/`](superpowers/) — superpowers upstream — Original workflow skill definitions; do not modify directly.
-- [`.claude/skills/anthropic-skill/`](.claude/skills/anthropic-skill/) — Local router — Top-level category entry point for Anthropic skills.
-- [`.claude/skills/superpowers-skill/`](.claude/skills/superpowers-skill/) — Local router — Top-level category entry point for superpowers skills.
+- [`docs/skills/anthropic-skills-catalog.md`](docs/skills/anthropic-skills-catalog.md) — Human-readable catalog for choosing Anthropic upstream skills.
+- [`docs/skills/superpowers-skills-catalog.md`](docs/skills/superpowers-skills-catalog.md) — Human-readable catalog for choosing superpowers upstream skills.
 - [`.claude/skills/_shared/`](.claude/skills/_shared/) — Shared protocol — Contains [`upstream-sync-protocol.md`](.claude/skills/_shared/upstream-sync-protocol.md) referenced by sync skills.
 - [`.claude/skills/anthropic-skills-sync/`](.claude/skills/anthropic-skills-sync/) — Maintenance skill — Sync Anthropic skills upstream.
 - [`.claude/skills/superpowers-skills-sync/`](.claude/skills/superpowers-skills-sync/) — Maintenance skill — Sync superpowers upstream.

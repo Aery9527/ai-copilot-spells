@@ -11,11 +11,14 @@ flowchart LR
         B["📖 README.md\n快速定位"]
     end
 
-    subgraph routers ["Skill Router 層 (.claude/skills/)"]
+    subgraph refs ["Catalog 文件層 (docs/skills/)"]
         direction TB
-        R1["🎨 創意・前端・文件・AI 工程\n(anthropic-skill)"]
-        R2["⚡ 開發流程・Review・並行・維運\n(superpowers-skill)"]
-        R3["… 未來更多 …"]
+        R1["🎨 Anthropic skills catalog"]
+        R2["⚡ Superpowers skills catalog"]
+    end
+
+    subgraph runtime ["Project skill 層 (.claude/skills + .agents/skills)"]
+        C1["🔄 sync / CLI docs / governance"]
     end
 
     subgraph upstream ["上游來源層 (N 個 submodule)"]
@@ -23,9 +26,10 @@ flowchart LR
         P["🔄 _shared/upstream-sync-protocol"]
     end
 
-    U --> nav --> routers
-    S -->|"sync"| routers
-    P -.->|"協議"| S
+    U --> nav --> refs
+    nav --> runtime
+    S -->|"catalog links"| refs
+    P -.->|"sync 協議"| runtime
 ```
 
 ## Quick Navigation
@@ -68,20 +72,24 @@ git submodule update --init --recursive
 
 ## Skills 系統
 
-本 repo 維護三個層次的 skills：
+本 repo 維護 upstream skills、catalog 文件，以及本 repo 處理任務時使用的 project skills：
 
 | 目錄 | 來源 | 用途 |
 |------|------|------|
 | `anthropic-skills/` | [Anthropic 上游](https://github.com/anthropics/skills) | 創意設計、前端工程、AI 工程、Office 文件、技術寫作 |
 | `superpowers/` | [superpowers 上游](https://github.com/obra/superpowers) | 開發流程、Code Review、並行協作、Git 工作流、維運 |
+| `docs/skills/` | 本地文件 | 回答「該用哪個 upstream skill」時使用的 catalog；不是可執行 skill |
+| `.claude/skills/` | 本地 Claude Code project skills | 同步上游、同步 CLI 文件、共用維運協議 |
 | `.agents/skills/` | 本地 project-specific custom skills | 專案內部治理、客製 workflow 與只在本 repo 使用的 skills，例如 [`skills-governance`](.agents/skills/skills-governance/SKILL.md) |
 
-### Skill Routers（第一層入口）
+### Skill Catalogs（問題回答用參考）
 
-| Router | 涵蓋範疇 |
-|--------|---------|
-| [`.claude/skills/anthropic-skill/`](.claude/skills/anthropic-skill/SKILL.md) | 創意設計・前端工程・AI 工程・Office 文件・技術寫作 |
-| [`.claude/skills/superpowers-skill/`](.claude/skills/superpowers-skill/SKILL.md) | 開發流程・Code Review・並行協作・Git 工作流・維運 |
+| Catalog | 涵蓋範疇 |
+|---------|---------|
+| [`docs/skills/anthropic-skills-catalog.md`](docs/skills/anthropic-skills-catalog.md) | 創意設計・前端工程・AI 工程・Office 文件・技術寫作 |
+| [`docs/skills/superpowers-skills-catalog.md`](docs/skills/superpowers-skills-catalog.md) | 開發流程・Code Review・並行協作・Git 工作流・維運 |
+
+Catalog 文件只用於回答「該選哪個 skill」或建立任務心智模型。真正執行時，應使用已安裝的 upstream skill，或讀取 [`anthropic-skills/skills/`](anthropic-skills/skills/) / [`superpowers/skills/`](superpowers/skills/) 下的原始 `SKILL.md`。
 
 ### 共用基礎設施
 
@@ -244,7 +252,7 @@ flowchart TD
 
 ### 這個 repo 目前怎麼看
 
-1. [`.claude/skills/`](.claude/skills/anthropic-skill/SKILL.md) 與 [`.agents/skills/`](.agents/skills/skills-governance/SKILL.md) 主要都屬於 **skill 生態**。
+1. [`.claude/skills/`](.claude/skills/sync-all/SKILL.md) 與 [`.agents/skills/`](.agents/skills/skills-governance/SKILL.md) 主要都屬於 **project skill 生態**，只放本 repo 執行維護任務時需要的 workflow。
 2. [Claude Code Agent 使用指南](docs/claude-code-agents.md) 與 [GitHub Copilot CLI Agent 使用指南](docs/github-copilot-agents.md) 則是整理 **agent 建立、使用與能力邊界**。
 3. 如果未來要新增可分發的 plugin / marketplace，cc 與 gc 都做得到，但不應假設一份 agent 定義可直接跨兩邊共用。
 4. 如果你在設計新能力時猶豫該做 agent 還是 skill，先問自己一句：**我要的是專家，還是手冊？** 要專家就做 agent；要手冊就做 skill。
@@ -299,12 +307,11 @@ ai-research/
 ├── scripts/                  # 維護與自動化腳本文件
 │   ├── README.md
 │   └── remove-local-git-user.ps1
+├── docs/skills/              # upstream skill catalog 文件（回答問題用，不是 executable skills）
 ├── .agents/skills/           # repo 專用 custom skills（skills-governance, ...）
 ├── .claude/skills/           # Claude Code project skills
 │   ├── _shared/              # 共用協議（upstream-sync-protocol）
-│   ├── anthropic-skill/      # Anthropic router（categories + skills）
 │   ├── anthropic-skills-sync/ # Anthropic sync 維運 skill
-│   ├── superpowers-skill/    # Superpowers router（categories + skills）
 │   ├── superpowers-skills-sync/ # Superpowers sync 維運 skill
 │   ├── cli-doc-sync/         # CLI 文件同步工具
 │   └── sync-all/             # 統一 orchestrator：Dependabot PR → invoke 各 sync skill

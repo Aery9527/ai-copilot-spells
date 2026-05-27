@@ -80,7 +80,7 @@ submodule path       →  skill 目錄名稱
 
 ```bash
 gh pr close <PR_NUMBER> \
-  --comment "Synced via sync-all skill. Submodule updated and skill summaries regenerated."
+  --comment "Synced via sync-all skill. Submodule updated and skill catalog refreshed."
 ```
 
 若 `gh pr close` 失敗（PR 已關閉或已被 merge）：
