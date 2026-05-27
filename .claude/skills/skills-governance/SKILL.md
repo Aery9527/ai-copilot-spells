@@ -1,26 +1,25 @@
 ---
 name: skills-governance
 description: >-
-  用於建立、修改、重新命名或移除 `.agents/skills/` 下的專案客製 skills，
-  並套用本 repo 的目錄邊界、文件同步與 Conventional Commit 規則時使用。
+  用於建立、修改、重新命名或移除本 repo 的 project skills，並套用
+  文件同步、catalog 邊界與 Conventional Commit 規則時使用。
 ---
 
 # Skills Governance
 
-治理本 repo 內的 project-specific custom skills，特別是 [`.agents/skills/`](../) 下的內容，以及與其直接相關的文件同步、目錄邊界與 commit slice 規則。
+治理本 repo 內的 project skills，特別是 [`.claude/skills/`](../) 下的可執行 workflow skills，以及與其直接相關的文件同步、catalog 邊界與 commit slice 規則。
 
 ## Directory Boundaries
 
-- [`.agents/skills/`](../) — project-specific custom skills — 只放本 repo 專用的治理規則、內部 workflow、維護政策。
-- [`.claude/skills/`](../../../.claude/skills/) — Claude Code project skills — 只放本 repo 執行維護任務時需要的 sync skill、CLI 文件同步 skill 與共用協議。
+- [`.claude/skills/`](../) — project skills — 放本 repo 執行維護任務時需要的 sync skill、CLI 文件同步 skill、治理 workflow 與共用協議。
 - [`docs/skills/`](../../../docs/skills/) — skill catalog documents — 放協助回答「該用哪個 upstream skill」的人類可讀 catalog；不是可執行 skill。
 - [`anthropic-skills/`](../../../anthropic-skills/) — upstream submodule — 放上游 skills 原始內容；除同步任務外，不承擔本 repo 治理規則。
 - [`superpowers/`](../../../superpowers/) — upstream submodule — 放上游 workflow skills 原始內容；除同步任務外，不承擔本 repo 治理規則。
 
 ## Placement Rules
 
-- 如果規則只對這個 repo 有效，必須放在 [`.agents/skills/`](../)。
-- 如果內容是在調整 Claude Code 專案級 sync 流程、CLI 文件同步流程或 shared protocol，必須放在 [`.claude/skills/`](../../../.claude/skills/)。
+- 如果內容是本 repo 專用且需要被 agent 執行的 workflow skill，必須放在 [`.claude/skills/`](../)。
+- 如果內容是在調整 sync 流程、CLI 文件同步流程、治理 workflow 或 shared protocol，必須放在 [`.claude/skills/`](../)。
 - 如果內容只是協助選擇或解釋 upstream skill，必須放在 [`docs/skills/`](../../../docs/skills/)，嚴禁包成 project skill。
 - 如果規則離開此 repo 就失去意義，嚴禁塞進 upstream submodule。
 
@@ -42,8 +41,7 @@ description: >-
 
 - 預設格式：`<type>(<scope>): <summary>`。
 - 建議 scope：
-  - `agents-skills` — 修改 [`.agents/skills/`](../) 內的治理 skill。
-  - `claude-skills` — 修改 [`.claude/skills/`](../../../.claude/skills/) sync skill、CLI 文件同步 skill 或 shared protocol。
+  - `claude-skills` — 修改 [`.claude/skills/`](../) project skill 或 shared protocol。
   - `docs` — 以文件索引與說明同步為主。
 - 類型選擇：
   - `feat` — 新增 skill、擴充能力、擴大規則覆蓋面。
@@ -55,12 +53,12 @@ description: >-
 
 ## Documentation And Metadata Sync
 
-- 修改 [`.agents/skills/`](../) 或相關治理邊界時，至少檢查這些位置是否因本次變更而過期：
+- 修改 [`.claude/skills/`](../) 或相關治理邊界時，至少檢查這些位置是否因本次變更而過期：
   - [`README.md`](../../../README.md)
   - [`AGENTS.md`](../../../AGENTS.md)
   - [`CLAUDE.md`](../../../CLAUDE.md)，如果專案級使用指引受影響
   - [`docs/skills/`](../../../docs/skills/) 下的 catalog 文件，如果 upstream skill 查找入口受影響
-  - [`.claude/skills/`](../../../.claude/skills/) 下的 sync skill 或 shared protocol，如果入口或引用名稱受影響
+  - [`.claude/skills/`](../) 下的 project skill 或 shared protocol，如果入口或引用名稱受影響
   - [`.gitignore`](../../../.gitignore)、[`scripts/README.md`](../../../scripts/README.md)、migration docs、舊計畫文件，如果名稱或路徑變更讓它們過期
 - 原則不是每次全改，而是所有被這次修改弄成不準確的地方都必須在同一個 slice 內修完。
 

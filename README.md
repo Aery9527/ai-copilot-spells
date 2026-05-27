@@ -17,7 +17,7 @@ flowchart LR
         R2["⚡ Superpowers skills catalog"]
     end
 
-    subgraph runtime ["Project skill 層 (.claude/skills + .agents/skills)"]
+    subgraph runtime ["Project skill 層 (.claude/skills/)"]
         C1["🔄 sync / CLI docs / governance"]
     end
 
@@ -43,7 +43,7 @@ flowchart LR
 - [AI 工具文件](#ai-工具文件)
 - [Agent 與 Skill 差異](#agent-與-skill-差異)
 - [腳本文件](#腳本文件)
-- [個人自製 Skills](#個人自製-skills)
+- [Project Skills](#project-skills)
 - [目錄結構](#目錄結構)
 
 [Back to top](#quick-navigation)
@@ -79,8 +79,7 @@ git submodule update --init --recursive
 | `anthropic-skills/` | [Anthropic 上游](https://github.com/anthropics/skills) | 創意設計、前端工程、AI 工程、Office 文件、技術寫作 |
 | `superpowers/` | [superpowers 上游](https://github.com/obra/superpowers) | 開發流程、Code Review、並行協作、Git 工作流、維運 |
 | `docs/skills/` | 本地文件 | 回答「該用哪個 upstream skill」時使用的 catalog；不是可執行 skill |
-| `.claude/skills/` | 本地 Claude Code project skills | 同步上游、同步 CLI 文件、共用維運協議 |
-| `.agents/skills/` | 本地 project-specific custom skills | 專案內部治理、客製 workflow 與只在本 repo 使用的 skills，例如 [`skills-governance`](.agents/skills/skills-governance/SKILL.md) |
+| `.claude/skills/` | 本地 project skills | 同步上游、同步 CLI 文件、治理 workflow、共用維運協議 |
 
 ### Skill Catalogs（問題回答用參考）
 
@@ -209,7 +208,7 @@ flowchart TD
 | 面向 | Agent | Skill |
 |------|-------|-------|
 | 本質 | 專家角色 / 執行者 | SOP / 任務知識包 |
-| 系統實際做的事 | 啟動一個專門 agent 或 subagent 去做 | 把對應的 [`SKILL.md`](.agents/skills/skills-governance/SKILL.md) 與附帶資源注入目前 agent 的 context |
+| 系統實際做的事 | 啟動一個專門 agent 或 subagent 去做 | 把對應的 [`SKILL.md`](.claude/skills/skills-governance/SKILL.md) 與附帶資源注入目前 agent 的 context |
 | Context | 常有獨立 context，適合隔離探索、測試、review | 多半沿用目前對話 context，屬 just-in-time 指南 |
 | 主要關注 | 角色、工具權限、模型、隔離、背景執行、可否委派 | 步驟、模板、範例、腳本、輸出格式 |
 | 適合場景 | `security-auditor`、`code-reviewer`、`test-runner` | `skills-governance`、release note / deploy SOP |
@@ -224,7 +223,7 @@ flowchart TD
 | tool / MCP | 實際能力來源，例如讀檔、改檔、查 GitHub、操作外部服務 |
 
 實務上比較穩的設計通常是：**把知識與流程放 skill，把角色、權限與執行邊界放 agent**。  
-例如 [`.agents/skills/`](.agents/skills/skills-governance/SKILL.md) 目前收的就是 repo 專用 skills，不是 agents。
+例如 [`.claude/skills/`](.claude/skills/skills-governance/SKILL.md) 目前收的就是 repo 專用 skills，不是 agents。
 
 ### Claude Code 與 GitHub Copilot 的差異
 
@@ -252,7 +251,7 @@ flowchart TD
 
 ### 這個 repo 目前怎麼看
 
-1. [`.claude/skills/`](.claude/skills/sync-all/SKILL.md) 與 [`.agents/skills/`](.agents/skills/skills-governance/SKILL.md) 主要都屬於 **project skill 生態**，只放本 repo 執行維護任務時需要的 workflow。
+1. [`.claude/skills/`](.claude/skills/sync-all/SKILL.md) 是本 repo 的 **project skill 生態**，只放本 repo 執行維護任務時需要的 workflow。
 2. [Claude Code Agent 使用指南](docs/claude-code-agents.md) 與 [GitHub Copilot CLI Agent 使用指南](docs/github-copilot-agents.md) 則是整理 **agent 建立、使用與能力邊界**。
 3. 如果未來要新增可分發的 plugin / marketplace，cc 與 gc 都做得到，但不應假設一份 agent 定義可直接跨兩邊共用。
 4. 如果你在設計新能力時猶豫該做 agent 還是 skill，先問自己一句：**我要的是專家，還是手冊？** 要專家就做 agent；要手冊就做 skill。
@@ -275,13 +274,13 @@ Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/READM
 
 ---
 
-## 個人自製 Skills
+## Project Skills
 
-目前 repo 內自製 skills 僅維護在 [`.agents/skills/`](.agents/skills/skills-governance/SKILL.md)：
+目前 repo 內自製 project skills 維護在 [`.claude/skills/`](.claude/skills/skills-governance/SKILL.md)：
 
 | 位置 | 定位 |
 |------|------|
-| [`.agents/skills/`](.agents/skills/skills-governance/SKILL.md) | 專案內部 custom skills；只放治理規則、維護政策與 repo 專用 workflow。首個 skill 為 [`skills-governance`](.agents/skills/skills-governance/SKILL.md)。 |
+| [`.claude/skills/`](.claude/skills/skills-governance/SKILL.md) | 專案內部 project skills；只放治理規則、維護政策與 repo 專用 workflow，例如 [`skills-governance`](.claude/skills/skills-governance/SKILL.md)。 |
 
 這些 skills 的用途是讓本 repo 的維護規則可以被 AI 工具即時載入，而不是對外發佈成可安裝 plugin。
 
@@ -308,9 +307,9 @@ ai-research/
 │   ├── README.md
 │   └── remove-local-git-user.ps1
 ├── docs/skills/              # upstream skill catalog 文件（回答問題用，不是 executable skills）
-├── .agents/skills/           # repo 專用 custom skills（skills-governance, ...）
-├── .claude/skills/           # Claude Code project skills
+├── .claude/skills/           # repo 專用 project skills
 │   ├── _shared/              # 共用協議（upstream-sync-protocol）
+│   ├── skills-governance/    # project skill 治理規則
 │   ├── anthropic-skills-sync/ # Anthropic sync 維運 skill
 │   ├── superpowers-skills-sync/ # Superpowers sync 維運 skill
 │   ├── cli-doc-sync/         # CLI 文件同步工具

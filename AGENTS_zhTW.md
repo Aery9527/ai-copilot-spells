@@ -45,7 +45,7 @@
 ### Skill 維護
 
 - 如果使用者要建立或改善 AI skill，必須使用 `brainstorming` -> `writing-skills`。
-- 如果使用者要維護本 repo 客製 skills 的治理規則，必須使用 `skills-governance`。
+- 如果使用者要維護本 repo project skills 的治理規則，必須使用 `skills-governance`。
 - 如果使用者要同步 Anthropic skills 上游，必須使用 `anthropic-skills-sync`。
 - 如果使用者要同步 superpowers 上游，必須使用 `superpowers-skills-sync`。
 - 如果使用者要同步 CLI 文件（Claude Code / Copilot），必須使用 `cli-doc-sync`。
@@ -79,9 +79,9 @@
 - [`docs/skills/anthropic-skills-catalog.md`](docs/skills/anthropic-skills-catalog.md) — 協助選擇 Anthropic upstream skills 的人類可讀 catalog。
 - [`docs/skills/superpowers-skills-catalog.md`](docs/skills/superpowers-skills-catalog.md) — 協助選擇 superpowers upstream skills 的人類可讀 catalog。
 - [`.claude/skills/_shared/`](.claude/skills/_shared/) — 共用協議 — 包含 [`upstream-sync-protocol.md`](.claude/skills/_shared/upstream-sync-protocol.md)，供各 sync skill 引用。
+- [`.claude/skills/skills-governance/`](.claude/skills/skills-governance/) — 本 repo 的 project skill 治理規則。
 - [`.claude/skills/anthropic-skills-sync/`](.claude/skills/anthropic-skills-sync/) — 維運 skill — 同步 Anthropic skills 上游。
 - [`.claude/skills/superpowers-skills-sync/`](.claude/skills/superpowers-skills-sync/) — 維運 skill — 同步 superpowers 上游。
 - [`.claude/skills/cli-doc-sync/`](.claude/skills/cli-doc-sync/) — 維運 skill — 同步 Claude Code 與 GitHub Copilot 的 CLI 文件。
 - [`.claude/skills/sync-all/`](.claude/skills/sync-all/) — 本地自製 skill — 統一 orchestrator：偵測 Dependabot PR 並 invoke 各 sync skill。
-- [`.agents/skills/`](.agents/skills/) — 本地 project-specific custom skills — 專案內部治理與 repo 客製 workflow，例如 [`skills-governance`](.agents/skills/skills-governance/SKILL.md)。
 - [`scripts/`](scripts/) — 本地維護腳本 — repo 維護與自動化腳本；文件索引在 [`scripts/README.md`](scripts/README.md)。

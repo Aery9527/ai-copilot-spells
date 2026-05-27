@@ -65,6 +65,6 @@ flowchart LR
 
 - Use this catalog only to choose or explain a skill; do not treat it as a runtime workflow.
 - For execution details, read the linked upstream [SKILL.md](../../superpowers/skills/) file and only load supporting files that the upstream skill explicitly needs.
-- Repo-specific sync and maintenance work belongs to [Claude project skills](../../.claude/skills/) or [project custom skills](../../.agents/skills/), not this catalog.
+- Repo-specific sync, governance, and maintenance work belongs to [project skills](../../.claude/skills/), not this catalog.
 
 [Back to top](#quick-navigation)
