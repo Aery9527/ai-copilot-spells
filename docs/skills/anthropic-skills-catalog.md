@@ -47,7 +47,7 @@ flowchart LR
 
 ### AI Engineering
 
-- [claude-api](../../anthropic-skills/skills/claude-api/SKILL.md) — Claude API and Anthropic SDK apps.
+- [claude-api](../../anthropic-skills/skills/claude-api/SKILL.md) — Claude API, Anthropic SDK, and Managed Agents apps.
 - [mcp-builder](../../anthropic-skills/skills/mcp-builder/SKILL.md) — MCP servers for LLM tool access.
 - [skill-creator](../../anthropic-skills/skills/skill-creator/SKILL.md) — creating, improving, packaging, and evaluating AI skills.
 
