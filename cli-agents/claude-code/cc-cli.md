@@ -4,12 +4,32 @@
 
 - [更新時間與差異總結](#更新時間與差異總結)
 - [常用 CLI 參數](#常用-cli-參數)
+  - [Session 與對話](#session-與對話)
+  - [模型與輸出](#模型與輸出)
+  - [System Prompt](#system-prompt)
+  - [Tools 與權限](#tools-與權限)
+  - [Workspace / Browser](#workspace--browser)
+  - [MCP 與 Plugin](#mcp-與-plugin)
+  - [Remote / Automation / Other](#remote--automation--other)
 - [CLI 內建指令](#cli-內建指令)
 - [互動式 slash commands](#互動式-slash-commands)
+  - [Agent / 模型 / 任務](#agent--模型--任務)
+  - [Code / Workspace / Tooling](#code--workspace--tooling)
+  - [Permissions / Directories](#permissions--directories)
+  - [Session / Context / Sharing](#session--context--sharing)
+  - [Configuration / Extensibility](#configuration--extensibility)
+  - [Help / Account / Lifecycle](#help--account--lifecycle)
 - [Hook 機制](#hook-機制)
 - [內建 Skills](#內建-skills)
 - [常見 plugin](#常見-plugin)
+  - [Codex](#codex)
+- [LSP 整合](#lsp-整合)
+  - [Claude Code 設定](#claude-code-設定)
+  - [Go LSP — gopls](#go-lsp--gopls)
+  - [HTML LSP — vscode-html-language-server](#html-lsp--vscode-html-language-server)
 - [互動式特殊功能](#互動式特殊功能)
+  - [輸入前綴](#輸入前綴)
+  - [鍵盤快捷鍵](#鍵盤快捷鍵)
 
 [Back to top](#quick-navigation)
 
@@ -40,10 +60,14 @@ flowchart LR
 
 ## 更新時間與差異總結
 
-- 更新時間：`2026-05-13 10:09 UTC`
-- 比較基準：上一版本地文件（補 `Hook 機制` 前）
+- 更新時間：`2026-05-20`
+- 比較基準：上一版本地文件（補 `LSP 整合` 前；後經雙 agent 驗證修正）
 - 差異摘要：
-  - 新增「Hook 機制」章節，整理 Claude Code lifecycle hooks、設定位置、官方完整事件清單與風險邊界。
+  - 新增「LSP 整合」章節，整理 Go（gopls）與 HTML（vscode-html-language-server）的安裝方式、PATH 設定，以及 Claude Code plugin 與 MCP 兩種整合路徑。
+  - 補充 Windows PATH PowerShell 設定指令。
+  - 修正 MCP 起始版本（v0.17 → v0.20，最新 v0.22.0）、補充 Claude Code `mcp add` 整合指令與 Attached 模式、為第三方 mcp-gopls wrapper 加上 AI 生成警告。
+  - 修正 Claude Code plugin install 指令 marketplace 名稱（`Piebald-AI` → `claude-code-lsps`）。
+  - 新增「Claude Code 設定」小節：說明需在 `~/.claude/settings.json` 加入 `ENABLE_LSP_TOOL=1` 與 `enabledPlugins`，並須完整重啟 Claude Code。
 
 [Back to top](#quick-navigation)
 
@@ -392,10 +416,6 @@ Bundled skills 隨 Claude Code 出貨，是 prompt-based 的指令，可協調�
 
 這一章整理值得額外安裝的 plugin。後續若新增其他 plugin，建議沿用相同 table 結構，固定呈現用途、安裝、檢查、模型設定與最小可用命令。
 
-### 章內導覽
-
-- [Codex](#codex)
-
 ### Codex
 
 在 Claude Code 內使用 `codex` plugin 後，實際可用的是 `/codex:*` 指令，例如 `/codex:setup`、`/codex:review`、`/codex:rescue`，不是單獨一個內建 `/codex`。
@@ -435,6 +455,146 @@ Bundled skills 隨 Claude Code 出貨，是 prompt-based 的指令，可協調�
 - [Codex plugin for Claude Code](https://github.com/openai/codex-plugin-cc)
 - [Discover and install prebuilt plugins through marketplaces](https://code.claude.com/docs/en/discover-plugins)
 - [Codex CLI](https://developers.openai.com/codex/cli)
+
+[Back to top](#quick-navigation)
+
+---
+
+## LSP 整合
+
+LSP（Language Server Protocol）讓 Claude Code 能藉由語言伺服器取得程式碼定義跳轉、參考查找、hover 資訊與診斷等能力。以下整理 Go 與 HTML 的安裝方式與 Claude Code 整合路徑。
+
+```mermaid
+flowchart LR
+    CC["Claude Code"]
+    CC -->|LSP plugin| gopls["gopls\n(Go)"]
+    CC -->|LSP plugin| htmlls["vscode-html-language-server\n(HTML / CSS / JSON)"]
+    gopls -.->|"go install"| gx["golang.org/x/tools/gopls"]
+    htmlls -.->|"npm install"| vl["vscode-langservers-extracted"]
+```
+
+### Claude Code 設定
+
+LSP tool 預設未啟用，需在 `~/.claude/settings.json` 的 `env` 區塊加入 `ENABLE_LSP_TOOL=1`，並於 `enabledPlugins` 中列出已安裝的 LSP plugins，設定後**完整重啟 Claude Code**（`/reload-plugins` 不足）：
+
+```json
+{
+  "env": {
+    "ENABLE_LSP_TOOL": "1"
+  },
+  "enabledPlugins": {
+    "gopls-lsp@claude-plugins-official": true,
+    "vscode-langservers@claude-code-lsps": true
+  }
+}
+```
+
+安裝 plugin 的 CLI 指令（會自動寫入 `settings.json`）：
+
+```bash
+claude plugin marketplace add Piebald-AI/claude-code-lsps
+claude plugin install gopls-lsp@claude-plugins-official
+claude plugin install vscode-langservers@claude-code-lsps
+```
+
+### Go LSP — gopls
+
+`gopls`（讀作「Go please」）是 Go 官方團隊維護的語言伺服器，遵循 Go Release Policy，固定支援最新兩個 Go 主要版本。
+
+| 項目 | 說明 |
+|---|---|
+| 套件路徑 | `golang.org/x/tools/gopls` |
+| 維護方 | Go 官方團隊 |
+| 工具鏈需求 | Go 1.21 以上（支援 `GOTOOLCHAIN=auto` 自動升級工具鏈） |
+
+**安裝**
+
+```bash
+go install golang.org/x/tools/gopls@latest
+```
+
+安裝後確認 `$GOPATH/bin`（預設為 `$HOME/go/bin`）已加入 `PATH`；否則 `gopls` 指令將無法找到：
+
+```bash
+# macOS / Linux
+export PATH="$PATH:$(go env GOPATH)/bin"
+```
+
+```powershell
+# Windows（PowerShell，永久生效）
+[System.Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$(go env GOPATH)\bin", "User")
+```
+
+**Claude Code plugin 整合**
+
+```
+/plugin install gopls-lsp@claude-plugins-official
+```
+
+安裝後 `.go` 檔案自動啟用 gopls，提供 go-to-definition、find-references、hover info、診斷與重構建議。
+
+**MCP 模式（選用）**
+
+gopls 自 v0.20 起原生支援 MCP 協定（目前最新版本：v0.22.0），無需另外包裝：
+
+```bash
+# 確認 gopls 版本 ≥ 0.20
+gopls version
+
+# Detached 模式（透過 stdin/stdout 通訊）
+gopls mcp
+
+# Attached 模式（共享已有 LSP session 的記憶體）
+gopls serve -mcp.listen=localhost:8092
+```
+
+與 Claude Code 整合：
+
+```bash
+claude mcp add gopls -- gopls mcp
+```
+
+若需第三方 MCP 包裝器（全由 AI 生成、無人工審查；v0.20+ 已有原生支援，建議優先使用上述官方方式）：
+
+```bash
+go install github.com/Yantrio/mcp-gopls@latest
+```
+
+來源：[Gopls 官方說明](https://go.dev/gopls/) · [Gopls MCP support](https://go.dev/gopls/features/mcp) · [gopls-lsp Claude plugin](https://claude.com/plugins/gopls-lsp)
+
+### HTML LSP — vscode-html-language-server
+
+`vscode-langservers-extracted`（由 [hrsh7th](https://github.com/hrsh7th/vscode-langservers-extracted) 維護）是從 Microsoft VS Code 擷取出的語言伺服器集合，提供 HTML、CSS、JSON 三個伺服器。
+
+| 伺服器執行檔 | 支援語言 |
+|---|---|
+| `vscode-html-language-server` | HTML |
+| `vscode-css-language-server` | CSS、SCSS、Less |
+| `vscode-json-language-server` | JSON、JSONC |
+
+**安裝**
+
+```bash
+npm install -g vscode-langservers-extracted
+```
+
+安裝後確認執行檔可被找到：
+
+```bash
+vscode-html-language-server --version
+```
+
+**Claude Code 整合**
+
+透過 [Piebald-AI/claude-code-lsps](https://github.com/Piebald-AI/claude-code-lsps) marketplace 安裝：
+
+```
+/plugin marketplace add Piebald-AI/claude-code-lsps
+/plugin install vscode-langservers@claude-code-lsps
+/reload-plugins
+```
+
+來源：[vscode-langservers-extracted (GitHub)](https://github.com/hrsh7th/vscode-langservers-extracted) · [Piebald-AI/claude-code-lsps](https://github.com/Piebald-AI/claude-code-lsps)
 
 [Back to top](#quick-navigation)
 

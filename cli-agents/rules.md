@@ -4,6 +4,7 @@
 - `Less is More` is the guiding principle for analyzing every task. Avoid over-engineering and unnecessary abstractions; every added element must have a clear and sufficient reason.
 - `KISS` is the principle for design and implementation. Prefer direct, easy-to-understand, low-cognitive-load solutions; if a simpler approach is sufficient, do not introduce a more complex structure.
 - `Specification by Example` runs through every stage of the conversation. Drive spec confirmation with concrete examples rather than abstract descriptions; any requirement that cannot be expressed as input/output examples is considered undefined.
+- `Comments` must always convey high-level intent, not details the code itself already reveals. Focus on the core question: **Why does this thing exist, and what problem does it solve?** Answer it in 1–2 sentences. It is **strictly forbidden** to leave comments that record historical reasons for past changes.
 
 # Git Principles
 
@@ -15,7 +16,9 @@
 - **MUST** respond in Traditional Chinese unless a proper noun should remain in the original language or the task explicitly requires another language.
 - **MUST** execute tasks seriously and completely. Follow task requirements strictly. Do not cut corners, do superficial work, or give up midway. If the task gets stuck in a loop or cannot progress, raise the problem directly instead of pretending the work is done.
 - **MUST** access only paths inside the project unless the user's task explicitly requires it, or the task genuinely needs additional path access and the user has been asked for authorization first.
+- **MUST** maintain critical scrutiny toward reviews from other agents (including but not limited to Codex) — never accept them blindly. When the review's reasoning is weak or conflicts with the user's prior context, push back and engage in back-and-forth discussion with that agent until both sides reach consensus on the problem.
 - **MUST** apply `First Principles` to every detail of the task. Constantly ask: **Is this actually correct?**
 - **MUST** apply `Less is More` when analyzing every task. Constantly ask: **Is this truly necessary?**
 - **MUST** apply `KISS` when designing and implementing every task. Constantly ask: **Without compromising functional completeness, is there a simpler and more direct approach?**
 - **MUST** apply `SBE` to define task inputs and outputs. Constantly ask: **Have concrete examples been used to confirm the spec? Are all edge cases covered?**
+- **MUST** apply the `Comments` principle — high-level intent over code details. Constantly ask: **Does this comment convey clear high-level intent? Have historical comments unrelated to current logic been removed?**

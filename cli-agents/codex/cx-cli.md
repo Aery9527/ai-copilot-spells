@@ -4,12 +4,27 @@
 
 - [更新時間與差異總結](#更新時間與差異總結)
 - [安裝與登入](#安裝與登入)
+  - [安裝](#安裝)
+  - [登入方式](#登入方式)
+  - [認證與快取注意事項](#認證與快取注意事項)
 - [常用 CLI 參數](#常用-cli-參數)
+  - [安全與執行](#安全與執行)
+  - [模型與搜尋](#模型與搜尋)
+  - [Session 與設定](#session-與設定)
+  - [Remote 與 UI](#remote-與-ui)
 - [CLI 內建指令](#cli-內建指令)
 - [互動式 slash commands](#互動式-slash-commands)
+  - [Model / thread / planning](#model--thread--planning)
+  - [Permissions / workspace / extensibility](#permissions--workspace--extensibility)
+  - [Review / session / lifecycle](#review--session--lifecycle)
 - [Hook 機制](#hook-機制)
 - [設定與安全邊界](#設定與安全邊界)
+  - [設定檔層級](#設定檔層級)
+  - [常用設定](#常用設定)
+  - [三個最容易踩坑的點](#三個最容易踩坑的點)
 - [互動式特殊功能](#互動式特殊功能)
+  - [鍵盤快捷鍵](#鍵盤快捷鍵)
+  - [TUI 操作特性](#tui-操作特性)
 
 [Back to top](#quick-navigation)
 
@@ -90,22 +105,39 @@ codex login --device-auth
 
 > 下面優先整理對日常工作流影響最大的旗標。完整列表仍以 `codex --help`、`codex exec --help` 與官方文件為準。
 
+### 安全與執行
+
 | flag | example | 說明 | scope / risk | notes |
 |---|---|---|---|---|
 | `--ask-for-approval`, `-a` | `codex -a on-request` | 設定何時停下來等你核准：`untrusted`、`on-request`、`never`。 | 中 | `on-failure` 已 deprecated。 |
 | `--sandbox`, `-s` | `codex -s workspace-write` | 控制 shell command 的 sandbox 層級：`read-only`、`workspace-write`、`danger-full-access`。 | **高** | 日常本機開發通常先用 `workspace-write`。 |
+| `--dangerously-bypass-approvals-and-sandbox`, `--yolo` | `codex --yolo` | 跳過 approvals 與 sandbox。 | **極高** | 只可在外部已強化的受控環境使用。 |
+
+### 模型與搜尋
+
+| flag | example | 說明 | scope / risk | notes |
+|---|---|---|---|---|
 | `--model`, `-m` | `codex -m gpt-5.5` | 指定本次 session 使用的模型。 | 低 | 可取代互動模式中的 `/model`。 |
+| `--search` | `codex --search "latest API change"` | 把 web search 從 cached mode 切到 live。 | 中 | live web 結果要當作不可信輸入。 |
+| `--enable` / `--disable` | `codex --enable apps` | 單次開關 feature flag。 | 中 | 等價於覆蓋 `[features]`。 |
+| `--image`, `-i` | `codex -i screenshot.png "explain this error"` | 將圖片附加到初始 prompt。 | 低 | 可重複使用或用逗號附多張圖。 |
+| `--oss` | `codex exec --oss "summarize this folder"` | 改用本機 open-source model provider。 | 中 | 會驗證 Ollama 是否可用。 |
+
+### Session 與設定
+
+| flag | example | 說明 | scope / risk | notes |
+|---|---|---|---|---|
 | `--profile`, `-p` | `codex -p work` | 套用 `~/.codex/config.toml` 內的 profile。 | 低 | 不同 repo / 權限策略切換很方便。 |
 | `--config`, `-c` | `codex -c approval_policy=\"never\"` | 覆蓋單次執行的 config 值。 | 中 | CLI override 優先級最高。 |
 | `--cd`, `-C` | `codex -C .. "review this repo"` | 啟動前先切換工作目錄。 | 低 | 適合 wrapper script。 |
 | `--add-dir` | `codex --add-dir ..\shared` | 額外授權可寫入的目錄。 | 中 | 多 repo / monorepo 子目錄常用。 |
-| `--image`, `-i` | `codex -i screenshot.png "explain this error"` | 將圖片附加到初始 prompt。 | 低 | 可重複使用或用逗號附多張圖。 |
-| `--search` | `codex --search "latest API change"` | 把 web search 從 cached mode 切到 live。 | 中 | live web 結果要當作不可信輸入。 |
-| `--enable` / `--disable` | `codex --enable apps` | 單次開關 feature flag。 | 中 | 等價於覆蓋 `[features]`。 |
+
+### Remote 與 UI
+
+| flag | example | 說明 | scope / risk | notes |
+|---|---|---|---|---|
 | `--remote` | `codex --remote ws://127.0.0.1:4500` | 用本機 TUI 連遠端 app-server。 | 中 | 適合 code / credential 在遠端機器時。 |
 | `--remote-auth-token-env` | `codex --remote wss://host:4500 --remote-auth-token-env CODEX_REMOTE_AUTH_TOKEN` | 提供 remote TUI 的 bearer token。 | 中 | 只會傳到 `wss://` 或 localhost `ws://`。 |
-| `--oss` | `codex exec --oss "summarize this folder"` | 改用本機 open-source model provider。 | 中 | 會驗證 Ollama 是否可用。 |
-| `--dangerously-bypass-approvals-and-sandbox`, `--yolo` | `codex --yolo` | 跳過 approvals 與 sandbox。 | **極高** | 只可在外部已強化的受控環境使用。 |
 | `--no-alt-screen` | `codex --no-alt-screen` | 停用 TUI 的 alternate screen。 | 低 | 部分 terminal 相容性較好。 |
 
 [Back to top](#quick-navigation)

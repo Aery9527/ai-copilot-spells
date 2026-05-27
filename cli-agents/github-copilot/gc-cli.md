@@ -4,10 +4,27 @@
 
 - [更新時間與差異總結](#更新時間與差異總結)
 - [常用 CLI 參數](#常用-cli-參數)
+  - [Session 與對話](#session-與對話)
+  - [模型與輸出](#模型與輸出)
+  - [Agent 與自動化](#agent-與自動化)
+  - [Tools 與權限](#tools-與權限)
+  - [MCP 與 Plugin](#mcp-與-plugin)
+  - [Workspace / 目錄](#workspace--目錄)
+  - [Remote 與分享](#remote-與分享)
+  - [設定與環境](#設定與環境)
+  - [UI / Terminal](#ui--terminal)
 - [CLI 內建指令](#cli-內建指令)
 - [互動式 slash commands](#互動式-slash-commands)
+  - [Agent / model / subagent](#agent--model--subagent)
+  - [Code / workspace / tooling](#code--workspace--tooling)
+  - [Permissions / directories](#permissions--directories)
+  - [Session / context / sharing](#session--context--sharing)
+  - [Extensibility / configuration](#extensibility--configuration)
+  - [Help / account / lifecycle](#help--account--lifecycle)
 - [Hook 機制](#hook-機制)
 - [互動式特殊功能](#互動式特殊功能)
+  - [輸入前綴與快速操作](#輸入前綴與快速操作)
+  - [鍵盤快捷鍵](#鍵盤快捷鍵)
 
 [Back to top](#quick-navigation)
 
@@ -47,17 +64,42 @@ flowchart LR
 >
 > 官方還有不少較低層的 logging、config、accessibility 旗標；這份文件優先保留高影響、日常最常用的選項。
 
+### Session 與對話
+
 | flag | example | 說明 | scope / risk | notes |
 |---|---|---|---|---|
 | `-p`, `--prompt=PROMPT` | `copilot -p "Summarize this repo"` | 以單次模式執行 prompt，完成後退出。 | 中 | 適合腳本化或 CI 整合。 |
 | `-i`, `--interactive=PROMPT` | `copilot -i "Review this folder"` | 啟動互動模式，並先執行一段 prompt。 | 低 | 適合直接帶著初始上下文進場。 |
-| `--agent=AGENT` | `copilot --agent=refactor-agent` | 指定 custom agent。 | 低 | 任務明確時可降低行為漂移。 |
-| `--model=MODEL` | `copilot --model=gpt-5.1` | 指定要使用的模型。 | 低 | 可取代互動模式內的 `/model`。 |
-| `--effort=LEVEL` / `--reasoning-effort=LEVEL` | `copilot --effort=high` | 設定 reasoning effort level。 | 中 | 目前官方列出 `low`、`medium`、`high`。 |
-| `--enable-reasoning-summaries` | `copilot --enable-reasoning-summaries` | 針對支援的 OpenAI models 請求 reasoning summaries。 | 低 | 只對支援的模型有效。 |
 | `--continue` | `copilot --continue` | 直接續接最近一次 session。 | 低 | 不會先顯示 session 清單。 |
 | `--resume[=SESSION-ID]` | `copilot --resume` | 從既有 session 清單中選擇續接，或直接指定 `SESSION-ID`。 | 低 | 長任務與中斷續跑很實用。 |
 | `--connect[=SESSION-ID]` | `copilot --connect` | 直接連到 remote session，也可指定 session ID 或 task ID。 | 中 | 與 `--resume`、`--continue` 互斥。 |
+
+### 模型與輸出
+
+| flag | example | 說明 | scope / risk | notes |
+|---|---|---|---|---|
+| `--model=MODEL` | `copilot --model=gpt-5.1` | 指定要使用的模型。 | 低 | 可取代互動模式內的 `/model`。 |
+| `--effort=LEVEL` / `--reasoning-effort=LEVEL` | `copilot --effort=high` | 設定 reasoning effort level。 | 中 | 目前官方列出 `low`、`medium`、`high`。 |
+| `--enable-reasoning-summaries` | `copilot --enable-reasoning-summaries` | 針對支援的 OpenAI models 請求 reasoning summaries。 | 低 | 只對支援的模型有效。 |
+| `--output-format=FORMAT` | `copilot -p "Summarize" --output-format=json` | 控制輸出格式。 | 中 | `FORMAT` 可為 `text` 或 `json`；`json` 會輸出 JSONL。 |
+| `-s`, `--silent` | `copilot -p "Summarize" --silent` | 只輸出 agent 回應。 | 低 | 常用於 shell script。 |
+| `--stream=MODE` | `copilot --stream=off -p "query"` | 開啟或關閉 streaming 模式（`on` 或 `off`）。 | 低 | 非互動管道或偵錯時可能需要關閉。 |
+
+### Agent 與自動化
+
+| flag | example | 說明 | scope / risk | notes |
+|---|---|---|---|---|
+| `--agent=AGENT` | `copilot --agent=refactor-agent` | 指定 custom agent。 | 低 | 任務明確時可降低行為漂移。 |
+| `--autopilot` | `copilot --autopilot -p "fix failing tests"` | 在 prompt mode 啟用 autopilot continuation。 | **高** | 讓 agent 更自主地持續完成多步驟任務。 |
+| `--mode=MODE` | `copilot --mode=plan` | 設定初始 agent mode。 | 中 | 可用值為 `interactive`、`plan`、`autopilot`；不可與 `--autopilot` 或 `--plan` 並用。 |
+| `--plan` | `copilot --plan` | 直接以 plan mode 啟動。 | 中 | 是 `--mode=plan` 的 shorthand。 |
+| `--no-ask-user` | `copilot --no-ask-user -p "update dependencies"` | 停用 `ask_user` tool，改成完全自主執行。 | 中 | 批次或 unattended workflow 常用。 |
+| `--max-autopilot-continues=COUNT` | `copilot --autopilot --max-autopilot-continues 10 -p "task"` | 限制 autopilot 模式的最大繼續輪數（預設：無限制）。 | 中 | 防止長任務無限執行。 |
+
+### Tools 與權限
+
+| flag | example | 說明 | scope / risk | notes |
+|---|---|---|---|---|
 | `--allow-all` | `copilot --allow-all` | 一次開啟所有 tools、paths、URLs 權限。 | **高** | 等價於 `--allow-all-tools --allow-all-paths --allow-all-urls`。 |
 | `--yolo` | `copilot --yolo -p "fix failing tests"` | 一次開啟所有權限（等同 `--allow-all`）。 | **高** | `--allow-all` 的 alias；適合快速無障礙執行。 |
 | `--allow-all-tools` | `copilot --allow-all-tools` | 讓所有 tools 自動執行，不再逐次詢問。 | **高** | 程式化執行時常用，但風險高。 |
@@ -66,40 +108,57 @@ flowchart LR
 | `--allow-tool=TOOL ...` | `copilot --allow-tool write` | 預先允許指定 tool。 | 中 | 可用 quoted comma-separated list。 |
 | `--allow-url=URL ...` | `copilot --allow-url github.com` | 預先允許特定 URL 或網域。 | 中 | 可與 `--deny-url` 類規則搭配。 |
 | `--available-tools=TOOL ...` | `copilot --available-tools read,view,rg` | 限制只有列出的 tools 可供 model 使用。 | 中 | 做只讀分析或強化安全邊界很實用。 |
-| `--additional-mcp-config=JSON` | `copilot --additional-mcp-config=@mcp.json` | 為本次 session 額外加入 MCP server。 | 中 | 不會永久改動既有設定。 |
-| `--autopilot` | `copilot --autopilot -p "fix failing tests"` | 在 prompt mode 啟用 autopilot continuation。 | **高** | 讓 agent 更自主地持續完成多步驟任務。 |
-| `--mode=MODE` | `copilot --mode=plan` | 設定初始 agent mode。 | 中 | 可用值為 `interactive`、`plan`、`autopilot`；不可與 `--autopilot` 或 `--plan` 並用。 |
-| `--plan` | `copilot --plan` | 直接以 plan mode 啟動。 | 中 | 是 `--mode=plan` 的 shorthand。 |
 | `--deny-tool=TOOL ...` | `copilot --deny-tool "shell(rm)"` | 預先禁止指定 tool。 | 低 | 適合建立安全護欄。 |
 | `--deny-url=URL ...` | `copilot --deny-url "malicious.example.com"` | 拒絕存取特定 URL 或網域，優先於 `--allow-url`。 | 中 | 可與 `--allow-url` 組合建立精細的 URL 存取控制。 |
-| `--experimental` / `--no-experimental` | `copilot --experimental` | 開啟或關閉 experimental features。 | 中 | 互動模式也可用 `/experimental` 切換。 |
-| `--share=PATH` / `--share-gist` | `copilot -p "Summarize" --share=summary.md` | 在 programmatic session 結束後輸出分享檔或 gist。 | 中 | 適合留存執行紀錄。 |
-| `--no-ask-user` | `copilot --no-ask-user -p "update dependencies"` | 停用 `ask_user` tool，改成完全自主執行。 | 中 | 批次或 unattended workflow 常用。 |
-| `--no-custom-instructions` | `copilot --no-custom-instructions` | 停用 `AGENTS.md` 等 custom instructions。 | 中 | 排查指令干擾或做乾淨基線測試時實用。 |
-| `--output-format=FORMAT` | `copilot -p "Summarize" --output-format=json` | 控制輸出格式。 | 中 | `FORMAT` 可為 `text` 或 `json`；`json` 會輸出 JSONL。 |
-| `-s`, `--silent` | `copilot -p "Summarize" --silent` | 只輸出 agent 回應。 | 低 | 常用於 shell script。 |
-| `--add-dir=PATH` | `copilot --add-dir ./data` | 新增目錄到允許的檔案存取清單（可重複使用多次）。 | 低 | 配合 `--allow-all-paths` 使用效果更佳。 |
 | `--excluded-tools=TOOL ...` | `copilot --excluded-tools "shell,write"` | 指定不提供給 model 的 tools（quoted comma-separated list）。 | 中 | 建立精確的工具範圍限制。 |
 | `--disable-parallel-tools-execution` | `copilot --disable-parallel-tools-execution` | 停用 tools 的平行執行（LLM 仍可發出平行呼叫，但會依序執行）。 | 中 | 除錯或需嚴格序列執行時使用。 |
-| `--secret-env-vars=VAR ...` | `copilot --secret-env-vars "API_KEY,TOKEN"` | 在輸出中遮蔽指定環境變數的值。 | 低 | 防止敏感憑證洩漏到 session 輸出。 |
-| `--bash-env` | `copilot --bash-env` | 啟用 bash shells 的 `BASH_ENV` 支援。 | 低 | 需要 bash hook 時使用。 |
-| `--no-bash-env` | `copilot --no-bash-env` | 停用 bash shells 的 `BASH_ENV` 支援。 | 低 | 明確關閉 BASH_ENV hook。 |
-| `--disallow-temp-dir` | `copilot --disallow-temp-dir` | 阻止自動存取系統暫存目錄。 | 中 | 沙盒或受控環境下加強隔離。 |
+
+### MCP 與 Plugin
+
+| flag | example | 說明 | scope / risk | notes |
+|---|---|---|---|---|
+| `--additional-mcp-config=JSON` | `copilot --additional-mcp-config=@mcp.json` | 為本次 session 額外加入 MCP server。 | 中 | 不會永久改動既有設定。 |
+| `--disable-builtin-mcps` | `copilot --disable-builtin-mcps` | 停用所有內建 MCP servers（目前：`github-mcp-server`）。 | 中 | 僅使用外部 MCP 設定時的隔離選項。 |
+| `--disable-mcp-server=SERVER-NAME` | `copilot --disable-mcp-server github-mcp-server` | 停用指定的 MCP server（可重複使用多次）。 | 中 | 精細控制哪些 MCP servers 啟用。 |
 | `--add-github-mcp-tool=TOOL` | `copilot --add-github-mcp-tool create_issue` | 為 GitHub MCP server 額外啟用指定 tool（可重複使用多次）。 | 低 | 取代預設的 CLI subset，精確新增單一工具。 |
 | `--add-github-mcp-toolset=TOOLSET` | `copilot --add-github-mcp-toolset issues` | 為 GitHub MCP server 額外啟用指定 toolset（可重複使用多次）。 | 低 | 一次開啟一組相關 tools。 |
 | `--enable-all-github-mcp-tools` | `copilot --enable-all-github-mcp-tools` | 啟用 GitHub MCP server 的全部 tools（覆蓋 `--add-github-mcp-tool` / `--add-github-mcp-toolset`）。 | 中 | 適合需要完整 GitHub 操作能力的場景。 |
-| `--disable-builtin-mcps` | `copilot --disable-builtin-mcps` | 停用所有內建 MCP servers（目前：`github-mcp-server`）。 | 中 | 僅使用外部 MCP 設定時的隔離選項。 |
-| `--disable-mcp-server=SERVER-NAME` | `copilot --disable-mcp-server github-mcp-server` | 停用指定的 MCP server（可重複使用多次）。 | 中 | 精細控制哪些 MCP servers 啟用。 |
 | `--plugin-dir=DIRECTORY` | `copilot --plugin-dir ./my-plugin` | 從本機目錄載入 plugin。 | 低 | 可重複使用多次。 |
-| `--config-dir=PATH` | `copilot --config-dir ~/.copilot-work` | 設定 config 目錄（預設 `~/.copilot`）。 | 低 | 多環境或 CI 場景下切換設定集合。 |
+
+### Workspace / 目錄
+
+| flag | example | 說明 | scope / risk | notes |
+|---|---|---|---|---|
+| `--add-dir=PATH` | `copilot --add-dir ./data` | 新增目錄到允許的檔案存取清單（可重複使用多次）。 | 低 | 配合 `--allow-all-paths` 使用效果更佳。 |
+| `--disallow-temp-dir` | `copilot --disallow-temp-dir` | 阻止自動存取系統暫存目錄。 | 中 | 沙盒或受控環境下加強隔離。 |
+| `--no-custom-instructions` | `copilot --no-custom-instructions` | 停用 `AGENTS.md` 等 custom instructions。 | 中 | 排查指令干擾或做乾淨基線測試時實用。 |
+
+### Remote 與分享
+
+| flag | example | 說明 | scope / risk | notes |
+|---|---|---|---|---|
 | `--remote` | `copilot --remote` | 啟用從 GitHub.com 與 GitHub Mobile 遠端控制目前 session 的能力。 | 中 | 適合遠端 steer session 的工作流。 |
 | `--no-remote` | `copilot --no-remote` | 停用本次 session 的 remote access。 | 低 | 明確禁止遠端連入。 |
-| `--stream=MODE` | `copilot --stream=off -p "query"` | 開啟或關閉 streaming 模式（`on` 或 `off`）。 | 低 | 非互動管道或偵錯時可能需要關閉。 |
-| `--max-autopilot-continues=COUNT` | `copilot --autopilot --max-autopilot-continues 10 -p "task"` | 限制 autopilot 模式的最大繼續輪數（預設：無限制）。 | 中 | 防止長任務無限執行。 |
+| `--share=PATH` / `--share-gist` | `copilot -p "Summarize" --share=summary.md` | 在 programmatic session 結束後輸出分享檔或 gist。 | 中 | 適合留存執行紀錄。 |
+
+### 設定與環境
+
+| flag | example | 說明 | scope / risk | notes |
+|---|---|---|---|---|
+| `--config-dir=PATH` | `copilot --config-dir ~/.copilot-work` | 設定 config 目錄（預設 `~/.copilot`）。 | 低 | 多環境或 CI 場景下切換設定集合。 |
 | `--no-auto-update` | `copilot --no-auto-update` | 停用自動下載 CLI 更新。 | 低 | 鎖定版本的 CI / 受控環境。 |
 | `--log-dir=DIRECTORY` | `copilot --log-dir ./logs` | 設定 log 檔目錄（預設 `~/.copilot/logs/`）。 | 低 | 集中管理多個 session 的 logs。 |
 | `--log-level=LEVEL` | `copilot --log-level debug` | 設定 log level（`none`、`error`、`warning`、`info`、`debug`、`all`、`default`）。 | 低 | 除錯時搭配 `debug` 或 `all`。 |
 | `--acp` | `copilot --acp` | 啟動 Agent Client Protocol server。 | 中 | 供外部 ACP 客戶端整合使用。 |
+| `--bash-env` | `copilot --bash-env` | 啟用 bash shells 的 `BASH_ENV` 支援。 | 低 | 需要 bash hook 時使用。 |
+| `--no-bash-env` | `copilot --no-bash-env` | 停用 bash shells 的 `BASH_ENV` 支援。 | 低 | 明確關閉 BASH_ENV hook。 |
+| `--secret-env-vars=VAR ...` | `copilot --secret-env-vars "API_KEY,TOKEN"` | 在輸出中遮蔽指定環境變數的值。 | 低 | 防止敏感憑證洩漏到 session 輸出。 |
+| `--experimental` / `--no-experimental` | `copilot --experimental` | 開啟或關閉 experimental features。 | 中 | 互動模式也可用 `/experimental` 切換。 |
+
+### UI / Terminal
+
+| flag | example | 說明 | scope / risk | notes |
+|---|---|---|---|---|
 | `--banner` | `copilot --banner` | 顯示啟動 banner。 | 低 | 預設行為；可用於確認版本資訊。 |
 | `--alt-screen=VALUE` | `copilot --alt-screen=off` | 控制 terminal alternate screen buffer（`on` 或 `off`）。 | 低 | 不支援 alternate screen 的 terminal 可設 off。 |
 | `--no-alt-screen` | `copilot --no-alt-screen` | 停用 terminal alternate screen buffer。 | 低 | `--alt-screen=off` 的 shorthand。 |

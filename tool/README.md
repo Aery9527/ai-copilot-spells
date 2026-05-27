@@ -35,8 +35,8 @@ flowchart TD
 | [`PowerShell/Exe-CC.ps1`](PowerShell/Exe-CC.ps1) | 執行 Claude Code：`claude --permission-mode auto @args` |
 | [`PowerShell/Exe-GC.ps1`](PowerShell/Exe-GC.ps1) | 執行 GitHub Copilot CLI：`copilot --allow-all-tools @args` |
 | [`PowerShell/Exe-CX.ps1`](PowerShell/Exe-CX.ps1) | 執行 Codex CLI：`codex --sandbox danger-full-access -a never @args` |
-| [`PowerShell/Set-CommonEnv.ps1`](PowerShell/Set-CommonEnv.ps1) | 全域共用環境變數設定入口 |
-| [`PowerShell/Set-DevEnv.ps1`](PowerShell/Set-DevEnv.ps1) | 開發時共用環境變數設定入口；供 Go / Java CLI wrapper 載入 |
+| [`PowerShell/Set-DevEnv.ps1`](PowerShell/Set-DevEnv.ps1) | 開發時共用環境變數設定入口；供 AI CLI / Go / Java wrapper 載入 |
+| [`PowerShell/Set-GoEnv.ps1`](PowerShell/Set-GoEnv.ps1) | 設定 Go workspace 的 `GO_BIN_HOME` / `PATH` |
 | [`PowerShell/Set-GoVersion.ps1`](PowerShell/Set-GoVersion.ps1) | 設定 Go 版本與 `GO_HOME` / `PATH` |
 | [`PowerShell/Set-JavaVersion.ps1`](PowerShell/Set-JavaVersion.ps1) | 設定 Java 版本與 `JAVA_HOME` / `PATH` |
 
