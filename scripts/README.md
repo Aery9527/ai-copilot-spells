@@ -16,8 +16,9 @@ flowchart LR
 - [用途與維護原則](#用途與維護原則)
 - [腳本索引](#腳本索引)
 - [腳本詳述](#腳本詳述)
+  - [Link Agent Skills](#link-agent-skills)
   - [`remove-local-git-user.ps1`](#remove-local-git-userps1)
-- [`setup-statusline.ps1`](#setup-statuslineps1)
+  - [`setup-statusline.ps1`](#setup-statuslineps1)
 - [新增腳本時建議補充的欄位](#新增腳本時建議補充的欄位)
 
 [Back to top](#quick-navigation)
@@ -45,6 +46,8 @@ flowchart LR
 
 | 腳本 | 類型 | 用途 | 是否修改檔案 | 備註 |
 |------|------|------|--------------|------|
+| [`link-agent-skills.ps1`](./link-agent-skills.ps1) | PowerShell | 互動式建立或移除 `.agents/skills` 到 `.claude/skills` 的 Windows junction | 會，建立/移除 `.agents/skills` 並更新 [`.gitignore`](../.gitignore) | Mode 1 會先移除既有 `.agents/skills`；適合 Windows |
+| [`link-agent-skills.sh`](./link-agent-skills.sh) | Bash | 互動式建立或移除 `.agents/skills` 到 `.claude/skills` 的 Unix symlink | 會，建立/移除 `.agents/skills` 並更新 [`.gitignore`](../.gitignore) | Mode 1 會先移除既有 `.agents/skills`；適合 macOS / Linux / Git Bash |
 | [`remove-local-git-user.ps1`](./remove-local-git-user.ps1) | PowerShell | 遞迴掃描指定路徑下的 Git repository / worktree，移除 local git config 中的 `[user]` section | 會，直接覆寫 Git config | 不建立 backup；遇到異常 config 會跳過 |
 | [`setup-statusline.ps1`](./setup-statusline.ps1) | PowerShell | 將 statusLine 設定與狀態追蹤 hooks 寫入 `~/.claude/settings.json`，並將 [`statusline-command.sh`](../cli-agents/claude-code/statusline-command.sh) 及 [`hooks/`](../cli-agents/claude-code/hooks/) 部署至 `~/.claude/` | 會，更新 `~/.claude/settings.json` 並複製 sh 腳本 | 若目標 sh 已是最新版則略過複製；`-Force` 強制覆寫；hooks 合併不覆蓋既有設定 |
 
@@ -53,6 +56,75 @@ flowchart LR
 ---
 
 ## 腳本詳述
+
+### Link Agent Skills
+
+#### 目的
+
+[`link-agent-skills.ps1`](./link-agent-skills.ps1) 與 [`link-agent-skills.sh`](./link-agent-skills.sh) 用來把 repo 內的 [`.claude/skills/`](../.claude/skills/) 暴露成 `.agents/skills`，方便需要 native `.agents/skills` discovery 的工具讀到同一批 project skills。
+
+兩個版本功能相同：
+
+- PowerShell 版使用 Windows junction。
+- Bash 版使用 symbolic link。
+
+#### 參數
+
+兩支腳本都沒有命令列參數，執行後以互動式選單選擇模式。
+
+| 選項 | 行為 |
+|------|------|
+| `0` | 取消，不做任何修改 |
+| `1` | 將整個 `.agents/skills` 連到 `.claude/skills` |
+| `2` | 在 `.agents/skills` 下逐一建立每個 skill 的 link |
+| `3` | 移除已建立的 link，並清理對應 [`.gitignore`](../.gitignore) 條目 |
+
+#### 它實際在做什麼
+
+1. 以腳本所在位置推算 repo 根目錄。
+2. 將 [`.claude/skills/`](../.claude/skills/) 視為真實來源目錄。
+3. 依選單模式建立 `.agents/skills` 到 [`.claude/skills/`](../.claude/skills/) 的單一 link，或逐一建立每個 skill 子目錄的 link。
+4. 將 `.agents/skills` 或 `.agents/skills/<skill-name>` 加入 [`.gitignore`](../.gitignore)，避免 link 被提交。
+5. 取消連結時，移除已建立的 link 與對應 [`.gitignore`](../.gitignore) 條目。
+
+#### 風險與限制
+
+- **Mode 1 會先移除既有 `.agents/skills`。** 如果該路徑不是本工具建立的 link，執行前應先確認沒有重要內容。
+- 兩支腳本都會修改 [`.gitignore`](../.gitignore)，新增或移除 `.agents/skills` 相關條目。
+- PowerShell 版依賴 Windows junction；Bash 版依賴 symlink。
+- Mode 1 需要 `.agents` 父目錄存在；若不存在，請先建立 `.agents`，或改用 Mode 2 讓腳本建立 `.agents/skills` 目錄。
+- 如果 [`.claude/skills/`](../.claude/skills/) 不存在，腳本會停止並提示錯誤。
+
+#### 範例
+
+Windows PowerShell：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\link-agent-skills.ps1
+```
+
+Bash：
+
+```bash
+bash ./scripts/link-agent-skills.sh
+```
+
+#### 預期輸出
+
+```text
+==========================================
+   Agent Skills Linker
+==========================================
+
+  [0] 取消
+  [1] 將整個 .agents/skills 連結至 .claude/skills
+  [2] 逐一將 .claude/skills 底下的每個 skill 連結至 .agents/skills
+  [3] 取消連結
+
+[OK] 完成
+```
+
+---
 
 ### `remove-local-git-user.ps1`
 

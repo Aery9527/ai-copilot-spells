@@ -266,7 +266,10 @@ Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/READM
 
 目前已收錄：
 
+- [`scripts/link-agent-skills.ps1`](scripts/link-agent-skills.ps1)：在 Windows 以 junction 將 `.agents/skills` 連到 `.claude/skills`
+- [`scripts/link-agent-skills.sh`](scripts/link-agent-skills.sh)：在 Bash 環境以 symlink 將 `.agents/skills` 連到 `.claude/skills`
 - [`scripts/remove-local-git-user.ps1`](scripts/remove-local-git-user.ps1)：遞迴掃描指定路徑下的 Git repository / worktree，移除 local Git config 的 `[user]` section
+- [`scripts/setup-statusline.ps1`](scripts/setup-statusline.ps1)：安裝 Claude Code status line 與狀態追蹤 hooks
 
 之後若 `scripts/` 目錄新增腳本，也應同步補充到 [`scripts/README.md`](scripts/README.md)。
 
