@@ -12,8 +12,8 @@
   - Anthropic 範例：`anthropic-skills`
   - superpowers 範例：`superpowers`
 - `SUBMODULE_PATH` — git submodule 相對路徑。
-  - Anthropic 範例：`anthropic-skills/`
-  - superpowers 範例：`superpowers/`
+  - Anthropic 範例：`skill-source/anthropic-skills/`
+  - superpowers 範例：`skill-source/superpowers/`
 - `CATALOG_PATH` — 本地 catalog 文件。
   - Anthropic 範例：`docs/skills/anthropic-skills-catalog.md`
   - superpowers 範例：`docs/skills/superpowers-skills-catalog.md`

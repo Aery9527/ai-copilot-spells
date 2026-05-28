@@ -74,8 +74,9 @@ Purpose: quickly find the right skill combination for the current task. Follow t
 
 ## Skill Locations
 
-- [`anthropic-skills/`](anthropic-skills/) — Anthropic upstream — Original skill definitions; do not modify directly.
-- [`superpowers/`](superpowers/) — superpowers upstream — Original workflow skill definitions; do not modify directly.
+- [`skill-source/`](skill-source/) — Upstream submodule container — Holds upstream skill libraries as git submodules; the agent MUST NOT modify upstream content directly.
+- [`skill-source/anthropic-skills/`](skill-source/anthropic-skills/) — Anthropic upstream — Original skill definitions; do not modify directly.
+- [`skill-source/superpowers/`](skill-source/superpowers/) — superpowers upstream — Original workflow skill definitions; do not modify directly.
 - [`docs/skills/anthropic-skills-catalog.md`](docs/skills/anthropic-skills-catalog.md) — Human-readable catalog for choosing Anthropic upstream skills.
 - [`docs/skills/superpowers-skills-catalog.md`](docs/skills/superpowers-skills-catalog.md) — Human-readable catalog for choosing superpowers upstream skills.
 - [`.claude/skills/_shared/`](.claude/skills/_shared/) — Shared protocol — Contains [`upstream-sync-protocol.md`](.claude/skills/_shared/upstream-sync-protocol.md) referenced by sync skills.

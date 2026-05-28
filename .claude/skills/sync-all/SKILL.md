@@ -43,11 +43,11 @@ gh pr list \
 
 ## Step 2 — 解析 submodule 名稱
 
-從 `headRefName` 中移除前綴 `dependabot/submodules/` 得到 submodule path：
+從 `headRefName` 中移除前綴 `dependabot/submodules/` 得到 submodule path（自 submodules 搬遷至 `skill-source/` 後，路徑前綴含 `skill-source/`）：
 
 ```
-dependabot/submodules/anthropic-skills  →  anthropic-skills
-dependabot/submodules/superpowers       →  superpowers
+dependabot/submodules/skill-source/anthropic-skills  →  skill-source/anthropic-skills
+dependabot/submodules/skill-source/superpowers       →  skill-source/superpowers
 ```
 
 ## Step 3 — 使用固定 sync skill 對應表
@@ -55,9 +55,9 @@ dependabot/submodules/superpowers       →  superpowers
 使用 repo 內固定映射表，不要從 frontmatter 動態發現：
 
 ```
-submodule path       →  skill 目錄名稱
-"anthropic-skills"   →  "anthropic-skills-sync"
-"superpowers"        →  "superpowers-skills-sync"
+submodule path                    →  skill 目錄名稱
+"skill-source/anthropic-skills"   →  "anthropic-skills-sync"
+"skill-source/superpowers"        →  "superpowers-skills-sync"
 ```
 
 ## Step 4 — 比對並準備執行清單

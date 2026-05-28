@@ -14,7 +14,7 @@ description: >-
 
 - `LIBRARY_NAME` -> `superpowers`
 - `UPSTREAM_URL` -> [obra/superpowers.git](https://github.com/obra/superpowers.git)
-- `SUBMODULE_PATH` -> `superpowers/`
+- `SUBMODULE_PATH` -> `skill-source/superpowers/`
 - `CATALOG_PATH` -> `docs/skills/superpowers-skills-catalog.md`
 - `SKILL_SOURCE_PATTERN` -> `skills/<name>/SKILL.md`
 - `CO_AUTHOR` -> `Claude Sonnet 4.6 <noreply@anthropic.com>`
