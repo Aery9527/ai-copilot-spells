@@ -213,12 +213,12 @@ flowchart LR
 | command | 說明 | notes |
 |---|---|---|
 | `/model [model]` | 選擇或直接切換模型。 | 支援的模型可在選單中查看。 |
-| `/effort [low|medium|high|max|auto]` | 設定推理強度。 | `max` 僅 Opus 4.6 支援；`auto` 重設成預設。 |
+| `/effort [low\|medium\|high\|max\|auto]` | 設定推理強度。 | `max` 僅 Opus 4.6 支援；`auto` 重設成預設。 |
 | `/agents` | 管理 agent 設定。 | 確認可用 agent 清單。 |
 | `/tasks` | 列出並管理背景任務。 | 含 subagents 與 shell sessions。 |
 | `/plan [description]` | 直接進入 plan mode。 | 可直接附帶任務描述。 |
 | `/ultraplan <prompt>` | 在瀏覽器草擬 ultraplan，審閱後可遠端執行或送回 terminal。 | 適合把大任務先拉到 web 端規劃。 |
-| `/fast [on|off]` | 切換 fast mode。 | 適合快速回應場景。 |
+| `/fast [on\|off]` | 切換 fast mode。 | 適合快速回應場景。 |
 | `/btw <question>` | 問一個不寫入主對話歷史的 side question。 | 只使用目前 context，不會動用 tools。 |
 
 ### Code / Workspace / Tooling
