@@ -19,12 +19,12 @@ description: Suite of tools for creating elaborate, multi-component claude.ai HT
 ## 四步工作流程
 
 ```bash
-bash anthropic-skills/skills/web-artifacts-builder/scripts/init-artifact.sh <project-name>
+bash skill-source/anthropic-skills/skills/web-artifacts-builder/scripts/init-artifact.sh <project-name>
 cd <project-name>
 
 # 開發 artifact
 
-bash ../anthropic-skills/skills/web-artifacts-builder/scripts/bundle-artifact.sh
+bash ../skill-source/anthropic-skills/skills/web-artifacts-builder/scripts/bundle-artifact.sh
 # -> 生成 bundle.html
 ```
 

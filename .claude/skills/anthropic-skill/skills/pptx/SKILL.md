@@ -10,8 +10,8 @@ description: "Use this skill any time a .pptx file is involved in any way — as
 ## 三種工作模式
 
 - 讀取或分析內容 -> `python -m markitdown presentation.pptx`
-- 編輯既有簡報或從模板創建 -> 讀 [anthropic-skills/skills/pptx/editing.md](../../../../../anthropic-skills/skills/pptx/editing.md)，走 unpack / edit XML / pack 流程
-- 從零創建簡報 -> 讀 [anthropic-skills/skills/pptx/pptxgenjs.md](../../../../../anthropic-skills/skills/pptx/pptxgenjs.md)，使用 `pptxgenjs`
+- 編輯既有簡報或從模板創建 -> 讀 [skill-source/anthropic-skills/skills/pptx/editing.md](../../../../../skill-source/anthropic-skills/skills/pptx/editing.md)，走 unpack / edit XML / pack 流程
+- 從零創建簡報 -> 讀 [skill-source/anthropic-skills/skills/pptx/pptxgenjs.md](../../../../../skill-source/anthropic-skills/skills/pptx/pptxgenjs.md)，使用 `pptxgenjs`
 
 ## 設計規範
 
@@ -49,7 +49,7 @@ description: "Use this skill any time a .pptx file is involved in any way — as
 ```bash
 python -m markitdown output.pptx
 python -m markitdown output.pptx | grep -iE "xxxx|lorem|ipsum"
-python anthropic-skills/skills/pptx/scripts/office/soffice.py --headless --convert-to pdf output.pptx
+python skill-source/anthropic-skills/skills/pptx/scripts/office/soffice.py --headless --convert-to pdf output.pptx
 pdftoppm -jpeg -r 150 output.pdf slide
 ```
 

@@ -21,7 +21,7 @@ description: "Use this skill whenever the user wants to create, read, edit, or m
 ### 讀取文件
 ```bash
 pandoc --track-changes=all document.docx -o output.md
-python anthropic-skills/skills/docx/scripts/office/unpack.py document.docx unpacked/
+python skill-source/anthropic-skills/skills/docx/scripts/office/unpack.py document.docx unpacked/
 ```
 
 ### 創建新文件（推薦：docx-js）
@@ -33,15 +33,15 @@ node generate.js  # 生成 .docx
 ### 編輯現有文件
 ```bash
 # 1. 解包
-python anthropic-skills/skills/docx/scripts/office/unpack.py input.docx unpacked/
+python skill-source/anthropic-skills/skills/docx/scripts/office/unpack.py input.docx unpacked/
 # 2. 修改 unpacked/ 內的 XML
 # 3. 重打包
-python anthropic-skills/skills/docx/scripts/office/pack.py unpacked/ output.docx
+python skill-source/anthropic-skills/skills/docx/scripts/office/pack.py unpacked/ output.docx
 ```
 
 ### 視覺驗證
 ```bash
-python anthropic-skills/skills/docx/scripts/office/soffice.py --headless --convert-to pdf document.docx
+python skill-source/anthropic-skills/skills/docx/scripts/office/soffice.py --headless --convert-to pdf document.docx
 pdftoppm -jpeg -r 150 document.pdf page
 ```
 
@@ -50,8 +50,8 @@ pdftoppm -jpeg -r 150 document.pdf page
 - **pandoc**：文字提取（含追蹤修訂）
 - **docx（npm）**：創建新 Word 文件（JavaScript）
 - **python-docx**：Python 操作（基本格式）
-- **anthropic-skills/skills/docx/scripts/office/soffice.py**：LibreOffice 包裝（格式轉換）
-- **anthropic-skills/skills/docx/scripts/office/unpack.py / pack.py**：XML 直接操作
+- **skill-source/anthropic-skills/skills/docx/scripts/office/soffice.py**：LibreOffice 包裝（格式轉換）
+- **skill-source/anthropic-skills/skills/docx/scripts/office/unpack.py / pack.py**：XML 直接操作
 
 ## 重要注意事項
 

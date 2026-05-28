@@ -1,7 +1,7 @@
 ---
 name: using-superpowers
 description: Use when starting any conversation - establishes how to find and use skills, requiring Skill tool invocation before ANY response including clarifying questions
-source: superpowers/skills/using-superpowers/SKILL.md
+source: skill-source/superpowers/skills/using-superpowers/SKILL.md
 ---
 
 ## 概述

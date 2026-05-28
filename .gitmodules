@@ -1,6 +1,6 @@
 [submodule "anthropic-skills"]
-	path = anthropic-skills
+	path = skill-source/anthropic-skills
 	url = https://github.com/anthropics/skills.git
 [submodule "superpowers"]
-	path = superpowers
+	path = skill-source/superpowers
 	url = https://github.com/obra/superpowers.git

@@ -9,7 +9,7 @@ description: Use this skill when the user asks to sync, update, refresh, or chec
 
 - `LIBRARY_NAME` -> `superpowers`
 - `UPSTREAM_URL` -> [obra/superpowers.git](https://github.com/obra/superpowers.git)
-- `SUBMODULE_PATH` -> `superpowers/`
+- `SUBMODULE_PATH` -> `skill-source/superpowers/`
 - `LOCAL_ROUTER_PATH` -> `.claude/skills/superpowers-skill/`
 - `SKILL_SOURCE_PATTERN` -> `skills/<name>/SKILL.md`
 - `CO_AUTHOR` -> `Claude Sonnet 4.6 <noreply@anthropic.com>`

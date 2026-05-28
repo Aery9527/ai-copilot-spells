@@ -13,8 +13,9 @@ description: >-
 
 - [`.agents/skills/`](../) — project-specific custom skills — 只放本 repo 專用的治理規則、內部 workflow、維護政策。
 - [`.claude/skills/`](../../../.claude/skills/) — project skill routers and maintenance skills — 放 Claude Code 專案級 router、sync skill 與共用協議。
-- [`anthropic-skills/`](../../../anthropic-skills/) — upstream submodule — 放上游 skills 原始內容；除同步任務外，不承擔本 repo 治理規則。
-- [`superpowers/`](../../../superpowers/) — upstream submodule — 放上游 workflow skills 原始內容；除同步任務外，不承擔本 repo 治理規則。
+- [`skill-source/`](../../../skill-source/) — upstream submodule container — 集中存放上游 skill 函式庫的 git submodule；嚴禁直接修改上游內容。
+- [`skill-source/anthropic-skills/`](../../../skill-source/anthropic-skills/) — upstream submodule — 放上游 skills 原始內容；除同步任務外，不承擔本 repo 治理規則。
+- [`skill-source/superpowers/`](../../../skill-source/superpowers/) — upstream submodule — 放上游 workflow skills 原始內容；除同步任務外，不承擔本 repo 治理規則。
 
 ## Placement Rules
 

@@ -1,7 +1,7 @@
 ---
 name: executing-plans
 description: Use when you have a written implementation plan to execute in a separate session with review checkpoints
-source: superpowers/skills/executing-plans/SKILL.md
+source: skill-source/superpowers/skills/executing-plans/SKILL.md
 ---
 
 ## 概述

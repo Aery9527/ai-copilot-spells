@@ -9,7 +9,7 @@ description: Use this skill when the user asks to sync, update, refresh, or chec
 
 - `LIBRARY_NAME` -> `anthropic-skills`
 - `UPSTREAM_URL` -> [anthropics/skills.git](https://github.com/anthropics/skills.git)
-- `SUBMODULE_PATH` -> `anthropic-skills/`
+- `SUBMODULE_PATH` -> `skill-source/anthropic-skills/`
 - `LOCAL_ROUTER_PATH` -> `.claude/skills/anthropic-skill/`
 - `SKILL_SOURCE_PATTERN` -> `skills/<name>/SKILL.md`
 - `CO_AUTHOR` -> `Claude Sonnet 4.6 <noreply@anthropic.com>`

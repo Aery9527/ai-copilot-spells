@@ -9,10 +9,10 @@ description: Toolkit for styling artifacts with a theme. These artifacts can be 
 
 ## 使用流程
 
-1. 先展示 [theme-showcase.pdf](../../../../../anthropic-skills/skills/theme-factory/theme-showcase.pdf)，讓使用者看所有主題。
+1. 先展示 [theme-showcase.pdf](../../../../../skill-source/anthropic-skills/skills/theme-factory/theme-showcase.pdf)，讓使用者看所有主題。
 2. 詢問使用者選擇哪個主題。
 3. 等待明確確認。
-4. 讀取 [`anthropic-skills/skills/theme-factory/themes/`](../../../../../anthropic-skills/skills/theme-factory/themes/) 下對應主題文件。
+4. 讀取 [`skill-source/anthropic-skills/skills/theme-factory/themes/`](../../../../../skill-source/anthropic-skills/skills/theme-factory/themes/) 下對應主題文件。
 5. 把顏色與字體套用到 artifact。
 
 ## 預設主題
@@ -28,7 +28,7 @@ description: Toolkit for styling artifacts with a theme. These artifacts can be 
 - `Botanical Garden` — 清新有機的花園色彩。
 - `Midnight Galaxy` — 戲劇宇宙的深邃色調。
 
-每個主題的詳細規格都在 [`anthropic-skills/skills/theme-factory/themes/`](../../../../../anthropic-skills/skills/theme-factory/themes/) 目錄。
+每個主題的詳細規格都在 [`skill-source/anthropic-skills/skills/theme-factory/themes/`](../../../../../skill-source/anthropic-skills/skills/theme-factory/themes/) 目錄。
 
 ## 自訂主題生成
 
@@ -46,6 +46,6 @@ description: Toolkit for styling artifacts with a theme. These artifacts can be 
 
 ## 重要注意事項
 
-- [theme-showcase.pdf](../../../../../anthropic-skills/skills/theme-factory/theme-showcase.pdf) 只用於展示，嚴禁修改。
+- [theme-showcase.pdf](../../../../../skill-source/anthropic-skills/skills/theme-factory/theme-showcase.pdf) 只用於展示，嚴禁修改。
 - 必須等使用者明確選定主題後才開始套用。
-- 主題細節必須從 [`anthropic-skills/skills/theme-factory/themes/`](../../../../../anthropic-skills/skills/theme-factory/themes/) 目錄讀取。
+- 主題細節必須從 [`skill-source/anthropic-skills/skills/theme-factory/themes/`](../../../../../skill-source/anthropic-skills/skills/theme-factory/themes/) 目錄讀取。

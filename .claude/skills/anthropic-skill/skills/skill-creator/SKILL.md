@@ -25,11 +25,11 @@ description: Create new skills, modify and improve existing skills, and measure 
 - `skill-name/SKILL.md` 是必要檔案。
 - YAML frontmatter 至少要有 `name` 與 `description`。
 - 可選附帶資源包括：
-  - [`agents/`](../../../../../anthropic-skills/skills/skill-creator/agents/)
-  - [`assets/`](../../../../../anthropic-skills/skills/skill-creator/assets/)
-  - [`eval-viewer/`](../../../../../anthropic-skills/skills/skill-creator/eval-viewer/)
-  - [`references/`](../../../../../anthropic-skills/skills/skill-creator/references/)
-  - [`scripts/`](../../../../../anthropic-skills/skills/skill-creator/scripts/)
+  - [`agents/`](../../../../../skill-source/anthropic-skills/skills/skill-creator/agents/)
+  - [`assets/`](../../../../../skill-source/anthropic-skills/skills/skill-creator/assets/)
+  - [`eval-viewer/`](../../../../../skill-source/anthropic-skills/skills/skill-creator/eval-viewer/)
+  - [`references/`](../../../../../skill-source/anthropic-skills/skills/skill-creator/references/)
+  - [`scripts/`](../../../../../skill-source/anthropic-skills/skills/skill-creator/scripts/)
 
 ## Description 設計原則
 
@@ -39,9 +39,9 @@ description: Create new skills, modify and improve existing skills, and measure 
 
 ## 腳本工具
 
-- [anthropic-skills/skills/skill-creator/scripts/run_eval.py](../../../../../anthropic-skills/skills/skill-creator/scripts/run_eval.py) — 執行評估。
-- [anthropic-skills/skills/skill-creator/scripts/run_loop.py](../../../../../anthropic-skills/skills/skill-creator/scripts/run_loop.py) — 多輪評估循環。
-- [anthropic-skills/skills/skill-creator/scripts/generate_report.py](../../../../../anthropic-skills/skills/skill-creator/scripts/generate_report.py) — 生成評估報告。
-- [anthropic-skills/skills/skill-creator/eval-viewer/generate_review.py](../../../../../anthropic-skills/skills/skill-creator/eval-viewer/generate_review.py) — 視覺化評估結果。
-- [anthropic-skills/skills/skill-creator/scripts/improve_description.py](../../../../../anthropic-skills/skills/skill-creator/scripts/improve_description.py) — 優化 skill description。
-- [anthropic-skills/skills/skill-creator/scripts/quick_validate.py](../../../../../anthropic-skills/skills/skill-creator/scripts/quick_validate.py) — 快速驗證。
+- [skill-source/anthropic-skills/skills/skill-creator/scripts/run_eval.py](../../../../../skill-source/anthropic-skills/skills/skill-creator/scripts/run_eval.py) — 執行評估。
+- [skill-source/anthropic-skills/skills/skill-creator/scripts/run_loop.py](../../../../../skill-source/anthropic-skills/skills/skill-creator/scripts/run_loop.py) — 多輪評估循環。
+- [skill-source/anthropic-skills/skills/skill-creator/scripts/generate_report.py](../../../../../skill-source/anthropic-skills/skills/skill-creator/scripts/generate_report.py) — 生成評估報告。
+- [skill-source/anthropic-skills/skills/skill-creator/eval-viewer/generate_review.py](../../../../../skill-source/anthropic-skills/skills/skill-creator/eval-viewer/generate_review.py) — 視覺化評估結果。
+- [skill-source/anthropic-skills/skills/skill-creator/scripts/improve_description.py](../../../../../skill-source/anthropic-skills/skills/skill-creator/scripts/improve_description.py) — 優化 skill description。
+- [skill-source/anthropic-skills/skills/skill-creator/scripts/quick_validate.py](../../../../../skill-source/anthropic-skills/skills/skill-creator/scripts/quick_validate.py) — 快速驗證。

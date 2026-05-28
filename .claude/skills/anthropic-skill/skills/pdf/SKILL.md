@@ -20,7 +20,7 @@ description: Use this skill whenever the user wants to do anything with PDF file
 - 提取圖像 -> `pdfimages`
 - OCR 掃描 PDF -> `pytesseract` + `pdf2image`
 - 命令列合併或分割 -> `qpdf` 或 `pdftk`
-- 填寫 PDF 表單 -> `pdf-lib` 或 `pypdf`；詳細流程讀 [anthropic-skills/skills/pdf/forms.md](../../../../../anthropic-skills/skills/pdf/forms.md)
+- 填寫 PDF 表單 -> `pdf-lib` 或 `pypdf`；詳細流程讀 [skill-source/anthropic-skills/skills/pdf/forms.md](../../../../../skill-source/anthropic-skills/skills/pdf/forms.md)
 
 ## 核心 Python 庫
 
@@ -55,6 +55,6 @@ squared = Paragraph("x<super>2</super>", styles['Normal'])
 
 ## 進階功能
 
-- PDF 表單流程讀 [anthropic-skills/skills/pdf/forms.md](../../../../../anthropic-skills/skills/pdf/forms.md)。
-- 進階 pypdfium2 與 JavaScript `pdf-lib` 用法讀 [anthropic-skills/skills/pdf/reference.md](../../../../../anthropic-skills/skills/pdf/reference.md)。
-- 故障排除也讀 [anthropic-skills/skills/pdf/reference.md](../../../../../anthropic-skills/skills/pdf/reference.md)。
+- PDF 表單流程讀 [skill-source/anthropic-skills/skills/pdf/forms.md](../../../../../skill-source/anthropic-skills/skills/pdf/forms.md)。
+- 進階 pypdfium2 與 JavaScript `pdf-lib` 用法讀 [skill-source/anthropic-skills/skills/pdf/reference.md](../../../../../skill-source/anthropic-skills/skills/pdf/reference.md)。
+- 故障排除也讀 [skill-source/anthropic-skills/skills/pdf/reference.md](../../../../../skill-source/anthropic-skills/skills/pdf/reference.md)。

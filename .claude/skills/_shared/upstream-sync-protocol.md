@@ -12,8 +12,8 @@
   - Anthropic 範例：`anthropic-skills`
   - superpowers 範例：`superpowers`
 - `SUBMODULE_PATH` — git submodule 相對路徑。
-  - Anthropic 範例：`anthropic-skills/`
-  - superpowers 範例：`superpowers/`
+  - Anthropic 範例：`skill-source/anthropic-skills/`
+  - superpowers 範例：`skill-source/superpowers/`
 - `LOCAL_ROUTER_PATH` — 本地 router 目錄。
   - Anthropic 範例：`.claude/skills/anthropic-skill/`
   - superpowers 範例：`.claude/skills/superpowers-skill/`

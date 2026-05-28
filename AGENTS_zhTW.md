@@ -74,8 +74,9 @@
 
 ## Skill Locations
 
-- [`anthropic-skills/`](anthropic-skills/) — Anthropic 上游 — 原始 skill 定義；不要直接修改。
-- [`superpowers/`](superpowers/) — superpowers 上游 — 原始 workflow skill 定義；不要直接修改。
+- [`skill-source/`](skill-source/) — 上游 submodule 容器 — 集中存放上游 skill 函式庫的 git submodule；嚴禁直接修改上游內容。
+- [`skill-source/anthropic-skills/`](skill-source/anthropic-skills/) — Anthropic 上游 — 原始 skill 定義；不要直接修改。
+- [`skill-source/superpowers/`](skill-source/superpowers/) — superpowers 上游 — 原始 workflow skill 定義；不要直接修改。
 - [`.claude/skills/anthropic-skill/`](.claude/skills/anthropic-skill/) — 本地 router — Anthropic skills 第一層分類入口。
 - [`.claude/skills/superpowers-skill/`](.claude/skills/superpowers-skill/) — 本地 router — superpowers skills 第一層分類入口。
 - [`.claude/skills/_shared/`](.claude/skills/_shared/) — 共用協議 — 包含 [`upstream-sync-protocol.md`](.claude/skills/_shared/upstream-sync-protocol.md)，供各 sync skill 引用。

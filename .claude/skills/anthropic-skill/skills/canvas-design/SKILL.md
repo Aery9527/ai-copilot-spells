@@ -18,7 +18,7 @@ description: Create beautiful visual art in .png and .pdf documents using design
 ## 設計特色
 
 - 90% 視覺，10% 文字。
-- 必須搜尋 [`anthropic-skills/skills/canvas-design/canvas-fonts/`](../../../../../anthropic-skills/skills/canvas-design/canvas-fonts/) 並選擇合適字體。
+- 必須搜尋 [`skill-source/anthropic-skills/skills/canvas-design/canvas-fonts/`](../../../../../skill-source/anthropic-skills/skills/canvas-design/canvas-fonts/) 並選擇合適字體。
 - 作品必須看起來像經過長時間精修，而不是快速拼裝。
 - 必須從原始請求提取概念 DNA，並把它隱含在設計裡。
 - 支援第二次精修循環。
@@ -26,7 +26,7 @@ description: Create beautiful visual art in .png and .pdf documents using design
 ## 關鍵技術棧
 
 - Python 繪圖工具，例如 reportlab、PIL 或 Pillow、matplotlib。
-- [`anthropic-skills/skills/canvas-design/canvas-fonts/`](../../../../../anthropic-skills/skills/canvas-design/canvas-fonts/) 字體資源目錄。
+- [`skill-source/anthropic-skills/skills/canvas-design/canvas-fonts/`](../../../../../skill-source/anthropic-skills/skills/canvas-design/canvas-fonts/) 字體資源目錄。
 
 ## 與 `algorithmic-art` 的差異
 

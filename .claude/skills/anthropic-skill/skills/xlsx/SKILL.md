@@ -11,7 +11,7 @@ description: "Use this skill any time a spreadsheet file is the primary input or
 
 - 數據分析、批次操作、簡單導出 -> `pandas`
 - 複雜格式、公式、Excel 特定功能 -> `openpyxl`
-- 公式重新計算 -> [`anthropic-skills/skills/xlsx/scripts/recalc.py`](../../../../../anthropic-skills/skills/xlsx/scripts/recalc.py)
+- 公式重新計算 -> [`skill-source/anthropic-skills/skills/xlsx/scripts/recalc.py`](../../../../../skill-source/anthropic-skills/skills/xlsx/scripts/recalc.py)
 
 ## 核心工作流程
 
@@ -23,7 +23,7 @@ from openpyxl.styles import Font, PatternFill, Alignment
 
 - 用 `pandas` 做分析與簡單輸出。
 - 用 `openpyxl` 寫公式與格式。
-- 修改完成後必須執行 `python anthropic-skills/skills/xlsx/scripts/recalc.py output.xlsx`。
+- 修改完成後必須執行 `python skill-source/anthropic-skills/skills/xlsx/scripts/recalc.py output.xlsx`。
 
 ## 關鍵規則：公式優先
 
@@ -52,7 +52,7 @@ from openpyxl.styles import Font, PatternFill, Alignment
 ## 公式重新計算
 
 ```bash
-python anthropic-skills/skills/xlsx/scripts/recalc.py output.xlsx [timeout_seconds]
+python skill-source/anthropic-skills/skills/xlsx/scripts/recalc.py output.xlsx [timeout_seconds]
 ```
 
 - 腳本會回傳 `success` 或 `errors_found`。
@@ -63,5 +63,5 @@ python anthropic-skills/skills/xlsx/scripts/recalc.py output.xlsx [timeout_secon
 
 - 使用 `data_only=True` 讀取後再存檔，會永久把公式替換成值。
 - 財務模型應把假設集中在 assumption cells，公式用 cell 引用。
-- 修改後必須跑 [`anthropic-skills/skills/xlsx/scripts/recalc.py`](../../../../../anthropic-skills/skills/xlsx/scripts/recalc.py) 驗證。
+- 修改後必須跑 [`skill-source/anthropic-skills/skills/xlsx/scripts/recalc.py`](../../../../../skill-source/anthropic-skills/skills/xlsx/scripts/recalc.py) 驗證。
 - 如果主要交付物不是 spreadsheet file，嚴禁誤用此 skill。

@@ -17,15 +17,15 @@ description: A set of resources to help me write all kinds of internal communica
 ## 工作流程
 
 1. 識別溝通類型。
-2. 從 [`anthropic-skills/skills/internal-comms/examples/`](../../../../../anthropic-skills/skills/internal-comms/examples/) 目錄讀取對應指南文件。
+2. 從 [`skill-source/anthropic-skills/skills/internal-comms/examples/`](../../../../../skill-source/anthropic-skills/skills/internal-comms/examples/) 目錄讀取對應指南文件。
 3. 按照該文件的格式、語氣與內容要求撰寫。
 
 ## 指南文件對應
 
-- 3P 進度更新 -> [anthropic-skills/skills/internal-comms/examples/3p-updates.md](../../../../../anthropic-skills/skills/internal-comms/examples/3p-updates.md)
-- 公司電子報 -> [anthropic-skills/skills/internal-comms/examples/company-newsletter.md](../../../../../anthropic-skills/skills/internal-comms/examples/company-newsletter.md)
-- FAQ 回答 -> [anthropic-skills/skills/internal-comms/examples/faq-answers.md](../../../../../anthropic-skills/skills/internal-comms/examples/faq-answers.md)
-- 其他類型 -> [anthropic-skills/skills/internal-comms/examples/general-comms.md](../../../../../anthropic-skills/skills/internal-comms/examples/general-comms.md)
+- 3P 進度更新 -> [skill-source/anthropic-skills/skills/internal-comms/examples/3p-updates.md](../../../../../skill-source/anthropic-skills/skills/internal-comms/examples/3p-updates.md)
+- 公司電子報 -> [skill-source/anthropic-skills/skills/internal-comms/examples/company-newsletter.md](../../../../../skill-source/anthropic-skills/skills/internal-comms/examples/company-newsletter.md)
+- FAQ 回答 -> [skill-source/anthropic-skills/skills/internal-comms/examples/faq-answers.md](../../../../../skill-source/anthropic-skills/skills/internal-comms/examples/faq-answers.md)
+- 其他類型 -> [skill-source/anthropic-skills/skills/internal-comms/examples/general-comms.md](../../../../../skill-source/anthropic-skills/skills/internal-comms/examples/general-comms.md)
 
 ## 關鍵詞
 
