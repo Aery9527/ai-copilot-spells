@@ -40,6 +40,7 @@ flowchart LR
   - [.claude-plugin 檔案說明](#claude-plugin-檔案說明)
   - [anthropic-skills](#anthropic-skills)
   - [superpowers](#superpowers)
+  - [webwright](#webwright)
 - [AI 工具文件](#ai-工具文件)
 - [Agent 與 Skill 差異](#agent-與-skill-差異)
 - [腳本文件](#腳本文件)
@@ -78,6 +79,7 @@ git submodule update --init --recursive
 |------|------|------|
 | `skill-source/anthropic-skills/` | [Anthropic 上游](https://github.com/anthropics/skills) | 創意設計、前端工程、AI 工程、Office 文件、技術寫作 |
 | `skill-source/superpowers/` | [superpowers 上游](https://github.com/obra/superpowers) | 開發流程、Code Review、並行協作、Git 工作流、維運 |
+| `skill-source/webwright/` | [Microsoft Webwright 上游](https://github.com/microsoft/Webwright) | 瀏覽器自動化：以單一 bash command 驅動本地 Playwright workspace，附截圖與 action log 自我驗證 |
 | `docs/skills/` | 本地文件 | 回答「該用哪個 upstream skill」時使用的 catalog；不是可執行 skill |
 | `.claude/skills/` | 本地 project skills | 同步上游、同步 CLI 文件、治理 workflow、共用維運協議 |
 
@@ -176,6 +178,25 @@ flowchart TD
 
     ws["writing-skills"]
 ```
+
+[Back to top](#quick-navigation)
+
+---
+
+### webwright
+
+`webwright` 是 Microsoft Research 出品的瀏覽器代理 skill：把宿主 agent 變成 SOTA browser agent，透過一次一個 bash command 驅動本地 Playwright workspace，並把每步截圖與 action log 保存在 `final_runs/run_<id>/`，再以視覺方式自我驗證結果。上游同時提供 Claude Code 與 Codex 的 plugin manifest，`skills/webwright/` 內容兩端共用。
+
+| 維度 | Claude Code | GitHub Copilot CLI | Codex |
+|------|------|------|------|
+| 說明 | Marketplace source 是 `microsoft/Webwright`，marketplace 與 plugin 名稱皆為 `webwright`。 | Copilot CLI 讀取相同 Claude 風格 marketplace，透過 `copilot plugin` 註冊與安裝。 | Codex 直接讀取相同 marketplace，亦可用 `/plugins` 互動安裝。本機 Playwright 環境另需 `pip install -e .` 與 `playwright install`。 |
+| 安裝 | `/plugin marketplace add microsoft/Webwright`<br>`/plugin install webwright@webwright`<br>`/reload-plugins` | `copilot plugin marketplace add microsoft/Webwright`<br>`copilot plugin install webwright@webwright`<br>`copilot plugin list` | `codex plugin marketplace add microsoft/Webwright`<br>`codex`<br>`/plugins` 選 `webwright` → `Install Plugin` |
+| 更新 | `/plugin marketplace update webwright`<br>`/reload-plugins` | `copilot plugin update webwright@webwright` | 於 `/plugins` 內升級，或 `codex plugin marketplace update webwright`。 |
+| 移除 | `/plugin uninstall webwright@webwright`<br>`/plugin marketplace remove webwright` | `copilot plugin uninstall webwright@webwright`<br>`copilot plugin marketplace remove webwright` | 於 `/plugins` 內移除，或 `codex plugin marketplace remove webwright`。 |
+
+> 本 repo 的 [`skill-source/webwright/`](skill-source/webwright/) 僅作為原始碼紀錄與 Dependabot 同步源；Claude Code / Copilot / Codex 的 plugin 來源一律指向 GitHub 上的 `microsoft/Webwright`，不要從本機路徑加 marketplace。
+
+詳細設定見 [`skill-source/webwright/.claude-plugin/marketplace.json`](skill-source/webwright/.claude-plugin/marketplace.json) 與 [`skill-source/webwright/.claude-plugin/plugin.json`](skill-source/webwright/.claude-plugin/plugin.json)。
 
 [Back to top](#quick-navigation)
 
@@ -297,7 +318,8 @@ Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/READM
 ai-research/
 ├── skill-source/             # 上游 submodule 容器
 │   ├── anthropic-skills/     # Anthropic 上游 skills submodule
-│   └── superpowers/          # superpowers 上游 skills submodule
+│   ├── superpowers/          # superpowers 上游 skills submodule
+│   └── webwright/            # Microsoft Webwright 瀏覽器代理 submodule
 ├── cli-agents/               # 各 CLI agent 的參考文件與使用者級別設定範本
 │   ├── claude-code/          # Claude Code CLI 參考
 │   │   └── .claude/          # 使用者級別設定範本（複製到 ~/.claude/ 生效）
