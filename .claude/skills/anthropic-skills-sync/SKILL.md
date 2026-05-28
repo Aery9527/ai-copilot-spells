@@ -1,6 +1,11 @@
 ---
 name: anthropic-skills-sync
-description: Use this skill when the user asks to sync, update, refresh, or check for updates to the anthropic-skills library. Triggers when user says "sync skills", "update skills", "check for upstream changes", "pull latest skills from Anthropic", "refresh skill summaries", or any variation of wanting to keep local skills in sync with the upstream Anthropic repository.
+description: >-
+  Use this skill when the user asks to sync, update, refresh, or check for
+  updates to the anthropic-skills library. Triggers when user says "sync
+  skills", "update skills", "check for upstream changes", "pull latest skills
+  from Anthropic", "refresh skill catalog", or any variation of wanting to keep
+  the local Anthropic skills catalog in sync with the upstream repository.
 ---
 
 # Anthropic Skills Sync
@@ -10,7 +15,7 @@ description: Use this skill when the user asks to sync, update, refresh, or chec
 - `LIBRARY_NAME` -> `anthropic-skills`
 - `UPSTREAM_URL` -> [anthropics/skills.git](https://github.com/anthropics/skills.git)
 - `SUBMODULE_PATH` -> `skill-source/anthropic-skills/`
-- `LOCAL_ROUTER_PATH` -> `.claude/skills/anthropic-skill/`
+- `CATALOG_PATH` -> `docs/skills/anthropic-skills-catalog.md`
 - `SKILL_SOURCE_PATTERN` -> `skills/<name>/SKILL.md`
 - `CO_AUTHOR` -> `Claude Sonnet 4.6 <noreply@anthropic.com>`
 

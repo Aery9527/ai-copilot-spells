@@ -2,3 +2,4 @@
 .claude/skills/cli-doc-sync
 bash.exe.stackdump
 /.worktree/
+.agents/skills

@@ -1,6 +1,11 @@
 ---
 name: superpowers-skills-sync
-description: Use this skill when the user asks to sync, update, refresh, or check for updates to the superpowers skills library. Triggers when user says "sync superpowers", "update superpowers skills", "check superpowers upstream", "pull latest superpowers", or any variation of keeping superpowers local descriptions in sync with the upstream repo.
+description: >-
+  Use this skill when the user asks to sync, update, refresh, or check for
+  updates to the superpowers skills library. Triggers when user says "sync
+  superpowers", "update superpowers skills", "check superpowers upstream",
+  "pull latest superpowers", "refresh superpowers catalog", or any variation of
+  keeping the local superpowers skills catalog in sync with the upstream repo.
 ---
 
 # Superpowers Skills Sync
@@ -10,7 +15,7 @@ description: Use this skill when the user asks to sync, update, refresh, or chec
 - `LIBRARY_NAME` -> `superpowers`
 - `UPSTREAM_URL` -> [obra/superpowers.git](https://github.com/obra/superpowers.git)
 - `SUBMODULE_PATH` -> `skill-source/superpowers/`
-- `LOCAL_ROUTER_PATH` -> `.claude/skills/superpowers-skill/`
+- `CATALOG_PATH` -> `docs/skills/superpowers-skills-catalog.md`
 - `SKILL_SOURCE_PATTERN` -> `skills/<name>/SKILL.md`
 - `CO_AUTHOR` -> `Claude Sonnet 4.6 <noreply@anthropic.com>`
 
