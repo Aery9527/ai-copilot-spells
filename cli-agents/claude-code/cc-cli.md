@@ -276,9 +276,9 @@ flowchart LR
 |---|---|---|
 | `/config` | 開啟 Settings 介面（theme、model、output style 等）。 | alias：`/settings`。 |
 | `/theme` | 更換色彩主題。 | 支援 light / dark / daltonized / ANSI themes。 |
-| `/color [color|default]` | 設定 prompt bar 顏色。 | 支援 `red`、`blue`、`green`、`yellow`、`purple`、`orange`、`pink`、`cyan`。 |
+| `/color [color\|default]` | 設定 prompt bar 顏色。 | 支援 `red`、`blue`、`green`、`yellow`、`purple`、`orange`、`pink`、`cyan`。 |
 | `/vim` | 切換 Vim 與 Normal 輸入模式。 | 也可透過 `/config` 永久設定。 |
-| `/tui [default|fullscreen]` | 設定 terminal UI renderer，並保留目前對話重新啟動。 | `fullscreen` 會啟用 flicker-free alt-screen renderer；不帶參數可顯示目前 renderer。 |
+| `/tui [default\|fullscreen]` | 設定 terminal UI renderer，並保留目前對話重新啟動。 | `fullscreen` 會啟用 flicker-free alt-screen renderer；不帶參數可顯示目前 renderer。 |
 | `/terminal-setup` | 設定 terminal keybindings（如 `Shift+Enter`）。 | 僅在需要設定的 terminal 中顯示。 |
 | `/keybindings` | 開啟或建立 keybindings 設定檔。 | 自訂快捷鍵入口。 |
 | `/mcp` | 管理 MCP server 設定與 OAuth 認證。 | 包含 MCP prompts 與 server 狀態。 |
