@@ -1,6 +1,6 @@
 # ai-research
 
-> AI 工具研究 × Skills 知識庫：彙整 Claude Code、GitHub Copilot、Codex 等 AI 工具的使用方式，並沉澱為可重複使用的 Skills。
+> AI 工具研究 × Skills 知識庫：彙整 Claude Code、GitHub Copilot、Codex 等 AI 工具的使用方式。
 
 ```mermaid
 flowchart LR
