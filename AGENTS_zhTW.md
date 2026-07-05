@@ -34,6 +34,7 @@
 ### AI 工程、文件操作與寫作
 
 - 如果使用者要建 Claude API 應用或 Anthropic SDK 整合，必須使用 `brainstorming` -> `claude-api`。
+- 如果使用者詢問 Claude/Anthropic API 模型、價格、功能可用性、migration、caching、tool use 或 Managed Agents，必須使用 `claude-api`。
 - 如果使用者要建 MCP server，必須使用 `brainstorming` -> `mcp-builder`。
 - 如果使用者要操作 PDF，必須使用 `pdf`。
 - 如果使用者要操作 Word 文件，必須使用 `docx`。

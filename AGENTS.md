@@ -34,6 +34,7 @@ Purpose: quickly find the right skill combination for the current task. Follow t
 ### AI Engineering, Document Operations, And Writing
 
 - If the user wants to build a Claude API app or Anthropic SDK integration, use `brainstorming` -> `claude-api`.
+- If the user asks about Claude/Anthropic API models, pricing, feature availability, migration, caching, tool use, or Managed Agents, use `claude-api`.
 - If the user wants to build an MCP server, use `brainstorming` -> `mcp-builder`.
 - If the user wants to work with PDFs, use `pdf`.
 - If the user wants to work with Word documents, use `docx`.

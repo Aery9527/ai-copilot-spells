@@ -41,13 +41,13 @@ flowchart LR
 
 ### Frontend Engineering
 
-- [frontend-design](../../skill-source/anthropic-skills/skills/frontend-design/SKILL.md) — design-forward web UI, pages, components, dashboards, and landing pages.
+- [frontend-design](../../skill-source/anthropic-skills/skills/frontend-design/SKILL.md) — distinctive, subject-grounded visual design for new or reshaped web UI.
 - [web-artifacts-builder](../../skill-source/anthropic-skills/skills/web-artifacts-builder/SKILL.md) — complex Claude artifacts using React and shadcn/ui.
 - [webapp-testing](../../skill-source/anthropic-skills/skills/webapp-testing/SKILL.md) — Playwright-based testing for local web apps.
 
 ### AI Engineering
 
-- [claude-api](../../skill-source/anthropic-skills/skills/claude-api/SKILL.md) — Claude API, Anthropic SDK, and Managed Agents apps.
+- [claude-api](../../skill-source/anthropic-skills/skills/claude-api/SKILL.md) — Claude API and Anthropic SDK models, pricing, tool use, caching, migration, and Managed Agents.
 - [mcp-builder](../../skill-source/anthropic-skills/skills/mcp-builder/SKILL.md) — MCP servers for LLM tool access.
 - [skill-creator](../../skill-source/anthropic-skills/skills/skill-creator/SKILL.md) — creating, improving, packaging, and evaluating AI skills.
 
