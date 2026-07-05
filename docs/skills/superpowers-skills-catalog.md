@@ -34,8 +34,8 @@ flowchart LR
 ### Development Workflow
 
 - [brainstorming](../../skill-source/superpowers/skills/brainstorming/SKILL.md) — clarify user intent, requirements, and design before feature or behavior changes.
-- [writing-plans](../../skill-source/superpowers/skills/writing-plans/SKILL.md) — turn an approved spec into an implementation plan.
-- [executing-plans](../../skill-source/superpowers/skills/executing-plans/SKILL.md) — execute an existing plan in a new session.
+- [writing-plans](../../skill-source/superpowers/skills/writing-plans/SKILL.md) — turn approved requirements into task-sized implementation plans with global constraints and interface handoffs.
+- [executing-plans](../../skill-source/superpowers/skills/executing-plans/SKILL.md) — execute an existing plan in a separate session when subagent-driven execution is not available.
 - [test-driven-development](../../skill-source/superpowers/skills/test-driven-development/SKILL.md) — start feature or bugfix work with failing tests.
 - [systematic-debugging](../../skill-source/superpowers/skills/systematic-debugging/SKILL.md) — investigate root cause before fixing bugs, test failures, and unexpected behavior.
 - [verification-before-completion](../../skill-source/superpowers/skills/verification-before-completion/SKILL.md) — verify evidence before claiming work is complete.
@@ -49,13 +49,13 @@ flowchart LR
 ### Collaboration
 
 - [dispatching-parallel-agents](../../skill-source/superpowers/skills/dispatching-parallel-agents/SKILL.md) — split two or more independent tasks across agents.
-- [subagent-driven-development](../../skill-source/superpowers/skills/subagent-driven-development/SKILL.md) — execute planned tasks with focused subagents in the current session.
+- [subagent-driven-development](../../skill-source/superpowers/skills/subagent-driven-development/SKILL.md) — execute planned tasks in the current session with implementer subagents, task reviews, and a final branch review.
 - [using-git-worktrees](../../skill-source/superpowers/skills/using-git-worktrees/SKILL.md) — isolate feature work when worktree isolation is required.
 
 ### System And Meta
 
-- [using-superpowers](../../skill-source/superpowers/skills/using-superpowers/SKILL.md) — establish skill lookup discipline at session start.
-- [writing-skills](../../skill-source/superpowers/skills/writing-skills/SKILL.md) — create, edit, and validate skills.
+- [using-superpowers](../../skill-source/superpowers/skills/using-superpowers/SKILL.md) — establish skill lookup discipline and platform-specific invocation before any response or action.
+- [writing-skills](../../skill-source/superpowers/skills/writing-skills/SKILL.md) — create, edit, and validate skills with failure-driven tests and discovery-focused descriptions.
 
 [Back to top](#quick-navigation)
 
