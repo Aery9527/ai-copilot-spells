@@ -7,14 +7,8 @@ flowchart LR
     U(["👤 使用者"])
 
     subgraph nav ["導覽層"]
-        A["📋 AGENTS.md / AGENTS_zhTW.md\nTask → Skill 組合"]
+        A["📋 AGENTS.md / AGENTS_zhTW.md\nrepo 規則"]
         B["📖 README.md\n快速定位"]
-    end
-
-    subgraph refs ["Catalog 文件層 (docs/skills/)"]
-        direction TB
-        R1["🎨 Anthropic skills catalog"]
-        R2["⚡ Superpowers skills catalog"]
     end
 
     subgraph runtime ["Project skill 層 (.claude/skills/)"]
@@ -26,9 +20,8 @@ flowchart LR
         P["🔄 _shared/upstream-sync-protocol"]
     end
 
-    U --> nav --> refs
-    nav --> runtime
-    S -->|"catalog links"| refs
+    U --> nav --> runtime
+    S -->|"submodule source"| runtime
     P -.->|"sync 協議"| runtime
 ```
 
@@ -73,24 +66,17 @@ git submodule update --init --recursive
 
 ## Skills 系統
 
-本 repo 維護 upstream skills、catalog 文件，以及本 repo 處理任務時使用的 project skills：
+本 repo 維護 upstream skills，以及本 repo 處理任務時使用的 project skills：
 
 | 目錄 | 來源 | 用途 |
 |------|------|------|
 | `skill-source/anthropic-skills/` | [Anthropic 上游](https://github.com/anthropics/skills) | 創意設計、前端工程、AI 工程、Office 文件、技術寫作 |
 | `skill-source/superpowers/` | [superpowers 上游](https://github.com/obra/superpowers) | 開發流程、Code Review、並行協作、Git 工作流、維運 |
 | `skill-source/webwright/` | [Microsoft Webwright 上游](https://github.com/microsoft/Webwright) | 瀏覽器自動化：以單一 bash command 驅動本地 Playwright workspace，附截圖與 action log 自我驗證 |
-| `docs/skills/` | 本地文件 | 回答「該用哪個 upstream skill」時使用的 catalog；不是可執行 skill |
+| `skill-source-zhTW/` | 本地翻譯內容 | 依需要從 upstream skill 內容翻譯出的繁體中文版本 |
 | `.claude/skills/` | 本地 project skills | 同步上游、同步 CLI 文件、治理 workflow、共用維運協議 |
 
-### Skill Catalogs（問題回答用參考）
-
-| Catalog | 涵蓋範疇 |
-|---------|---------|
-| [`docs/skills/anthropic-skills-catalog.md`](docs/skills/anthropic-skills-catalog.md) | 創意設計・前端工程・AI 工程・Office 文件・技術寫作 |
-| [`docs/skills/superpowers-skills-catalog.md`](docs/skills/superpowers-skills-catalog.md) | 開發流程・Code Review・並行協作・Git 工作流・維運 |
-
-Catalog 文件只用於回答「該選哪個 skill」或建立任務心智模型。真正執行時，應使用已安裝的 upstream skill，或讀取 [`skill-source/anthropic-skills/skills/`](skill-source/anthropic-skills/skills/) / [`skill-source/superpowers/skills/`](skill-source/superpowers/skills/) 下的原始 `SKILL.md`。
+要確認 upstream skill 的用途時，直接讀取 [`skill-source/anthropic-skills/skills/`](skill-source/anthropic-skills/skills/) / [`skill-source/superpowers/skills/`](skill-source/superpowers/skills/) 下的原始 `SKILL.md`；真正執行時，使用已安裝的 upstream skill。
 
 ### 共用基礎設施
 
@@ -204,13 +190,13 @@ flowchart TD
 
 ## AI 工具文件
 
-| 工具 | CLI 參考 | Agent 使用指南 | 說明 |
-|------|---------|----------------|------|
-| **Shared Rules** | [`cli-agents/rules.md`](cli-agents/rules.md) / [`cli-agents/rules_zhTW.md`](cli-agents/rules_zhTW.md) | - | 可作為 Claude Code、GitHub Copilot、Codex 等 AI 工具共用的基本守則，包含語言偏好、工作態度與禁止行為 |
-| **Cross-Tool Hooks** | [`cli-agents/hooks-cross-tool.md`](cli-agents/hooks-cross-tool.md) | - | 比較 Claude Code、GitHub Copilot CLI、Codex CLI 的 hook 核心差異，並整理共用 plugin skill + hook 的封裝策略 |
-| **Claude Code** | [`cli-agents/claude-code/cc-cli.md`](cli-agents/claude-code/cc-cli.md) | [`docs/claude-code-agents.md`](docs/claude-code-agents.md) | CLI 參數、slash commands、快捷鍵，以及 built-in / custom agent 用法 |
-| **GitHub Copilot** | [`cli-agents/github-copilot/gc-cli.md`](cli-agents/github-copilot/gc-cli.md) | [`docs/github-copilot-agents.md`](docs/github-copilot-agents.md) | CLI 參數、slash commands、custom instructions，以及 built-in / custom agent 用法 |
-| **Codex CLI** | [`cli-agents/codex/cx-cli.md`](cli-agents/codex/cx-cli.md) | [`docs/codex-agents.md`](docs/codex-agents.md) | 安裝、登入、approval / sandbox、`codex exec`、subagents、`AGENTS.md`、slash commands、config，以及 TUI 快捷操作 |
+| 工具 | 參考文件 | 說明 |
+|------|---------|------|
+| **Shared Rules** | [`cli-agents/rules.md`](cli-agents/rules.md) / [`cli-agents/rules_zhTW.md`](cli-agents/rules_zhTW.md) | 可作為 Claude Code、GitHub Copilot、Codex 等 AI 工具共用的基本守則，包含語言偏好、工作態度與禁止行為 |
+| **Cross-Tool Hooks** | [`cli-agents/hooks-cross-tool.md`](cli-agents/hooks-cross-tool.md) | 比較 Claude Code、GitHub Copilot CLI、Codex CLI 的 hook 核心差異，並整理共用 plugin skill + hook 的封裝策略 |
+| **Claude Code** | [`cli-agents/claude-code/cc-cli.md`](cli-agents/claude-code/cc-cli.md) | CLI 參數、slash commands、快捷鍵，以及 built-in / custom agent 用法 |
+| **GitHub Copilot** | [`cli-agents/github-copilot/gc-cli.md`](cli-agents/github-copilot/gc-cli.md) | CLI 參數、slash commands、custom instructions，以及 built-in / custom agent 用法 |
+| **Codex CLI** | [`cli-agents/codex/cx-cli.md`](cli-agents/codex/cx-cli.md) | 安裝、登入、approval / sandbox、`codex exec`、subagents、`AGENTS.md`、slash commands、config，以及 TUI 快捷操作 |
 
 其他工具操作文件索引：[`tool/README.md`](tool/README.md)
 
@@ -220,7 +206,7 @@ flowchart TD
 
 ## Agent 與 Skill 差異
 
-這一節整理目前 repo 內對 **Claude Code** 與 **GitHub Copilot CLI** 的 agent / skill 研究結論。若要查各工具的完整建立方式與實際用法，請先看 [Claude Code Agent 使用指南](docs/claude-code-agents.md)、[GitHub Copilot CLI Agent 使用指南](docs/github-copilot-agents.md) 與 [Codex Agent 使用指南](docs/codex-agents.md)。
+這一節整理目前 repo 內對 **Claude Code** 與 **GitHub Copilot CLI** 的 agent / skill 研究結論。各工具的 CLI 與 agent 使用方式以 [`cli-agents/`](cli-agents/) 下的文件為準。
 
 ### 核心區分
 
@@ -273,7 +259,7 @@ flowchart TD
 ### 這個 repo 目前怎麼看
 
 1. [`.claude/skills/`](.claude/skills/sync-all/SKILL.md) 是本 repo 的 **project skill 生態**，只放本 repo 執行維護任務時需要的 workflow。
-2. [Claude Code Agent 使用指南](docs/claude-code-agents.md) 與 [GitHub Copilot CLI Agent 使用指南](docs/github-copilot-agents.md) 則是整理 **agent 建立、使用與能力邊界**。
+2. [`cli-agents/`](cli-agents/) 則整理各工具的 CLI、agent 建立、使用與能力邊界。
 3. 如果未來要新增可分發的 plugin / marketplace，cc 與 gc 都做得到，但不應假設一份 agent 定義可直接跨兩邊共用。
 4. 如果你在設計新能力時猶豫該做 agent 還是 skill，先問自己一句：**我要的是專家，還是手冊？** 要專家就做 agent；要手冊就做 skill。
 
@@ -320,6 +306,7 @@ ai-research/
 │   ├── anthropic-skills/     # Anthropic 上游 skills submodule
 │   ├── superpowers/          # superpowers 上游 skills submodule
 │   └── webwright/            # Microsoft Webwright 瀏覽器代理 submodule
+├── skill-source-zhTW/         # upstream skill 內容的繁體中文翻譯
 ├── cli-agents/               # 各 CLI agent 的參考文件與使用者級別設定範本
 │   ├── claude-code/          # Claude Code CLI 參考
 │   │   └── .claude/          # 使用者級別設定範本（複製到 ~/.claude/ 生效）
@@ -327,12 +314,9 @@ ai-research/
 │   │   └── .copilot/         # 使用者級別設定範本（複製到 ~/.copilot/ 生效）
 │   └── codex/                # Codex CLI 參考
 │       └── cx-cli.md
-├── other/                    # 其他語言 / 框架指引
-│   └── java-guidelines.md
 ├── scripts/                  # 維護與自動化腳本文件
 │   ├── README.md
 │   └── remove-local-git-user.ps1
-├── docs/skills/              # upstream skill catalog 文件（回答問題用，不是 executable skills）
 ├── .claude/skills/           # repo 專用 project skills
 │   ├── _shared/              # 共用協議（upstream-sync-protocol）
 │   ├── skills-governance/    # project skill 治理規則
@@ -350,13 +334,6 @@ ai-research/
 │   ├── claude_desktop_ahk.md
 │   ├── ps_func.md
 │   └── wsl-claude-code-env-setup.md
-└── docs/
-    ├── claude-code-agents.md
-    ├── codex-agents.md
-    ├── github-copilot-agents.md
-    └── superpowers/
-        ├── specs/            # 設計文件
-        └── plans/            # 實作計畫
 ```
 
 [Back to top](#quick-navigation)

@@ -2,18 +2,18 @@
 name: skills-governance
 description: >-
   用於建立、修改、重新命名或移除本 repo 的 project skills，並套用
-  文件同步、catalog 邊界與 Conventional Commit 規則時使用。
+  文件同步、目錄邊界與 Conventional Commit 規則時使用。
 ---
 
 # Skills Governance
 
-治理本 repo 內的 project skills，特別是 [`.claude/skills/`](../) 下的可執行 workflow skills，以及與其直接相關的文件同步、catalog 邊界與 commit slice 規則。
+治理本 repo 內的 project skills，特別是 [`.claude/skills/`](../) 下的可執行 workflow skills，以及與其直接相關的文件同步、目錄邊界與 commit slice 規則。
 
 ## Directory Boundaries
 
 - [`.claude/skills/`](../) — project skills — 放本 repo 執行維護任務時需要的 sync skill、CLI 文件同步 skill、治理 workflow 與共用協議。
-- [`docs/skills/`](../../../docs/skills/) — skill catalog documents — 放協助回答「該用哪個 upstream skill」的人類可讀 catalog；不是可執行 skill。
 - [`skill-source/`](../../../skill-source/) — upstream submodule container — 集中存放上游 skill 函式庫的 git submodule；嚴禁直接修改上游內容。
+- [`skill-source-zhTW/`](../../../skill-source-zhTW/) — localized skill content — 放本 repo 依需要從上游 skill 內容翻譯出的繁體中文版本。
 - [`skill-source/anthropic-skills/`](../../../skill-source/anthropic-skills/) — upstream submodule — 放上游 skills 原始內容；除同步任務外，不承擔本 repo 治理規則。
 - [`skill-source/superpowers/`](../../../skill-source/superpowers/) — upstream submodule — 放上游 workflow skills 原始內容；除同步任務外，不承擔本 repo 治理規則。
 
@@ -21,13 +21,14 @@ description: >-
 
 - 如果內容是本 repo 專用且需要被 agent 執行的 workflow skill，必須放在 [`.claude/skills/`](../)。
 - 如果內容是在調整 sync 流程、CLI 文件同步流程、治理 workflow 或 shared protocol，必須放在 [`.claude/skills/`](../)。
-- 如果內容只是協助選擇或解釋 upstream skill，必須放在 [`docs/skills/`](../../../docs/skills/)，嚴禁包成 project skill。
+- 如果內容是上游 skill 的繁體中文翻譯，必須放在 [`skill-source-zhTW/`](../../../skill-source-zhTW/)。
+- 如果內容只是協助選擇或解釋 upstream skill，應優先讀取 [`skill-source/`](../../../skill-source/) 內的上游 `SKILL.md`，嚴禁為此建立 project skill。
 - 如果規則離開此 repo 就失去意義，嚴禁塞進 upstream submodule。
 
 ## Workflow
 
 1. 先搜尋影響面。必須用舊名稱、舊路徑、新名稱、新路徑與主題關鍵字掃描整個 repo。
-2. 在同一個 change slice 內修完所有過期資訊。嚴禁只改 skill 本體卻把 [`README.md`](../../../README.md)、[`AGENTS.md`](../../../AGENTS.md) 或 catalog 文件留到之後。
+2. 在同一個 change slice 內修完所有過期資訊。嚴禁只改 skill 本體卻把 [`README.md`](../../../README.md)、[`AGENTS.md`](../../../AGENTS.md) 或相關入口文件留到之後。
 3. 定義 commit 邊界。一個 slice 必須只有單一目的，且可獨立 review、獨立回滾。
 4. Slice 一完成就 commit。若 worktree 有不相關修改，必須用 selective staging 或先 stash；嚴禁等待大雜燴 commit。
 5. 完成一個 slice 後，才能進下一個主題。
@@ -58,7 +59,7 @@ description: >-
   - [`README.md`](../../../README.md)
   - [`AGENTS.md`](../../../AGENTS.md)
   - [`CLAUDE.md`](../../../CLAUDE.md)，如果專案級使用指引受影響
-  - [`docs/skills/`](../../../docs/skills/) 下的 catalog 文件，如果 upstream skill 查找入口受影響
+  - [`skill-source-zhTW/`](../../../skill-source-zhTW/) 下的翻譯內容，如果 upstream skill 的在地化入口受影響
   - [`.claude/skills/`](../) 下的 project skill 或 shared protocol，如果入口或引用名稱受影響
   - [`.gitignore`](../../../.gitignore)、[`scripts/README.md`](../../../scripts/README.md)、migration docs、舊計畫文件，如果名稱或路徑變更讓它們過期
 - 原則不是每次全改，而是所有被這次修改弄成不準確的地方都必須在同一個 slice 內修完。
@@ -81,6 +82,6 @@ description: >-
 
 ## Invalid Rationalizations
 
-- 如果你認為 `SKILL.md` 才是唯一 source of truth，因此 README 或 AGENTS 之後再補，那是錯的；README、AGENTS、catalog 文件與 repo 指引都是正式 discovery surface。
+- 如果你認為 `SKILL.md` 才是唯一 source of truth，因此 README 或 AGENTS 之後再補，那是錯的；README、AGENTS 與 repo 指引都是正式 discovery surface。
 - 如果你認為先把 skill 改完、等所有雜項收尾後再一起 commit 比較省事，那是錯的；完整且可驗證的 slice 應立刻 commit。
 - 如果你認為可以等到最後再決定 `feat`、`fix`、`docs`，那是錯的；type 是 slice 邊界的一部分，開始 stage 前就應明確。

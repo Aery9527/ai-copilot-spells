@@ -1,6 +1,6 @@
 # AGENTS.md — AI Tool Skills Knowledge Base
 
-Purpose: track upstream AI tool skills, catalog their usage, and maintain local sync and governance workflows.
+Purpose: track upstream AI tool skills and maintain local sync and governance workflows.
 
 ## Repository Governance
 
@@ -16,12 +16,6 @@ Purpose: track upstream AI tool skills, catalog their usage, and maintain local 
 - When adding, removing, renaming, or materially changing scripts under [`scripts/`](scripts/), the agent MUST update [`scripts/README.md`](scripts/README.md) in the same slice.
 - [`scripts/README.md`](scripts/README.md) is the single index for [`scripts/`](scripts/); new scripts MUST document at least purpose, arguments, behavior, risks or side effects, and a minimal usage example.
 - If [`README.md`](README.md) already lists script entries or summaries, the agent MUST check whether it also needs to be updated.
-
-## Skill Catalog References
-
-- If the user asks which Anthropic upstream skill fits a task, read [Anthropic Skills Catalog](docs/skills/anthropic-skills-catalog.md).
-- If the user asks which superpowers upstream skill fits a task, read [Superpowers Skills Catalog](docs/skills/superpowers-skills-catalog.md).
-- Catalog documents are references for answering questions. They are not executable skills.
 
 ## Project Structure
 
