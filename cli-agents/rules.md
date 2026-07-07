@@ -22,3 +22,4 @@
 - **MUST** apply `KISS` when designing and implementing every task. Constantly ask: **Without compromising functional completeness, is there a simpler and more direct approach?**
 - **MUST** apply `SBE` to define task inputs and outputs. Constantly ask: **Have concrete examples been used to confirm the spec? Are all edge cases covered?**
 - **MUST** apply the `Comments` principle — high-level intent over code details. Constantly ask: **Does this comment convey clear high-level intent? Have historical comments unrelated to current logic been removed?**
+- **MUST NOT** write time-sensitive state into skills or AGENTS.md — content that ongoing development or environment change will invalidate and turn misleading (e.g. a game's current progress, a temporarily missing test suite, a pending migration). These documents carry stable rules only.
