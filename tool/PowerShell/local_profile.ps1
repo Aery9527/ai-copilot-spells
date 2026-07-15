@@ -57,18 +57,21 @@ function gcx {
 
 function jcc {
     . "$ToolRoot\Set-DevEnv.ps1"
+    . "$ToolRoot\Set-JavaEnv.ps1"
     . "$ToolRoot\Set-JavaVersion.ps1"
     . "$ToolRoot\Exe-CC.ps1" @args
 }
 
 function jgc {
     . "$ToolRoot\Set-DevEnv.ps1"
+    . "$ToolRoot\Set-JavaEnv.ps1"
     . "$ToolRoot\Set-JavaVersion.ps1"
     . "$ToolRoot\Exe-GC.ps1" @args
 }
 
 function jcx {
     . "$ToolRoot\Set-DevEnv.ps1"
+    . "$ToolRoot\Set-JavaEnv.ps1"
     . "$ToolRoot\Set-JavaVersion.ps1"
     . "$ToolRoot\Exe-CX.ps1" @args
 }
