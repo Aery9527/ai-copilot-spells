@@ -6,11 +6,11 @@ $ToolRoot = Join-Path $HOME ".config\powershell"
 # workspace
 
 function gws { # golang workspace: GolandProjects
-    cd C:\Users\User\GolandProjects
+    cd (Join-Path $HOME "GolandProjects")
 }
 
 function jws { # java workspace: IdeaProjects
-    cd C:\Users\User\IdeaProjects
+    cd (Join-Path $HOME "IdeaProjects")
 }
 
 # agent cli
