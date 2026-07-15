@@ -41,10 +41,13 @@ flowchart TD
 | [`PowerShell/Set-GoVersion.ps1`](PowerShell/Set-GoVersion.ps1) | 設定 Go 版本與 `GO_HOME` / `PATH` |
 | [`PowerShell/Set-JavaVersion.ps1`](PowerShell/Set-JavaVersion.ps1) | 設定 Java 版本與 `JAVA_HOME` / `PATH` |
 | [`PowerShell/Set-JavaEnv.ps1`](PowerShell/Set-JavaEnv.ps1) | 設定 Maven 安裝路徑的 `MAVEN_HOME` / `PATH` |
+| [`PowerShell/install.ps1`](PowerShell/install.ps1) | 部署腳本：把 `Microsoft.PowerShell_profile.ps1` 複製到 Documents 目錄下的 `PowerShell\` 子目錄（pwsh 的 profile 資料夾），其餘所有檔案複製到 `$HOME\.config\powershell\` |
 
 > **使用方式**：因為 `$PROFILE` 常隨 OneDrive 同步到多台機器，而各機器上這個 repo 的實際路徑可能不同，此架構分成兩層：
-> 1. 把 [`PowerShell/Microsoft.PowerShell_profile.ps1`](PowerShell/Microsoft.PowerShell_profile.ps1) 的內容 dot-source 進你的 `$PROFILE`（這支同步、各機器相同）。
-> 2. 把整個 [`PowerShell/`](PowerShell/) 目錄下所有檔案部署（複製）到 `$HOME\.config\powershell\`（不同步，每台機器各自一份）。
+> 1. `Microsoft.PowerShell_profile.ps1` 固定部署到 Documents 目錄下的 `PowerShell\` 子目錄（pwsh 的 profile 資料夾，隨 OneDrive 同步、各機器相同）。Documents 本身的路徑用 `[Environment]::GetFolderPath([Environment+SpecialFolder]::MyDocuments)` 取得（自動處理 OneDrive 重新導向與語系差異，例如繁中顯示為「文件」），子目錄名稱 `PowerShell` 則固定寫死——這是 pwsh 自己的命名慣例，不會因語系而變。**注意**：目標固定是 pwsh 的 `PowerShell` 資料夾，不會因為用哪個 shell 執行 `install.ps1` 而變成 Windows PowerShell 5.1 的 `WindowsPowerShell` 資料夾。
+> 2. 其餘所有腳本部署到 `$HOME\.config\powershell\`（不同步，每台機器各自一份）。
+>
+> 每台機器只要在這個 repo 目錄下執行一次 [`PowerShell/install.ps1`](PowerShell/install.ps1) 即可完成部署（可重複執行，會覆蓋舊檔）。
 >
 > [`PowerShell/local_profile.ps1`](PowerShell/local_profile.ps1) 內部用 `$ToolRoot = Join-Path $HOME ".config\powershell"` 定位 `Exe-*.ps1` / `Set-*.ps1`，而不是用 `$PSScriptRoot`：因為部署後 `local_profile.ps1` 與其他共用腳本都在 `$HOME\.config\powershell\` 底下，`$ToolRoot` 是這個固定慣例路徑，靠 `$HOME` 自動算出、不需要為每台機器手動改任何路徑。
 
