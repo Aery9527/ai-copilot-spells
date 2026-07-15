@@ -23,3 +23,12 @@
 - [`skill-source-zhTW/`](skill-source-zhTW/) — 在地化 skill 來源 — 存放本專案依需要從上游 skill 內容翻譯出的繁體中文特定內容。
 - [`.claude/skills/`](.claude/skills/) — Project skills — 存放本 repo 的本地維運 skills 與共用協議。
 - [`scripts/`](scripts/) — 本地維護腳本 — 存放 repo 維護與自動化腳本；文件索引在 [`scripts/README.md`](scripts/README.md)。
+
+## 本機一鍵安裝腳本
+
+本 repo 另外還有兩支會寫入使用者家目錄（repo 之外）的一鍵 PowerShell 安裝腳本，與 `scripts/` 分開管理：
+
+- [`cli-agents/claude-code/install-statusline.ps1`](cli-agents/claude-code/install-statusline.ps1) — 將 Claude Code 的 status line 與生命週期狀態 hooks 部署到 `~/.claude/`。
+- [`tool/PowerShell/install.ps1`](tool/PowerShell/install.ps1) — 將 PowerShell profile 部署到 Documents 底下的 `PowerShell` 資料夾，其餘工具腳本部署到 `$HOME/.config/powershell/`。
+
+兩者都會直接覆寫目標檔案，沒有自動 backup。完整安裝內容說明見 [`README.md`](README.md#一鍵安裝腳本)。

@@ -23,3 +23,12 @@ Purpose: track upstream AI tool skills and maintain local sync and governance wo
 - [`skill-source-zhTW/`](skill-source-zhTW/) — Localized skill sources — Contains selected Traditional Chinese translations derived from upstream skill content when this project needs a localized copy.
 - [`.claude/skills/`](.claude/skills/) — Project skills — Contains local maintenance skills and shared protocols for this repo.
 - [`scripts/`](scripts/) — Local maintenance scripts — Contains repo maintenance and automation scripts; the document index lives in [`scripts/README.md`](scripts/README.md).
+
+## Local Install Scripts
+
+This repo also ships two one-click PowerShell installers that write to the user's home directory (outside the repo), separate from `scripts/`:
+
+- [`cli-agents/claude-code/install-statusline.ps1`](cli-agents/claude-code/install-statusline.ps1) — deploys the Claude Code status line and lifecycle-state hooks to `~/.claude/`.
+- [`tool/PowerShell/install.ps1`](tool/PowerShell/install.ps1) — deploys the PowerShell profile to the Documents `PowerShell` folder and the remaining tool scripts to `$HOME/.config/powershell/`.
+
+Both overwrite existing files at their destination without backup. See [`README.md`](README.md#一鍵安裝腳本) for the full breakdown of what each script installs.

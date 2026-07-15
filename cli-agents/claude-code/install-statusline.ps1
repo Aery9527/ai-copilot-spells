@@ -4,8 +4,8 @@
     Install the statusLine configuration and state-tracking hooks to ~/.claude.
 
 .DESCRIPTION
-    1. Copies cli-agents/claude-code/statusline-command.sh to ~/.claude/statusline-command.sh
-    2. Copies cli-agents/claude-code/hooks/*.sh to ~/.claude/hooks/
+    1. Copies statusline-command.sh (next to this script) to ~/.claude/statusline-command.sh
+    2. Copies hooks/*.sh (next to this script) to ~/.claude/hooks/
     3. Injects the statusLine key into ~/.claude/settings.json
     4. Injects UserPromptSubmit / PreToolUse / Stop hooks for real-time state tracking
 
@@ -16,7 +16,7 @@
     Overwrite all target .sh files even if they already match the source.
 
 .EXAMPLE
-    powershell -ExecutionPolicy Bypass -File .\scripts\setup-statusline.ps1
+    powershell -ExecutionPolicy Bypass -File .\cli-agents\claude-code\install-statusline.ps1
 #>
 
 [CmdletBinding()]
@@ -27,9 +27,8 @@ param(
 $ErrorActionPreference = 'Stop'
 
 # --- Paths ---
-$repoRoot     = Split-Path $PSScriptRoot -Parent
-$shSrc        = Join-Path $repoRoot 'cli-agents\claude-code\statusline-command.sh'
-$hooksSrcDir  = Join-Path $repoRoot 'cli-agents\claude-code\hooks'
+$shSrc        = Join-Path $PSScriptRoot 'statusline-command.sh'
+$hooksSrcDir  = Join-Path $PSScriptRoot 'hooks'
 $claudeDir    = Join-Path $env:USERPROFILE '.claude'
 $shDst        = Join-Path $claudeDir 'statusline-command.sh'
 $hooksDstDir  = Join-Path $claudeDir 'hooks'

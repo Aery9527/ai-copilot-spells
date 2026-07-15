@@ -37,6 +37,7 @@ flowchart LR
 - [AI 工具文件](#ai-工具文件)
 - [Agent 與 Skill 差異](#agent-與-skill-差異)
 - [腳本文件](#腳本文件)
+- [一鍵安裝腳本](#一鍵安裝腳本)
 - [Project Skills](#project-skills)
 - [目錄結構](#目錄結構)
 
@@ -276,9 +277,23 @@ Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/READM
 - [`scripts/link-agent-skills.ps1`](scripts/link-agent-skills.ps1)：在 Windows 以 junction 將 `.agents/skills` 連到 `.claude/skills`
 - [`scripts/link-agent-skills.sh`](scripts/link-agent-skills.sh)：在 Bash 環境以 symlink 將 `.agents/skills` 連到 `.claude/skills`
 - [`scripts/remove-local-git-user.ps1`](scripts/remove-local-git-user.ps1)：遞迴掃描指定路徑下的 Git repository / worktree，移除 local Git config 的 `[user]` section
-- [`scripts/setup-statusline.ps1`](scripts/setup-statusline.ps1)：安裝 Claude Code status line 與狀態追蹤 hooks
 
 之後若 `scripts/` 目錄新增腳本，也應同步補充到 [`scripts/README.md`](scripts/README.md)。
+
+[Back to top](#quick-navigation)
+
+---
+
+## 一鍵安裝腳本
+
+除了 `scripts/` 下的 repo 維護腳本，本 repo 另外還有兩支會寫入**使用者家目錄**（repo 之外）的一鍵安裝腳本，各自服務不同目的，因此不收錄在 [`scripts/README.md`](scripts/README.md)：
+
+| 腳本 | 安裝目標 | 內容 | 範例 |
+|------|----------|------|------|
+| [`cli-agents/claude-code/install-statusline.ps1`](cli-agents/claude-code/install-statusline.ps1) | `~/.claude/` | 複製 [`statusline-command.sh`](cli-agents/claude-code/statusline-command.sh) 與 [`hooks/*.sh`](cli-agents/claude-code/hooks/)；在 `~/.claude/settings.json` 注入 `statusLine`，以及 `UserPromptSubmit` / `PreToolUse` / `Stop` 三個即時狀態追蹤 hooks | `powershell -ExecutionPolicy Bypass -File .\cli-agents\claude-code\install-statusline.ps1` |
+| [`tool/PowerShell/install.ps1`](tool/PowerShell/install.ps1) | Documents 下的 `PowerShell\`（profile）+ `$HOME\.config\powershell\`（其餘腳本） | 複製 [`Microsoft.PowerShell_profile.ps1`](tool/PowerShell/Microsoft.PowerShell_profile.ps1) 到 pwsh profile 資料夾；其餘 `tool/PowerShell/` 下的腳本（`local_profile.ps1`、`Exe-*.ps1`、`Set-*.ps1` 等）複製到 `.config\powershell\` | `powershell -ExecutionPolicy Bypass -File .\tool\PowerShell\install.ps1` |
+
+兩者都可重複執行，且都會直接覆寫目標檔案（`install-statusline.ps1` 對 `.sh` 檔案有 SHA-256 比對，內容相同會略過；`install.ps1` 一律覆寫，沒有 hash 比對）。完整行為與風險說明見各自的來源目錄文件：[`cc-cli.md`](cli-agents/claude-code/cc-cli.md)、[`tool/README.md`](tool/README.md)。
 
 [Back to top](#quick-navigation)
 
