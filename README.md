@@ -172,18 +172,47 @@ flowchart TD
 
 ### webwright
 
-`webwright` 是 Microsoft Research 出品的瀏覽器代理 skill：把宿主 agent 變成 SOTA browser agent，透過一次一個 bash command 驅動本地 Playwright workspace，並把每步截圖與 action log 保存在 `final_runs/run_<id>/`，再以視覺方式自我驗證結果。上游同時提供 Claude Code 與 Codex 的 plugin manifest，`skills/webwright/` 內容兩端共用。
+`webwright` 是 Microsoft Research 出品的瀏覽器代理 skill：把宿主 agent 變成 SOTA browser agent，透過一次一個 bash command 驅動本地 Playwright workspace，並把每步截圖與 action log 保存在 `final_runs/run_<id>/`，再以視覺方式自我驗證結果。上游同時提供 Claude Code 與 Codex 的 plugin manifest，[`skill-source/webwright/skills/webwright/`](skill-source/webwright/skills/webwright/) 內容兩端共用。
 
 | 維度 | Claude Code | GitHub Copilot CLI | Codex |
 |------|------|------|------|
-| 說明 | Marketplace source 是 `microsoft/Webwright`，marketplace 與 plugin 名稱皆為 `webwright`。 | Copilot CLI 讀取相同 Claude 風格 marketplace，透過 `copilot plugin` 註冊與安裝。 | Codex 直接讀取相同 marketplace，亦可用 `/plugins` 互動安裝。本機 Playwright 環境另需 `pip install -e .` 與 `playwright install`。 |
-| 安裝 | `/plugin marketplace add microsoft/Webwright`<br>`/plugin install webwright@webwright`<br>`/reload-plugins` | `copilot plugin marketplace add microsoft/Webwright`<br>`copilot plugin install webwright@webwright`<br>`copilot plugin list` | `codex plugin marketplace add microsoft/Webwright`<br>`codex`<br>`/plugins` 選 `webwright` → `Install Plugin` |
-| 更新 | `/plugin marketplace update webwright`<br>`/reload-plugins` | `copilot plugin update webwright@webwright` | 於 `/plugins` 內升級，或 `codex plugin marketplace update webwright`。 |
-| 移除 | `/plugin uninstall webwright@webwright`<br>`/plugin marketplace remove webwright` | `copilot plugin uninstall webwright@webwright`<br>`copilot plugin marketplace remove webwright` | 於 `/plugins` 內移除，或 `codex plugin marketplace remove webwright`。 |
+| 說明 | Marketplace source 是 `microsoft/Webwright`，marketplace 與 plugin 名稱皆為 `webwright`。 | Copilot CLI 讀取相同 Claude 風格 marketplace，透過 `copilot plugin` 註冊與安裝。 | 優先用 Codex 的 user-level skill discovery，把 Webwright skill junction 到 `~/.agents/skills/webwright`。 |
+| 安裝 | `/plugin marketplace add microsoft/Webwright`<br>`/plugin install webwright@webwright`<br>`/reload-plugins` | `copilot plugin marketplace add microsoft/Webwright`<br>`copilot plugin install webwright@webwright`<br>`copilot plugin list` | 建立 `~/.agents/skills/webwright` junction，並安裝 Webwright runtime；完整 PowerShell 流程見下方。 |
+| 更新 | `/plugin marketplace update webwright`<br>`/reload-plugins` | `copilot plugin update webwright@webwright` | 更新 submodule 後重新開 Codex；junction 會指向新的 submodule 內容。 |
+| 移除 | `/plugin uninstall webwright@webwright`<br>`/plugin marketplace remove webwright` | `copilot plugin uninstall webwright@webwright`<br>`copilot plugin marketplace remove webwright` | 刪除 `~/.agents/skills/webwright` junction；可選擇保留或移除 Python runtime。 |
 
-> 本 repo 的 [`skill-source/webwright/`](skill-source/webwright/) 僅作為原始碼紀錄與 Dependabot 同步源；Claude Code / Copilot / Codex 的 plugin 來源一律指向 GitHub 上的 `microsoft/Webwright`，不要從本機路徑加 marketplace。
+Codex 建議使用下列 skill-only 安裝流程：
 
-詳細設定見 [`skill-source/webwright/.claude-plugin/marketplace.json`](skill-source/webwright/.claude-plugin/marketplace.json) 與 [`skill-source/webwright/.claude-plugin/plugin.json`](skill-source/webwright/.claude-plugin/plugin.json)。
+```powershell
+git submodule update --init --recursive
+
+$skillTarget = Resolve-Path "skill-source\webwright\skills\webwright"
+$skillLink = Join-Path $env:USERPROFILE ".agents\skills\webwright"
+New-Item -ItemType Directory -Force -Path (Split-Path $skillLink) | Out-Null
+if (-not (Test-Path $skillLink)) {
+    New-Item -ItemType Junction -Path $skillLink -Target $skillTarget.Path | Out-Null
+}
+
+python -m pip install -e "skill-source\webwright"
+python -m playwright install firefox
+```
+
+安裝後用這些指令確認狀態：
+
+```text
+codex
+/skills
+```
+
+```powershell
+python -m playwright --version
+```
+
+重新開 Codex 後，可用 `$webwright` 明確呼叫，或讓 Codex 依 [`skill-source/webwright/skills/webwright/SKILL.md`](skill-source/webwright/skills/webwright/SKILL.md) 的 description 自動觸發。若要使用原生 Webwright CLI harness，再額外執行 `python -m playwright install chromium` 並依 backend 設定 API key；`python -m webwright.run.cli doctor` 檢查的是原生 harness，不是 Codex skill-only 路徑。
+
+> [Webwright 官方 README](https://github.com/microsoft/Webwright) 仍列出 `codex plugin marketplace add microsoft/Webwright` → `/plugins` 的 plugin 安裝流程；但目前已有 [microsoft/Webwright issue #37](https://github.com/microsoft/Webwright/issues/37) 回報該 Git marketplace 缺少 Codex 會列舉的 `.agents/plugins/marketplace.json` index，導致 `webwright` 在 Codex plugin browser 內不可見。等上游補齊 marketplace index 後，再改回官方 plugin 流程。
+
+詳細設定見 [`skill-source/webwright/.claude-plugin/marketplace.json`](skill-source/webwright/.claude-plugin/marketplace.json)、[`skill-source/webwright/.claude-plugin/plugin.json`](skill-source/webwright/.claude-plugin/plugin.json) 與 [`skill-source/webwright/.codex-plugin/plugin.json`](skill-source/webwright/.codex-plugin/plugin.json)。
 
 [Back to top](#quick-navigation)
 
