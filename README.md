@@ -222,7 +222,7 @@ python -m playwright --version
 
 | 工具 | 參考文件 | 說明 |
 |------|---------|------|
-| **Shared Rules** | [`cli-agents/rules.md`](cli-agents/rules.md) / [`cli-agents/rules_zhTW.md`](cli-agents/rules_zhTW.md) | 可作為 Claude Code、GitHub Copilot、Codex 等 AI 工具共用的基本守則，包含語言偏好、工作態度與禁止行為 |
+| **Shared Rules** | [`cli-agents/sys-prompt.md`](cli-agents/sys-prompt.md) / [`cli-agents/sys-prompt_zhTW.md`](cli-agents/sys-prompt_zhTW.md) | 可作為 Claude Code、GitHub Copilot、Codex 等 AI 工具共用的基本守則，包含語言偏好、工作態度與禁止行為 |
 | **Cross-Tool Hooks** | [`cli-agents/hooks-cross-tool.md`](cli-agents/hooks-cross-tool.md) | 比較 Claude Code、GitHub Copilot CLI、Codex CLI 的 hook 核心差異，並整理共用 plugin skill + hook 的封裝策略 |
 | **Claude Code** | [`cli-agents/claude-code/cc-cli.md`](cli-agents/claude-code/cc-cli.md) | CLI 參數、slash commands、快捷鍵，以及 built-in / custom agent 用法 |
 | **GitHub Copilot** | [`cli-agents/github-copilot/gc-cli.md`](cli-agents/github-copilot/gc-cli.md) | CLI 參數、slash commands、custom instructions，以及 built-in / custom agent 用法 |
@@ -315,14 +315,34 @@ Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/READM
 
 ## 一鍵安裝腳本
 
-除了 `scripts/` 下的 repo 維護腳本，本 repo 另外還有兩支會寫入**使用者家目錄**（repo 之外）的一鍵安裝腳本，各自服務不同目的，因此不收錄在 [`scripts/README.md`](scripts/README.md)：
+除了 `scripts/` 下的 repo 維護腳本，本 repo 另外還有四支會寫入**使用者家目錄**（repo 之外）的一鍵安裝腳本，各自服務不同目的，因此不收錄在 [`scripts/README.md`](scripts/README.md)：
 
 | 腳本 | 安裝目標 | 內容 | 範例 |
 |------|----------|------|------|
 | [`cli-agents/claude-code/install-statusline.ps1`](cli-agents/claude-code/install-statusline.ps1) | `~/.claude/` | 複製 [`statusline-command.sh`](cli-agents/claude-code/statusline-command.sh) 與 [`hooks/*.sh`](cli-agents/claude-code/hooks/)；在 `~/.claude/settings.json` 注入 `statusLine`，以及 `UserPromptSubmit` / `PreToolUse` / `Stop` 三個即時狀態追蹤 hooks | `powershell -ExecutionPolicy Bypass -File .\cli-agents\claude-code\install-statusline.ps1` |
+| [`cli-agents/install-sys-prompt.ps1`](cli-agents/install-sys-prompt.ps1) | `$env:USERPROFILE\.claude\`、`$env:USERPROFILE\.codex\`、`$env:USERPROFILE\.copilot\` | 先複製三個工具的提示範本，再以 [`sys-prompt.md`](cli-agents/sys-prompt.md) 覆蓋 `CLAUDE.md`、`AGENTS.md`、`copilot-instructions.md`；既有檔案會直接覆寫且不建立備份 | `powershell -ExecutionPolicy Bypass -File .\cli-agents\install-sys-prompt.ps1` |
+| [`cli-agents/install-sys-prompt.sh`](cli-agents/install-sys-prompt.sh) | `$HOME/.claude/`、`$HOME/.codex/`、`$HOME/.copilot/` | 與 PowerShell 版本相同，適用於 POSIX shell、macOS、Linux 與 Git Bash；先部署範本，再以 [`sys-prompt.md`](cli-agents/sys-prompt.md) 覆蓋三個目標檔 | `bash ./cli-agents/install-sys-prompt.sh` |
 | [`tool/PowerShell/install.ps1`](tool/PowerShell/install.ps1) | Documents 下的 `PowerShell\`（profile）+ `$HOME\.config\powershell\`（其餘腳本） | 複製 [`Microsoft.PowerShell_profile.ps1`](tool/PowerShell/Microsoft.PowerShell_profile.ps1) 到 pwsh profile 資料夾；其餘 `tool/PowerShell/` 下的腳本（`local_profile.ps1`、`Exe-*.ps1`、`Set-*.ps1` 等）複製到 `.config\powershell\` | `powershell -ExecutionPolicy Bypass -File .\tool\PowerShell\install.ps1` |
 
-兩者都可重複執行，且都會直接覆寫目標檔案（`install-statusline.ps1` 對 `.sh` 檔案有 SHA-256 比對，內容相同會略過；`install.ps1` 一律覆寫，沒有 hash 比對）。完整行為與風險說明見各自的來源目錄文件：[`cc-cli.md`](cli-agents/claude-code/cc-cli.md)、[`tool/README.md`](tool/README.md)。
+`install-sys-prompt.ps1` 與 `install-sys-prompt.sh` 都可重複執行，並且每次都會直接覆寫三個目標檔案；目標檔案中的既有自訂內容不會自動備份。若來源檔案不存在或複製失敗，腳本會停止並回傳錯誤。完整行為與風險說明見各自的來源目錄文件：[`cc-cli.md`](cli-agents/claude-code/cc-cli.md)、[`tool/README.md`](tool/README.md)。
+
+### 系統提示安裝器：SBE 腳本行為
+
+以下案例同時適用於 [`install-sys-prompt.ps1`](cli-agents/install-sys-prompt.ps1) 與 [`install-sys-prompt.sh`](cli-agents/install-sys-prompt.sh)：
+
+| 前置狀態 | 執行 | 預期結果 |
+|----------|------|----------|
+| 三個目標目錄不存在，來源範本與 [`sys-prompt.md`](cli-agents/sys-prompt.md) 都存在 | 執行安裝器 | 建立 `.claude`、`.codex`、`.copilot`，並產生三個目標檔；三個檔案內容都等於 [`sys-prompt.md`](cli-agents/sys-prompt.md) |
+| `CLAUDE.md` 已存在且內容為自訂文字 | 再次執行安裝器 | 先複製範本，最後以 [`sys-prompt.md`](cli-agents/sys-prompt.md) 覆蓋；安裝完成後 `CLAUDE.md` 不再保留原自訂文字 |
+| 任一來源範本或 [`sys-prompt.md`](cli-agents/sys-prompt.md) 不存在 | 執行安裝器 | 顯示來源檔案錯誤、回傳非零狀態，且在檢查完成前不建立或覆寫目標檔 |
+
+PowerShell 範例：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\cli-agents\install-sys-prompt.ps1
+```
+
+預期成功輸出會列出三個 `Template` 與三個 `Rules` `[OK]` 項目，最後顯示 `Done.`；shell 版本的成功輸出語意相同。
 
 [Back to top](#quick-navigation)
 
