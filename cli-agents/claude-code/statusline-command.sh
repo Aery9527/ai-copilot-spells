@@ -24,7 +24,6 @@ model_name=$(read_json "j?.model?.display_name")
 model_id=$(read_json "j?.model?.id")
 cwd_path=$(read_json "j?.workspace?.current_dir")
 session_input_tokens=$(read_json "j?.context_window?.total_input_tokens")
-session_output_tokens=$(read_json "j?.context_window?.total_output_tokens")
 effort_level=$(read_json "j?.effort?.level")
 cache_read_tokens=$(read_json "j?.context_window?.current_usage?.cache_read_input_tokens")
 cache_creation_tokens=$(read_json "j?.context_window?.current_usage?.cache_creation_input_tokens")
@@ -240,15 +239,14 @@ else
     git_part=""
 fi
 
-# --- Session tokens + cost segment: in X + out X ≈ $X.XX ---
-session_tokens_part=""
-cost_part=""
-if { [ -n "$session_input_tokens" ] && [ "$session_input_tokens" -gt 0 ] 2>/dev/null; } || \
-   { [ -n "$session_output_tokens" ] && [ "$session_output_tokens" -gt 0 ] 2>/dev/null; }; then
-    _in=$(format_k "${session_input_tokens:-0}")
-    _out=$(format_k "${session_output_tokens:-0}")
-    _cost=$(awk "BEGIN { printf \"%.2f\", (${session_input_tokens:-0} * 3 + ${session_output_tokens:-0} * 15) / 1000000 }")
-    session_tokens_part="${SOFT}in ${_in} ${DIM}+${RESET} ${SOFT}out ${_out} ${DIM}≈${RESET} ${SOFT}\$${_cost}${RESET}"
+# --- Last update time segment: transcript file's last modified time ---
+update_part=""
+if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
+    _mtime=$(stat -c %Y "$transcript_path" 2>/dev/null || stat -f %m "$transcript_path" 2>/dev/null)
+    if [ -n "$_mtime" ]; then
+        _update_stamp=$(date -d "@${_mtime}" +%y-%m-%d\ %H:%M:%S 2>/dev/null || date -r "${_mtime}" +%y-%m-%d\ %H:%M:%S 2>/dev/null)
+        [ -n "$_update_stamp" ] && update_part="${SOFT}更新 ${_update_stamp}${RESET}"
+    fi
 fi
 
 # --- Cache read tokens segment with hit rate bar ---
@@ -384,7 +382,7 @@ fi
 line1=""
 [ -n "$model_part"          ] && line1+="${model_part}"
 [ -n "$git_part"            ] && line1+="${SEP}${git_part}"
-[ -n "$session_tokens_part" ] && line1+="${SEP}${session_tokens_part}"
+[ -n "$update_part"         ] && line1+="${SEP}${update_part}"
 
 line2=""
 [ -n "$cache_part" ] && line2+="${cache_part}"

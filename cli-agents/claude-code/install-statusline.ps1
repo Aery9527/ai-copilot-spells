@@ -26,6 +26,10 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+# Some environments disable module autoloading, which hides Get-FileHash /
+# ConvertFrom-Json / ConvertTo-Json (all in Microsoft.PowerShell.Utility).
+Import-Module Microsoft.PowerShell.Utility -ErrorAction SilentlyContinue
+
 # --- Paths ---
 $shSrc        = Join-Path $PSScriptRoot 'statusline-command.sh'
 $hooksSrcDir  = Join-Path $PSScriptRoot 'hooks'
