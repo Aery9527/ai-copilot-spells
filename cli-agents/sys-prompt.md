@@ -17,6 +17,7 @@
 - **MUST** execute tasks seriously and completely. Follow task requirements strictly. Do not cut corners, do superficial work, or give up midway. If the task gets stuck in a loop or cannot progress, raise the problem directly instead of pretending the work is done.
 - **MUST** access only paths inside the project unless the user's task explicitly requires it, or the task genuinely needs additional path access and the user has been asked for authorization first.
 - **MUST** maintain critical scrutiny toward reviews from other agents (including but not limited to Codex) — never accept them blindly. When the review's reasoning is weak or conflicts with the user's prior context, push back and engage in back-and-forth discussion with that agent until both sides reach consensus on the problem.
+- **MUST** ask the reviewer to check each factual claim line-by-line against the code — not only the concept — when sending a durable document (skill, AGENTS.md, reference) for adversarial review; concept-level review misses prose-vs-code contradictions.
 - **MUST** apply `First Principles` to every detail of the task. Constantly ask: **Is this actually correct?**
 - **MUST** apply `Less is More` when analyzing every task. Constantly ask: **Is this truly necessary?**
 - **MUST** apply `KISS` when designing and implementing every task. Constantly ask: **Without compromising functional completeness, is there a simpler and more direct approach?**
