@@ -315,14 +315,19 @@ Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/READM
 
 ## 一鍵安裝腳本
 
-除了 `scripts/` 下的 repo 維護腳本，本 repo 另外還有四支會寫入**使用者家目錄**（repo 之外）的一鍵安裝腳本，各自服務不同目的，因此不收錄在 [`scripts/README.md`](scripts/README.md)：
+除了 `scripts/` 下的 repo 維護腳本，本 repo 另外還有七支會寫入**使用者家目錄**（repo 之外）的一鍵安裝腳本，各自服務不同目的，因此不收錄在 [`scripts/README.md`](scripts/README.md)：
 
 | 腳本 | 安裝目標 | 內容 | 範例 |
 |------|----------|------|------|
+| [`cli-agents/claude-code/install-cc.ps1`](cli-agents/claude-code/install-cc.ps1) | 系統層級（Node.js/npm）+ `$env:USERPROFILE\.claude\` | 三步驟：1) 缺 npm 時用 winget 安裝 Node.js LTS；已有 npm 且是 winget 裝的（`winget list -e --id OpenJS.NodeJS.LTS` 找得到）才執行 `winget upgrade`，若 npm 是用其他方式裝的（如 nvm）則略過更新、直接沿用；2) `npm install -g @anthropic-ai/claude-code` 安裝/更新 Claude Code CLI；3) 呼叫同資料夾的 [`install-statusline.ps1`](cli-agents/claude-code/install-statusline.ps1) 部署 statusLine 與 hooks（此步驟用內建 `ConvertFrom-Json`/`ConvertTo-Json`，不需要 `jq`） | `powershell -ExecutionPolicy Bypass -File .\cli-agents\claude-code\install-cc.ps1` |
+| [`cli-agents/claude-code/install-cc.sh`](cli-agents/claude-code/install-cc.sh) | 系統層級（Node.js/npm/jq）+ `~/.claude/` | macOS 版對應腳本，同樣三步驟，改用 Homebrew：缺 npm 時 `brew install node`；已有 npm 且是 Homebrew 裝的（`brew list node` 找得到）才 `brew upgrade node`，否則略過更新；第三步前先確保 `jq` 存在（缺的話用 `brew install jq` 補上），再呼叫 [`install-statusline.sh`](cli-agents/claude-code/install-statusline.sh) | `bash ./cli-agents/claude-code/install-cc.sh` |
 | [`cli-agents/claude-code/install-statusline.ps1`](cli-agents/claude-code/install-statusline.ps1) | `~/.claude/` | 複製 [`statusline-command.sh`](cli-agents/claude-code/statusline-command.sh) 與 [`hooks/*.sh`](cli-agents/claude-code/hooks/)；在 `~/.claude/settings.json` 注入 `statusLine`，以及 `UserPromptSubmit` / `PreToolUse` / `Stop` 三個即時狀態追蹤 hooks | `powershell -ExecutionPolicy Bypass -File .\cli-agents\claude-code\install-statusline.ps1` |
+| [`cli-agents/claude-code/install-statusline.sh`](cli-agents/claude-code/install-statusline.sh) | `~/.claude/` | `install-statusline.ps1` 的 macOS/Linux 版本，邏輯相同；用 `jq` 安全改寫 `settings.json`（需先自行安裝，例如 `brew install jq`），未安裝時會直接報錯並提示 | `bash ./cli-agents/claude-code/install-statusline.sh` |
 | [`cli-agents/install-sys-prompt.ps1`](cli-agents/install-sys-prompt.ps1) | `$env:USERPROFILE\.claude\`、`$env:USERPROFILE\.codex\`、`$env:USERPROFILE\.copilot\` | 若目標檔已存在，先改名備份為 `<檔名>_yyMMddHHmmss`，再複製三個工具的提示範本；然後將 [`common-prompt.md`](cli-agents/common-prompt.md) append 到 `CLAUDE.md`、`AGENTS.md` 與 `copilot-instructions.md` 底部 | `powershell -ExecutionPolicy Bypass -File .\cli-agents\install-sys-prompt.ps1` |
 | [`cli-agents/install-sys-prompt.sh`](cli-agents/install-sys-prompt.sh) | `$HOME/.claude/`、`$HOME/.codex/`、`$HOME/.copilot/` | 與 PowerShell 版本相同，適用於 POSIX shell、macOS、Linux 與 Git Bash；先部署範本，再將 [`common-prompt.md`](cli-agents/common-prompt.md) append 到 `CLAUDE.md`、`AGENTS.md` 與 `copilot-instructions.md` 底部 | `bash ./cli-agents/install-sys-prompt.sh` |
 | [`tool/PowerShell/install.ps1`](tool/PowerShell/install.ps1) | Documents 下的 `PowerShell\`（profile）+ `$HOME\.config\powershell\`（其餘腳本） | 複製 [`Microsoft.PowerShell_profile.ps1`](tool/PowerShell/Microsoft.PowerShell_profile.ps1) 到 pwsh profile 資料夾；其餘 `tool/PowerShell/` 下的腳本（`local_profile.ps1`、`Exe-*.ps1`、`Set-*.ps1` 等）複製到 `.config\powershell\` | `powershell -ExecutionPolicy Bypass -File .\tool\PowerShell\install.ps1` |
+
+`install-cc.ps1` / `install-cc.sh` 會呼叫系統套件管理器（winget / Homebrew）安裝或更新 Node.js，以及用 `npm install -g` 安裝/更新 Claude Code CLI，這些是系統層級變更，不像其餘腳本只複製 repo 內的檔案。
 
 `install-sys-prompt.ps1` 與 `install-sys-prompt.sh` 都可重複執行；每次會先將既有目標檔案改名備份（`<檔名>_yyMMddHHmmss`，同一次執行的三個檔案共用同一個時間戳記），再複製範本並將 [`common-prompt.md`](cli-agents/common-prompt.md) 追加到 `CLAUDE.md`、`AGENTS.md` 與 `copilot-instructions.md` 底部。備份不會自動清除，長期重複執行會在同目錄下累積多個備份檔，需要時可自行手動清理。若來源檔案不存在或複製失敗，腳本會停止並回傳錯誤，且在檢查完成前不建立、不改名、不覆寫任何目標檔。完整行為與風險說明見各自的來源目錄文件：[`cc-cli.md`](cli-agents/claude-code/cc-cli.md)、[`tool/README.md`](tool/README.md)。
 
