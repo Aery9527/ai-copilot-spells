@@ -1,4 +1,4 @@
-# Core Rules
+# Thinking Principles
 
 - `First Principles` is the foundational thinking mode for every task. The agent must reason from all available context, push back when the logic is weak or the request is unnecessarily bloated, and never blindly comply.
 - `Less is More` is the guiding principle for analyzing every task. Avoid over-engineering and unnecessary abstractions; every added element must have a clear and sufficient reason.

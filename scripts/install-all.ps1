@@ -5,11 +5,12 @@
 
 .DESCRIPTION
     Presents a menu and runs whichever of the following the user selects
-    (comma-separated, e.g. "1,3"); leaving the input blank or entering 0 runs all three,
-    always in the fixed order 1 -> 2 -> 3 regardless of the order typed:
+    (comma-separated, e.g. "1,3"); leaving the input blank or entering 0 runs all four,
+    always in the fixed order 1 -> 2 -> 3 -> 4 regardless of the order typed:
       1) Claude Code CLI + status line -> cli-agents\claude-code\install-cc.ps1
       2) Codex CLI + pet sprites        -> cli-agents\codex\install-cx.ps1
       3) PowerShell profile             -> tool\PowerShell\install.ps1
+      4) Shared system prompt           -> cli-agents\install-sys-prompt.ps1
 
     Each sub-script fails fast on its own ($ErrorActionPreference = 'Stop' plus explicit
     exit codes); a failure in one selected item stops the remaining items.
@@ -29,6 +30,7 @@ $items = [ordered]@{
     '1' = [PSCustomObject]@{ Label = 'Claude Code CLI (install-cc)';   Path = Join-Path $repoRoot 'cli-agents\claude-code\install-cc.ps1' }
     '2' = [PSCustomObject]@{ Label = 'Codex CLI (install-cx)';        Path = Join-Path $repoRoot 'cli-agents\codex\install-cx.ps1' }
     '3' = [PSCustomObject]@{ Label = 'PowerShell 腳本 (install.ps1)'; Path = Join-Path $repoRoot 'tool\PowerShell\install.ps1' }
+    '4' = [PSCustomObject]@{ Label = '系統提示詞 (install-sys-prompt)'; Path = Join-Path $repoRoot 'cli-agents\install-sys-prompt.ps1' }
 }
 
 Write-Host '==========================================' -ForegroundColor Cyan
