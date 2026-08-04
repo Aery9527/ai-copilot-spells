@@ -320,11 +320,11 @@ Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/READM
 | 腳本 | 安裝目標 | 內容 | 範例 |
 |------|----------|------|------|
 | [`cli-agents/claude-code/install-statusline.ps1`](cli-agents/claude-code/install-statusline.ps1) | `~/.claude/` | 複製 [`statusline-command.sh`](cli-agents/claude-code/statusline-command.sh) 與 [`hooks/*.sh`](cli-agents/claude-code/hooks/)；在 `~/.claude/settings.json` 注入 `statusLine`，以及 `UserPromptSubmit` / `PreToolUse` / `Stop` 三個即時狀態追蹤 hooks | `powershell -ExecutionPolicy Bypass -File .\cli-agents\claude-code\install-statusline.ps1` |
-| [`cli-agents/install-sys-prompt.ps1`](cli-agents/install-sys-prompt.ps1) | `$env:USERPROFILE\.claude\`、`$env:USERPROFILE\.codex\`、`$env:USERPROFILE\.copilot\` | 先複製三個工具的提示範本；再將 [`common-prompt.md`](cli-agents/common-prompt.md) append 到 `CLAUDE.md` 與 `AGENTS.md` 底部，Copilot 只部署自身範本；既有檔案會直接覆寫且不建立備份 | `powershell -ExecutionPolicy Bypass -File .\cli-agents\install-sys-prompt.ps1` |
-| [`cli-agents/install-sys-prompt.sh`](cli-agents/install-sys-prompt.sh) | `$HOME/.claude/`、`$HOME/.codex/`、`$HOME/.copilot/` | 與 PowerShell 版本相同，適用於 POSIX shell、macOS、Linux 與 Git Bash；先部署範本，再將 [`common-prompt.md`](cli-agents/common-prompt.md) append 到 `CLAUDE.md` 與 `AGENTS.md` 底部，Copilot 只部署自身範本 | `bash ./cli-agents/install-sys-prompt.sh` |
+| [`cli-agents/install-sys-prompt.ps1`](cli-agents/install-sys-prompt.ps1) | `$env:USERPROFILE\.claude\`、`$env:USERPROFILE\.codex\`、`$env:USERPROFILE\.copilot\` | 若目標檔已存在，先改名備份為 `<檔名>_yyMMddHHmmss`，再複製三個工具的提示範本；然後將 [`common-prompt.md`](cli-agents/common-prompt.md) append 到 `CLAUDE.md`、`AGENTS.md` 與 `copilot-instructions.md` 底部 | `powershell -ExecutionPolicy Bypass -File .\cli-agents\install-sys-prompt.ps1` |
+| [`cli-agents/install-sys-prompt.sh`](cli-agents/install-sys-prompt.sh) | `$HOME/.claude/`、`$HOME/.codex/`、`$HOME/.copilot/` | 與 PowerShell 版本相同，適用於 POSIX shell、macOS、Linux 與 Git Bash；先部署範本，再將 [`common-prompt.md`](cli-agents/common-prompt.md) append 到 `CLAUDE.md`、`AGENTS.md` 與 `copilot-instructions.md` 底部 | `bash ./cli-agents/install-sys-prompt.sh` |
 | [`tool/PowerShell/install.ps1`](tool/PowerShell/install.ps1) | Documents 下的 `PowerShell\`（profile）+ `$HOME\.config\powershell\`（其餘腳本） | 複製 [`Microsoft.PowerShell_profile.ps1`](tool/PowerShell/Microsoft.PowerShell_profile.ps1) 到 pwsh profile 資料夾；其餘 `tool/PowerShell/` 下的腳本（`local_profile.ps1`、`Exe-*.ps1`、`Set-*.ps1` 等）複製到 `.config\powershell\` | `powershell -ExecutionPolicy Bypass -File .\tool\PowerShell\install.ps1` |
 
-`install-sys-prompt.ps1` 與 `install-sys-prompt.sh` 都可重複執行；每次會先直接覆寫三個目標檔案，再將 [`common-prompt.md`](cli-agents/common-prompt.md) 追加到 `CLAUDE.md` 與 `AGENTS.md` 底部。目標檔案中的既有自訂內容不會自動備份。若來源檔案不存在或複製失敗，腳本會停止並回傳錯誤。完整行為與風險說明見各自的來源目錄文件：[`cc-cli.md`](cli-agents/claude-code/cc-cli.md)、[`tool/README.md`](tool/README.md)。
+`install-sys-prompt.ps1` 與 `install-sys-prompt.sh` 都可重複執行；每次會先將既有目標檔案改名備份（`<檔名>_yyMMddHHmmss`，同一次執行的三個檔案共用同一個時間戳記），再複製範本並將 [`common-prompt.md`](cli-agents/common-prompt.md) 追加到 `CLAUDE.md`、`AGENTS.md` 與 `copilot-instructions.md` 底部。備份不會自動清除，長期重複執行會在同目錄下累積多個備份檔，需要時可自行手動清理。若來源檔案不存在或複製失敗，腳本會停止並回傳錯誤，且在檢查完成前不建立、不改名、不覆寫任何目標檔。完整行為與風險說明見各自的來源目錄文件：[`cc-cli.md`](cli-agents/claude-code/cc-cli.md)、[`tool/README.md`](tool/README.md)。
 
 ### 共用 Prompt 安裝器：SBE 腳本行為
 
@@ -332,9 +332,9 @@ Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/READM
 
 | 前置狀態 | 執行 | 預期結果 |
 |----------|------|----------|
-| 三個目標目錄不存在，來源範本與 [`common-prompt.md`](cli-agents/common-prompt.md) 都存在 | 執行安裝器 | 建立 `.claude`、`.codex`、`.copilot`；`CLAUDE.md` 與 `AGENTS.md` 由各自範本加上 [`common-prompt.md`](cli-agents/common-prompt.md)，Copilot 檔案只等於自身範本 |
-| `CLAUDE.md` 已存在且內容為自訂文字 | 再次執行安裝器 | 先以 Claude 範本覆寫，再將 [`common-prompt.md`](cli-agents/common-prompt.md) append 到底部；安裝完成後不保留原自訂文字 |
-| 任一來源範本或 [`common-prompt.md`](cli-agents/common-prompt.md) 不存在 | 執行安裝器 | 顯示來源檔案錯誤、回傳非零狀態，且在檢查完成前不建立或覆寫目標檔 |
+| 三個目標目錄不存在，來源範本與 [`common-prompt.md`](cli-agents/common-prompt.md) 都存在 | 執行安裝器 | 建立 `.claude`、`.codex`、`.copilot`；`CLAUDE.md`、`AGENTS.md`、`copilot-instructions.md` 都由各自範本加上 [`common-prompt.md`](cli-agents/common-prompt.md) 組成；不產生任何備份檔 |
+| `CLAUDE.md` 已存在且內容為自訂文字 | 再次執行安裝器 | 先把現有 `CLAUDE.md` 改名為 `CLAUDE.md_yyMMddHHmmss`（原自訂文字完整保留在備份檔中），再以 Claude 範本重新產生 `CLAUDE.md` 並將 [`common-prompt.md`](cli-agents/common-prompt.md) append 到底部 |
+| 任一來源範本或 [`common-prompt.md`](cli-agents/common-prompt.md) 不存在 | 執行安裝器 | 顯示來源檔案錯誤、回傳非零狀態，且在檢查完成前不建立、不改名、不覆寫任何目標檔 |
 
 PowerShell 範例：
 
@@ -342,7 +342,7 @@ PowerShell 範例：
 powershell -ExecutionPolicy Bypass -File .\cli-agents\install-sys-prompt.ps1
 ```
 
-預期成功輸出會列出三個 `Template` 與兩個 `Common prompt` `[OK]` 項目，最後顯示 `Done.`；shell 版本的成功輸出語意相同。
+首次執行（目標檔皆不存在）預期成功輸出會列出三個 `Template` 與三個 `Common prompt` `[OK]` 項目，最後顯示 `Done.`；重複執行時，每個目標檔前面會多一行 `[Backup] <原檔> -> <原檔>_yyMMddHHmmss`。shell 版本的成功輸出語意相同。
 
 [Back to top](#quick-navigation)
 

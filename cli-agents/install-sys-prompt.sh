@@ -28,10 +28,24 @@ target_copilot="$HOME/.copilot/copilot-instructions.md"
 
 mkdir -p "$(dirname "$target_claude")" "$(dirname "$target_codex")" "$(dirname "$target_copilot")"
 
+backup_suffix=$(date +%y%m%d%H%M%S)
+
+backup_if_exists() {
+    local target="$1"
+    if [[ -f "$target" ]]; then
+        local backup="${target}_${backup_suffix}"
+        mv -f "$target" "$backup"
+        printf '  [Backup] %s -> %s\n' "$target" "$backup"
+    fi
+}
+
+backup_if_exists "$target_claude"
 cp -f "$template_claude" "$target_claude"
 printf '  [OK] Template: %s\n' "$target_claude"
+backup_if_exists "$target_codex"
 cp -f "$template_codex" "$target_codex"
 printf '  [OK] Template: %s\n' "$target_codex"
+backup_if_exists "$target_copilot"
 cp -f "$template_copilot" "$target_copilot"
 printf '  [OK] Template: %s\n' "$target_copilot"
 
@@ -41,5 +55,8 @@ printf '  [OK] Common prompt: %s\n' "$target_claude"
 printf '\n' >> "$target_codex"
 cat "$common_prompt_source" >> "$target_codex"
 printf '  [OK] Common prompt: %s\n' "$target_codex"
+printf '\n' >> "$target_copilot"
+cat "$common_prompt_source" >> "$target_copilot"
+printf '  [OK] Common prompt: %s\n' "$target_copilot"
 
 printf '%s\n' 'Done.'

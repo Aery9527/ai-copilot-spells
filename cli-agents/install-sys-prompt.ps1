@@ -22,7 +22,7 @@ $installItems = @(
     [PSCustomObject]@{
         Template           = Join-Path $sourceRoot 'github-copilot\.copilot\copilot-instructions.md'
         Target             = Join-Path $homeRoot '.copilot\copilot-instructions.md'
-        AppendCommonPrompt = $false
+        AppendCommonPrompt = $true
     }
 )
 
@@ -33,12 +33,18 @@ foreach ($path in @($commonPromptSource) + @($installItems | ForEach-Object { $_
 }
 
 $commonPrompt = Get-Content -LiteralPath $commonPromptSource -Raw -Encoding UTF8
+$backupSuffix = Get-Date -Format 'yyMMddHHmmss'
 
 Write-Host '=== Install common prompts ===' -ForegroundColor Cyan
 
 foreach ($item in $installItems) {
     $targetDirectory = Split-Path -Parent $item.Target
     New-Item -ItemType Directory -Path $targetDirectory -Force | Out-Null
+    if (Test-Path -LiteralPath $item.Target -PathType Leaf) {
+        $backupPath = "$($item.Target)_$backupSuffix"
+        Move-Item -LiteralPath $item.Target -Destination $backupPath -Force
+        Write-Host "  [Backup] $($item.Target) -> $backupPath" -ForegroundColor Yellow
+    }
     Copy-Item -LiteralPath $item.Template -Destination $item.Target -Force
     Write-Host "  [OK] Template: $($item.Target)" -ForegroundColor Green
 }
