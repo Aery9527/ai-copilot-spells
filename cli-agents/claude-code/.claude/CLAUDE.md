@@ -1,1 +1,3 @@
-這個檔案是可以放 **project root** 或者是 **~/.claude/** 底下, 代表專案層級的預設載入設定或個人帳號全局載入設定
+# Core Rules
+
+- **MUST** use the Bash tool for all shell script execution; never invoke PowerShell directly — use Bash even on Windows.
