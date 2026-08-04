@@ -17,6 +17,7 @@ flowchart LR
 - [腳本索引](#腳本索引)
 - [腳本詳述](#腳本詳述)
   - [Link Agent Skills](#link-agent-skills)
+  - [Install All](#install-all)
   - [`remove-local-git-user.ps1`](#remove-local-git-userps1)
 - [新增腳本時建議補充的欄位](#新增腳本時建議補充的欄位)
 
@@ -47,6 +48,8 @@ flowchart LR
 |------|------|------|--------------|------|
 | [`link-agent-skills.ps1`](./link-agent-skills.ps1) | PowerShell | 互動式建立或移除 `.agents/skills` 到 `.claude/skills` 的 Windows junction | 會，建立/移除 `.agents/skills` 並更新 [`.gitignore`](../.gitignore) | Mode 1 會先移除既有 `.agents/skills`；適合 Windows |
 | [`link-agent-skills.sh`](./link-agent-skills.sh) | Bash | 互動式建立或移除 `.agents/skills` 到 `.claude/skills` 的 Unix symlink | 會，建立/移除 `.agents/skills` 並更新 [`.gitignore`](../.gitignore) | Mode 1 會先移除既有 `.agents/skills`；適合 macOS / Linux / Git Bash |
+| [`install-all.ps1`](./install-all.ps1) | PowerShell | 互動式選單，依選擇呼叫 [`install-cc.ps1`](../cli-agents/claude-code/install-cc.ps1)、[`install-cx.ps1`](../cli-agents/codex/install-cx.ps1)、[`tool/PowerShell/install.ps1`](../tool/PowerShell/install.ps1) | 不直接修改檔案，但會觸發被呼叫腳本對使用者家目錄的修改 | 任一項失敗即中斷，不繼續安裝其餘項目；檔案含中文字，需要 UTF-8 BOM 才能被 PowerShell 5.1 正確解析 |
+| [`install-all.sh`](./install-all.sh) | Bash | `install-all.ps1` 的 macOS/Linux 對應版本，只呼叫 [`install-cc.sh`](../cli-agents/claude-code/install-cc.sh) 與 [`install-cx.sh`](../cli-agents/codex/install-cx.sh) | 不直接修改檔案，但會觸發被呼叫腳本對使用者家目錄的修改 | 選項 3（PowerShell 腳本）在這個版本僅顯示略過訊息，不執行任何動作；任一項失敗即中斷 |
 | [`remove-local-git-user.ps1`](./remove-local-git-user.ps1) | PowerShell | 遞迴掃描指定路徑下的 Git repository / worktree，移除 local git config 中的 `[user]` section | 會，直接覆寫 Git config | 不建立 backup；遇到異常 config 會跳過 |
 
 [Back to top](#quick-navigation)
@@ -121,6 +124,89 @@ bash ./scripts/link-agent-skills.sh
 
 [OK] 完成
 ```
+
+---
+
+### Install All
+
+#### 目的
+
+[`install-all.ps1`](./install-all.ps1) 與 [`install-all.sh`](./install-all.sh) 是一鍵安裝的選單入口，讓使用者不用分別記住並手動執行 [`install-cc.ps1`/`.sh`](../cli-agents/claude-code/)、[`install-cx.ps1`/`.sh`](../cli-agents/codex/)、[`tool/PowerShell/install.ps1`](../tool/PowerShell/install.ps1) 這幾支各自獨立的安裝腳本。
+
+兩個版本功能相同，差異在於平台限制：
+
+- PowerShell 版三個選項都能執行。
+- Bash 版只有選項 1、2 真的會執行；選項 3（PowerShell 腳本）在 macOS/Linux 上不適用，選到時只會印出略過訊息，不做任何動作。
+
+#### 參數
+
+兩支腳本都沒有命令列參數，執行後以互動輸入決定要安裝哪些項目。
+
+| 輸入 | 行為 |
+|------|------|
+| 留空 或 `0` | 全部安裝（依固定順序 1 → 2 → 3） |
+| `1` | 只安裝 Claude Code CLI（呼叫 [`install-cc.ps1`/`.sh`](../cli-agents/claude-code/)） |
+| `2` | 只安裝 Codex CLI（呼叫 [`install-cx.ps1`/`.sh`](../cli-agents/codex/)） |
+| `3` | 只安裝 PowerShell 腳本（呼叫 [`tool/PowerShell/install.ps1`](../tool/PowerShell/install.ps1)；Bash 版僅顯示略過訊息） |
+| 逗號分隔多選，例如 `1,3` | 安裝多項，執行順序固定為 1 → 2 → 3，與輸入順序無關 |
+| 無效編號（例如 `5`、`abc`） | 顯示錯誤並以非零狀態結束，不執行任何項目 |
+
+#### 它實際在做什麼
+
+1. 顯示選單與說明文字。
+2. 讀取使用者輸入，解析成一組要安裝的項目（預設全選）。
+3. 依固定順序 1 → 2 → 3 呼叫對應的子腳本。
+4. 每個子腳本執行後都會檢查其結束代碼；只要有一項失敗，立即停止，不繼續安裝其餘項目。
+
+#### 風險與限制
+
+- **任一項失敗就中斷**，不會嘗試繼續安裝清單中的其餘項目；這是刻意設計（子腳本彼此仍是各自獨立、有系統層級副作用的安裝流程，中斷後可以修好問題再單獨重跑失敗的那一項）。
+- 子腳本本身的風險（呼叫 winget/Homebrew 安裝或更新 Node.js、`npm install -g` 安裝 CLI 等）請參考 [`cc-cli.md`](../cli-agents/claude-code/cc-cli.md)、[`cx-cli.md`](../cli-agents/codex/cx-cli.md) 與 `README.md` 的「一鍵安裝腳本」章節。
+- `install-all.ps1` 含有中文選單文字，檔案必須保留 UTF-8 BOM 才能被 Windows PowerShell 5.1 正確解析；`install-all.sh` 則相反，開頭不可以有 BOM（會破壞 `#!/usr/bin/env bash` shebang 辨識）。
+
+#### 範例
+
+Windows PowerShell：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\install-all.ps1
+```
+
+Bash：
+
+```bash
+bash ./scripts/install-all.sh
+```
+
+#### 預期輸出
+
+```text
+==========================================
+   Install All
+==========================================
+
+  [1] Claude Code CLI (install-cc)
+  [2] Codex CLI (install-cx)
+  [3] PowerShell 腳本 (install.ps1)
+
+  [0] 全部安裝（預設）
+
+==========================================
+請輸入要安裝的項目編號，可用逗號分隔多選（例如 1,3；留空或輸入 0 = 全部安裝）:
+
+=== [1] Claude Code CLI (install-cc) ===
+...
+
+=== [2] Codex CLI (install-cx) ===
+...
+
+=== [3] PowerShell 腳本 (install.ps1) ===
+...
+
+[OK] 全部完成
+```
+
+若中途有項目失敗，會改為顯示 `[X] ERROR: ... 失敗 (exit N)` 並直接以非零狀態結束，不會出現 `[OK] 全部完成`。
 
 ---
 

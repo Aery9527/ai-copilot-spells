@@ -68,7 +68,12 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host '  [OK] Claude Code CLI installed/updated.' -ForegroundColor Green
 
 Write-Host '=== Step 3: statusLine ===' -ForegroundColor Cyan
+$global:LASTEXITCODE = 0
 & (Join-Path $PSScriptRoot 'install-statusline.ps1')
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "  [X] ERROR: install-statusline.ps1 failed (exit $LASTEXITCODE)" -ForegroundColor Red
+    exit 1
+}
 
 Write-Host ''
 Write-Host 'Done.' -ForegroundColor Green

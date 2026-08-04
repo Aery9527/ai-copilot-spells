@@ -317,6 +317,8 @@ Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/READM
 
 除了 `scripts/` 下的 repo 維護腳本，本 repo 另外還有九支會寫入**使用者家目錄**（repo 之外）的一鍵安裝腳本，各自服務不同目的，因此不收錄在 [`scripts/README.md`](scripts/README.md)：
 
+> 不想個別記住並手動執行下面這些腳本嗎？[`scripts/install-all.ps1` / `.sh`](scripts/README.md#install-all) 提供一個互動選單，可以一次選擇要安裝 Claude Code CLI（`install-cc`）、Codex CLI（`install-cx`）與/或 `tool/PowerShell/install.ps1`。
+
 | 腳本 | 安裝目標 | 內容 | 範例 |
 |------|----------|------|------|
 | [`cli-agents/claude-code/install-cc.ps1`](cli-agents/claude-code/install-cc.ps1) | 系統層級（Node.js/npm）+ `$env:USERPROFILE\.claude\` | 三步驟：1) 缺 npm 時用 winget 安裝 Node.js LTS；已有 npm 且是 winget 裝的（`winget list -e --id OpenJS.NodeJS.LTS` 找得到）才執行 `winget upgrade`，若 npm 是用其他方式裝的（如 nvm）則略過更新、直接沿用；2) `npm install -g @anthropic-ai/claude-code` 安裝/更新 Claude Code CLI；3) 呼叫同資料夾的 [`install-statusline.ps1`](cli-agents/claude-code/install-statusline.ps1) 部署 statusLine 與 hooks（此步驟用內建 `ConvertFrom-Json`/`ConvertTo-Json`，不需要 `jq`） | `powershell -ExecutionPolicy Bypass -File .\cli-agents\claude-code\install-cc.ps1` |
