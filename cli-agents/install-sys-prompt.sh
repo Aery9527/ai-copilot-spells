@@ -8,19 +8,19 @@ if [[ -z "${HOME:-}" ]]; then
     exit 1
 fi
 
-rules_source="$SCRIPT_DIR/sys-prompt.md"
+common_prompt_source="$SCRIPT_DIR/common-prompt.md"
 template_claude="$SCRIPT_DIR/claude-code/.claude/CLAUDE.md"
 template_codex="$SCRIPT_DIR/codex/.codex/AGENTS.md"
 template_copilot="$SCRIPT_DIR/github-copilot/.copilot/copilot-instructions.md"
 
-for source in "$rules_source" "$template_claude" "$template_codex" "$template_copilot"; do
+for source in "$common_prompt_source" "$template_claude" "$template_codex" "$template_copilot"; do
     if [[ ! -f "$source" ]]; then
         printf 'ERROR: Source file not found: %s\n' "$source" >&2
         exit 1
     fi
 done
 
-printf '%s\n' '=== Install system prompts ==='
+printf '%s\n' '=== Install common prompts ==='
 
 target_claude="$HOME/.claude/CLAUDE.md"
 target_codex="$HOME/.codex/AGENTS.md"
@@ -35,11 +35,11 @@ printf '  [OK] Template: %s\n' "$target_codex"
 cp -f "$template_copilot" "$target_copilot"
 printf '  [OK] Template: %s\n' "$target_copilot"
 
-cp -f "$rules_source" "$target_claude"
-printf '  [OK] Rules:    %s\n' "$target_claude"
-cp -f "$rules_source" "$target_codex"
-printf '  [OK] Rules:    %s\n' "$target_codex"
-cp -f "$rules_source" "$target_copilot"
-printf '  [OK] Rules:    %s\n' "$target_copilot"
+printf '\n' >> "$target_claude"
+cat "$common_prompt_source" >> "$target_claude"
+printf '  [OK] Common prompt: %s\n' "$target_claude"
+printf '\n' >> "$target_codex"
+cat "$common_prompt_source" >> "$target_codex"
+printf '  [OK] Common prompt: %s\n' "$target_codex"
 
 printf '%s\n' 'Done.'
