@@ -20,6 +20,7 @@ flowchart LR
   - [Install All](#install-all)
   - [`remove-local-git-user.ps1`](#remove-local-git-userps1)
   - [`setup-cc-desktop-ahk.ps1`](#setup-cc-desktop-ahkps1)
+  - [`setup-cx-desktop-ahk.ps1`](#setup-cx-desktop-ahkps1)
 - [新增腳本時建議補充的欄位](#新增腳本時建議補充的欄位)
 
 [Back to top](#quick-navigation)
@@ -55,6 +56,7 @@ flowchart LR
 | [`install-all.sh`](./install-all.sh) | Bash | `install-all.ps1` 的 macOS/Linux 對應版本，呼叫 [`install-cc.sh`](../cli-agents/claude-code/install-cc.sh)、[`install-cx.sh`](../cli-agents/codex/install-cx.sh)、[`install-sys-prompt.sh`](../cli-agents/install-sys-prompt.sh) | 不直接修改檔案，但會觸發被呼叫腳本對使用者家目錄的修改 | 選項 3（PowerShell 腳本）在這個版本僅顯示略過訊息，不執行任何動作；任一項失敗即中斷 |
 | [`remove-local-git-user.ps1`](./remove-local-git-user.ps1) | PowerShell | 遞迴掃描指定路徑下的 Git repository / worktree，移除 local git config 中的 `[user]` section | 會，直接覆寫 Git config | 不建立 backup；遇到異常 config 會跳過 |
 | [`setup-cc-desktop-ahk.ps1`](./setup-cc-desktop-ahk.ps1) | PowerShell | 查詢 Claude Desktop 的 AppID，缺 AutoHotkey v2 時用 winget 安裝，寫入切換 Claude Desktop 顯示/隱藏的 hotkey 腳本並設定開機自動執行 | 會，寫入 `$env:LOCALAPPDATA\ClaudeHotkey\` 與 Startup 資料夾（repo 之外） | 找不到唯一的 Claude Desktop AppID 時會直接中止；缺 winget 時需手動安裝 AutoHotkey v2 |
+| [`setup-cx-desktop-ahk.ps1`](./setup-cx-desktop-ahk.ps1) | PowerShell | `setup-cc-desktop-ahk.ps1` 的 ChatGPT Desktop 版本，同樣流程改成查詢 ChatGPT 的 AppID，寫入切換 ChatGPT Desktop 顯示/隱藏的 hotkey 腳本並設定開機自動執行 | 會，寫入 `$env:LOCALAPPDATA\ChatGPTHotkey\` 與 Startup 資料夾（repo 之外） | 熱鍵為 `Alt+Space`，會覆蓋 Windows 內建的視窗系統選單快捷鍵；找不到唯一的 ChatGPT Desktop AppID 時會直接中止 |
 
 [Back to top](#quick-navigation)
 
@@ -352,6 +354,55 @@ powershell -ExecutionPolicy Bypass -File .\scripts\setup-cc-desktop-ahk.ps1
   [OK] Configured startup shortcut: C:\Users\<user>\...\Startup\Claude Desktop Hotkey.lnk
 
 Done. Alt + Shift + Space now toggles Claude Desktop.
+```
+
+---
+
+### `setup-cx-desktop-ahk.ps1`
+
+#### 目的
+
+[`setup-cc-desktop-ahk.ps1`](#setup-cc-desktop-ahkps1) 的 ChatGPT Desktop 版本：同一套三步驟流程（查 AppID → 確認 AutoHotkey v2 → 寫入 hotkey 腳本並設定開機啟動），只是改成偵測 ChatGPT Desktop。ChatGPT Desktop 底層套件名稱是 `OpenAI.Codex`（`Get-StartApps` 顯示的 `Name` 仍是精確值 `ChatGPT`），因此沿用跟 Claude 版一致的比對邏輯。
+
+#### 參數
+
+沒有命令列參數，執行後直接依序完成三個步驟。
+
+#### 它實際在做什麼
+
+1. **Step 1 — ChatGPT Desktop**：呼叫 `Get-StartApps` 篩選 `Name -eq 'ChatGPT'`，要求剛好找到一筆有效 AppID，否則直接中止。
+2. **Step 2 — AutoHotkey v2**：跟 [`setup-cc-desktop-ahk.ps1`](#setup-cc-desktop-ahkps1) 相同的偵測／安裝邏輯。
+3. **Step 3 — Hotkey 與開機啟動**：把 AppID 寫入 `$env:LOCALAPPDATA\ChatGPTHotkey\chatgpt-hotkey.ahk`（`Alt+Space` 切換 ChatGPT Desktop：未啟動則啟動、已啟動未 focus 則叫到前景、已 focus 則關閉），並在 Startup 資料夾建立 `ChatGPT Desktop Hotkey.lnk` 捷徑指向 AutoHotkey 執行檔。
+
+腳本可重複執行，行為與 [`setup-cc-desktop-ahk.ps1`](#setup-cc-desktop-ahkps1) 相同。
+
+#### 風險與限制
+
+- **會寫入 repo 之外的使用者目錄**：`$env:LOCALAPPDATA\ChatGPTHotkey\` 與 Startup 資料夾，兩者都會被直接覆寫，沒有 backup。
+- **`Alt+Space` 是 Windows 內建的視窗系統選單快捷鍵**（開啟目前視窗左上角那個選單），此腳本執行期間會把它全域改綁成切換 ChatGPT Desktop，等於覆蓋掉原本的系統行為。
+- 若同時執行 [`setup-cc-desktop-ahk.ps1`](#setup-cc-desktop-ahkps1) 與本腳本，兩支 `.ahk` 是各自獨立的 process；由於熱鍵不同（`Alt+Shift+Space` vs `Alt+Space`）不會互相搶注冊，但若之後改成同一組熱鍵，Windows 只有先註冊的行程會生效。
+- 找不到唯一的 ChatGPT Desktop AppID（未安裝、或有多筆同名項目）時會直接拋錯中止。
+- 缺 AutoHotkey v2 且系統沒有 `winget` 時會直接報錯，需要手動安裝後再重跑。
+
+#### 範例
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\setup-cx-desktop-ahk.ps1
+```
+
+#### 預期輸出
+
+```text
+=== ChatGPT Desktop Hotkey Setup ===
+--- Step 1: ChatGPT Desktop ---
+  [OK] Found exactly one ChatGPT Desktop AppID.
+--- Step 2: AutoHotkey v2 ---
+  [OK] Found AutoHotkey v2: C:\Program Files\AutoHotkey\v2\AutoHotkey64.exe
+--- Step 3: Hotkey and startup ---
+  [OK] Wrote hotkey script: C:\Users\<user>\AppData\Local\ChatGPTHotkey\chatgpt-hotkey.ahk
+  [OK] Configured startup shortcut: C:\Users\<user>\...\Startup\ChatGPT Desktop Hotkey.lnk
+
+Done. Alt + Space now toggles ChatGPT Desktop.
 ```
 
 ---
