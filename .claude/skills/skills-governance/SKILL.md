@@ -61,7 +61,7 @@ description: >-
   - [`CLAUDE.md`](../../../CLAUDE.md)，如果專案級使用指引受影響
   - [`skill-source-zhTW/`](../../../skill-source-zhTW/) 下的翻譯內容，如果 upstream skill 的在地化入口受影響
   - [`.claude/skills/`](../) 下的 project skill 或 shared protocol，如果入口或引用名稱受影響
-  - [`.gitignore`](../../../.gitignore)、[`scripts/README.md`](../../../scripts/README.md)、migration docs、舊計畫文件，如果名稱或路徑變更讓它們過期
+  - [`.gitignore`](../../../.gitignore)、[`scripts/SCRIPTS.md`](../../../scripts/SCRIPTS.md)、migration docs、舊計畫文件，如果名稱或路徑變更讓它們過期
 - 原則不是每次全改，而是所有被這次修改弄成不準確的地方都必須在同一個 slice 內修完。
 
 ## Verification Checklist

@@ -4,7 +4,7 @@
 
 ```mermaid
 flowchart LR
-    A["新增或修改腳本"] --> B["更新 scripts/README.md 索引"]
+    A["新增或修改腳本"] --> B["更新 scripts/SCRIPTS.md 索引"]
     B --> C["確認用途、參數、風險、範例"]
     C --> D["再執行或分享腳本"]
 ```
@@ -324,7 +324,7 @@ Summary
 
 #### 目的
 
-一鍵設定 [`tool/claude_desktop_ahk.md`](../tool/claude_desktop_ahk.md) 描述的 AutoHotkey 快捷鍵：偵測本機 Claude Desktop 的 AppID 與 AutoHotkey v2，寫入可切換 Claude Desktop 顯示/隱藏的 `.ahk` 腳本，並設定開機自動啟動，取代手動照文件一步步操作。
+一鍵設定 Claude Desktop 的 AutoHotkey 快捷鍵：偵測本機 Claude Desktop 的 AppID 與 AutoHotkey v2，寫入可切換 Claude Desktop 顯示/隱藏的 `.ahk` 腳本，並設定開機自動啟動。
 
 #### 參數
 
@@ -343,7 +343,7 @@ Summary
 - **會寫入 repo 之外的使用者目錄**：`$env:LOCALAPPDATA\ClaudeHotkey\` 與 Startup 資料夾，兩者都會被直接覆寫，沒有 backup。
 - 找不到唯一的 Claude Desktop AppID（未安裝、或有多筆同名項目）時會直接拋錯中止，不會嘗試其他猜測方式。
 - 缺 AutoHotkey v2 且系統沒有 `winget` 時會直接報錯，需要手動安裝後再重跑。
-- 僅支援從 Microsoft Store 安裝的 Claude Desktop（AppID 啟動方式）；官網下載版需另外調整 `.ahk` 內容，詳見 [`tool/claude_desktop_ahk.md`](../tool/claude_desktop_ahk.md) 附註。
+- 僅支援從 Microsoft Store 安裝的 Claude Desktop（AppID 啟動方式）；官網下載版需另外把寫入的 `.ahk` 內容中 `Run "shell:AppsFolder\..."` 改成實際的 `Claude.exe` 路徑。
 
 #### 範例
 
@@ -436,7 +436,7 @@ Done. Alt + Space now toggles ChatGPT Desktop.
 - `scripts/remove-local-git-user.md`
 - `scripts/some-future-script.md`
 
-但在拆分之前，仍應保留這份 `scripts/README.md` 作為唯一入口。
+但在拆分之前，仍應保留這份 `scripts/SCRIPTS.md` 作為唯一入口。
 
 [Back to top](#quick-navigation)
 

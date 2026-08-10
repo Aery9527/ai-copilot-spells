@@ -228,7 +228,7 @@ python -m playwright --version
 | **GitHub Copilot** | [`cli-agents/github-copilot/gc-cli.md`](cli-agents/github-copilot/gc-cli.md) | CLI 參數、slash commands、custom instructions，以及 built-in / custom agent 用法 |
 | **Codex CLI** | [`cli-agents/codex/cx-cli.md`](cli-agents/codex/cx-cli.md) | 安裝、登入、approval / sandbox、`codex exec`、subagents、`AGENTS.md`、slash commands、config，以及 TUI 快捷操作 |
 
-其他工具操作文件索引：[`tool/README.md`](tool/README.md)
+其他工具操作文件索引：[`tool/TOOL.md`](tool/TOOL.md)
 
 [Back to top](#quick-navigation)
 
@@ -299,7 +299,7 @@ python -m playwright --version
 
 ## 腳本文件
 
-Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/README.md)。
+Repo 維護與自動化腳本的總索引在 [`scripts/SCRIPTS.md`](scripts/SCRIPTS.md)。
 
 目前已收錄：
 
@@ -307,7 +307,7 @@ Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/READM
 - [`scripts/link-agent-skills.sh`](scripts/link-agent-skills.sh)：在 Bash 環境以 symlink 將 `.agents/skills` 連到 `.claude/skills`
 - [`scripts/remove-local-git-user.ps1`](scripts/remove-local-git-user.ps1)：遞迴掃描指定路徑下的 Git repository / worktree，移除 local Git config 的 `[user]` section
 
-之後若 `scripts/` 目錄新增腳本，也應同步補充到 [`scripts/README.md`](scripts/README.md)。
+之後若 `scripts/` 目錄新增腳本，也應同步補充到 [`scripts/SCRIPTS.md`](scripts/SCRIPTS.md)。
 
 [Back to top](#quick-navigation)
 
@@ -315,9 +315,9 @@ Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/READM
 
 ## 一鍵安裝腳本
 
-除了 `scripts/` 下的 repo 維護腳本，本 repo 另外還有九支會寫入**使用者家目錄**（repo 之外）的一鍵安裝腳本，各自服務不同目的，因此不收錄在 [`scripts/README.md`](scripts/README.md)。（另有兩支性質相同的桌面應用程式熱鍵腳本 [`scripts/setup-cc-desktop-ahk.ps1`](scripts/setup-cc-desktop-ahk.ps1) 與 [`scripts/setup-cx-desktop-ahk.ps1`](scripts/setup-cx-desktop-ahk.ps1)，因為放在 `scripts/` 下，改收錄在 [`scripts/README.md`](scripts/README.md) 裡，不重複列在這張表。）
+除了 `scripts/` 下的 repo 維護腳本，本 repo 另外還有九支會寫入**使用者家目錄**（repo 之外）的一鍵安裝腳本，各自服務不同目的，因此不收錄在 [`scripts/SCRIPTS.md`](scripts/SCRIPTS.md)。（另有兩支性質相同的桌面應用程式熱鍵腳本 [`scripts/setup-cc-desktop-ahk.ps1`](scripts/setup-cc-desktop-ahk.ps1) 與 [`scripts/setup-cx-desktop-ahk.ps1`](scripts/setup-cx-desktop-ahk.ps1)，因為放在 `scripts/` 下，改收錄在 [`scripts/SCRIPTS.md`](scripts/SCRIPTS.md) 裡，不重複列在這張表。）
 
-> 不想個別記住並手動執行下面這些腳本嗎？[`scripts/install-all.ps1` / `.sh`](scripts/README.md#install-all) 提供一個互動選單，可以一次選擇要安裝 Claude Code CLI（`install-cc`）、Codex CLI（`install-cx`）、`tool/PowerShell/install.ps1`、共用系統提示詞（`install-sys-prompt`）與/或桌面應用程式熱鍵（[`setup-cc-desktop-ahk.ps1`](scripts/README.md#setup-cc-desktop-ahkps1) / [`setup-cx-desktop-ahk.ps1`](scripts/README.md#setup-cx-desktop-ahkps1)，僅 Windows）。
+> 不想個別記住並手動執行下面這些腳本嗎？[`scripts/install-all.ps1` / `.sh`](scripts/SCRIPTS.md#install-all) 提供一個互動選單，可以一次選擇要安裝 Claude Code CLI（`install-cc`）、Codex CLI（`install-cx`）、`tool/PowerShell/install.ps1`、共用系統提示詞（`install-sys-prompt`）與/或桌面應用程式熱鍵（[`setup-cc-desktop-ahk.ps1`](scripts/SCRIPTS.md#setup-cc-desktop-ahkps1) / [`setup-cx-desktop-ahk.ps1`](scripts/SCRIPTS.md#setup-cx-desktop-ahkps1)，僅 Windows）。
 
 | 腳本 | 安裝目標 | 內容 | 範例 |
 |------|----------|------|------|
@@ -333,7 +333,7 @@ Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/READM
 
 `install-cc.ps1` / `install-cc.sh` / `install-cx.ps1` / `install-cx.sh` 會呼叫系統套件管理器（winget / Homebrew）安裝或更新 Node.js，以及用 `npm install -g` 安裝/更新 Claude Code CLI 或 Codex CLI，這些是系統層級變更，不像其餘腳本只複製 repo 內的檔案。
 
-`install-sys-prompt.ps1` 與 `install-sys-prompt.sh` 都可重複執行；每次會先將既有目標檔案改名備份（`<檔名>_yyMMddHHmmss`，同一次執行的三個檔案共用同一個時間戳記），再複製範本並將 [`common-prompt.md`](cli-agents/common-prompt.md) 追加到 `CLAUDE.md`、`AGENTS.md` 與 `copilot-instructions.md` 底部。備份不會自動清除，長期重複執行會在同目錄下累積多個備份檔，需要時可自行手動清理。若來源檔案不存在或複製失敗，腳本會停止並回傳錯誤，且在檢查完成前不建立、不改名、不覆寫任何目標檔。完整行為與風險說明見各自的來源目錄文件：[`cc-cli.md`](cli-agents/claude-code/cc-cli.md)、[`tool/README.md`](tool/README.md)。
+`install-sys-prompt.ps1` 與 `install-sys-prompt.sh` 都可重複執行；每次會先將既有目標檔案改名備份（`<檔名>_yyMMddHHmmss`，同一次執行的三個檔案共用同一個時間戳記），再複製範本並將 [`common-prompt.md`](cli-agents/common-prompt.md) 追加到 `CLAUDE.md`、`AGENTS.md` 與 `copilot-instructions.md` 底部。備份不會自動清除，長期重複執行會在同目錄下累積多個備份檔，需要時可自行手動清理。若來源檔案不存在或複製失敗，腳本會停止並回傳錯誤，且在檢查完成前不建立、不改名、不覆寫任何目標檔。完整行為與風險說明見各自的來源目錄文件：[`cc-cli.md`](cli-agents/claude-code/cc-cli.md)、[`tool/TOOL.md`](tool/TOOL.md)。
 
 ### 共用 Prompt 安裝器：SBE 腳本行為
 
@@ -403,8 +403,7 @@ ai-research/
 ├── AGENTS_zhTW.md            # 繁中對照版 skill lookup and repo guidance
 ├── CLAUDE.md                 # Claude Code project instructions
 ├── tool/                     # 工具操作文件
-│   ├── README.md
-│   ├── claude_desktop_ahk.md
+│   ├── TOOL.md
 │   ├── ps_func.md
 │   └── wsl-claude-code-env-setup.md
 ```

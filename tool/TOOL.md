@@ -6,7 +6,7 @@
 flowchart TD
     A["想找本機工具文件"] --> B{"主題是什麼？"}
     B -->|"工具或環境安裝"| C["tool/ 文件"]
-    B -->|"腳本本身怎麼用"| D["scripts/README.md"]
+    B -->|"腳本本身怎麼用"| D["scripts/SCRIPTS.md"]
 ```
 
 ---
@@ -24,7 +24,6 @@ flowchart TD
 
 | 文件 | 說明 |
 |------|------|
-| [`claude_desktop_ahk.md`](claude_desktop_ahk.md) | 用 AutoHotkey v2 設定快捷鍵叫出 / 關閉 Claude Desktop |
 | [`PowerShell/`](PowerShell/) | PowerShell 啟動設定與 AI CLI / 語言環境切換腳本 |
 
 ### `PowerShell/` 內容
@@ -60,7 +59,7 @@ flowchart TD
 - Windows 本機工具安裝與設定
 - Claude Desktop 或 Claude Code 的本機端使用輔助文件
 
-如果文件的主題是「腳本本身怎麼用」，請放在 [`scripts/README.md`](../scripts/README.md) 或 [`scripts/`](../scripts/) 目錄下；如果主題是「工具或環境怎麼安裝與操作」，則更適合放在 [`tool/`](./)。
+如果文件的主題是「腳本本身怎麼用」，請放在 [`scripts/SCRIPTS.md`](../scripts/SCRIPTS.md) 或 [`scripts/`](../scripts/) 目錄下；如果主題是「工具或環境怎麼安裝與操作」，則更適合放在 [`tool/`](./)。
 
 [Back to top](#quick-navigation)
 

@@ -13,8 +13,8 @@
 
 ### `scripts/` 文件同步規則
 
-- 當新增、移除、重新命名或明顯改動 [`scripts/`](scripts/) 目錄下的腳本時，必須在同一個 slice 同步更新 [`scripts/README.md`](scripts/README.md)。
-- [`scripts/README.md`](scripts/README.md) 是 [`scripts/`](scripts/) 的唯一總索引；新增腳本必須至少補上用途、參數、行為、風險或副作用，以及最小使用範例。
+- 當新增、移除、重新命名或明顯改動 [`scripts/`](scripts/) 目錄下的腳本時，必須在同一個 slice 同步更新 [`scripts/SCRIPTS.md`](scripts/SCRIPTS.md)。
+- [`scripts/SCRIPTS.md`](scripts/SCRIPTS.md) 是 [`scripts/`](scripts/) 的唯一總索引；新增腳本必須至少補上用途、參數、行為、風險或副作用，以及最小使用範例。
 - 若 [`README.md`](README.md) 已列出腳本入口或摘要，agent 必須檢查是否也需要同步更新。
 
 ## 專案結構
@@ -22,7 +22,7 @@
 - [`skill-source/`](skill-source/) — 上游 skill 來源 — 集中存放來自 GitHub 的 skill 函式庫 git submodule，作為本專案持續跟進的上游標的；agents 嚴禁直接修改上游內容。
 - [`skill-source-zhTW/`](skill-source-zhTW/) — 在地化 skill 來源 — 存放本專案依需要從上游 skill 內容翻譯出的繁體中文特定內容。
 - [`.claude/skills/`](.claude/skills/) — Project skills — 存放本 repo 的本地維運 skills 與共用協議。
-- [`scripts/`](scripts/) — 本地維護腳本 — 存放 repo 維護與自動化腳本；文件索引在 [`scripts/README.md`](scripts/README.md)。
+- [`scripts/`](scripts/) — 本地維護腳本 — 存放 repo 維護與自動化腳本；文件索引在 [`scripts/SCRIPTS.md`](scripts/SCRIPTS.md)。
 
 ## 本機一鍵安裝腳本
 
