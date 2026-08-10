@@ -10,6 +10,7 @@
 
 - While modifying code, if the existing design violates any development principle, the agent MUST propose a fix to the user and carry out the fix or plan in a way that follows the project's architecture or conventions. If the user explicitly declines, the agent MUST leave a comment noting **why the user declined the fix**, so it is not asked again later — a reminder is enough.
 - When a task gets stuck in a loop or cannot progress, proactively raise the problem and ask for help, rather than pretending the task is done or cutting corners.
+- For any visually related development or design work, e.g. writing HTML/CSS, always use the OKLCH color space.
 
 # Git Principles
 
