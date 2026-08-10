@@ -315,7 +315,7 @@ Repo 維護與自動化腳本的總索引在 [`scripts/README.md`](scripts/READM
 
 ## 一鍵安裝腳本
 
-除了 `scripts/` 下的 repo 維護腳本，本 repo 另外還有九支會寫入**使用者家目錄**（repo 之外）的一鍵安裝腳本，各自服務不同目的，因此不收錄在 [`scripts/README.md`](scripts/README.md)：
+除了 `scripts/` 下的 repo 維護腳本，本 repo 另外還有九支會寫入**使用者家目錄**（repo 之外）的一鍵安裝腳本，各自服務不同目的，因此不收錄在 [`scripts/README.md`](scripts/README.md)。（另有一支性質相同的 [`scripts/setup-cc-desktop-ahk.ps1`](scripts/setup-cc-desktop-ahk.ps1) 因為放在 `scripts/` 下，改收錄在 [`scripts/README.md`](scripts/README.md) 裡，不重複列在這張表。）
 
 > 不想個別記住並手動執行下面這些腳本嗎？[`scripts/install-all.ps1` / `.sh`](scripts/README.md#install-all) 提供一個互動選單，可以一次選擇要安裝 Claude Code CLI（`install-cc`）、Codex CLI（`install-cx`）、`tool/PowerShell/install.ps1` 與/或共用系統提示詞（`install-sys-prompt`）。
 

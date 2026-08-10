@@ -19,6 +19,7 @@ flowchart LR
   - [Link Agent Skills](#link-agent-skills)
   - [Install All](#install-all)
   - [`remove-local-git-user.ps1`](#remove-local-git-userps1)
+  - [`setup-cc-desktop-ahk.ps1`](#setup-cc-desktop-ahkps1)
 - [新增腳本時建議補充的欄位](#新增腳本時建議補充的欄位)
 
 [Back to top](#quick-navigation)
@@ -32,6 +33,8 @@ flowchart LR
 - repo 維護輔助工具
 - 重複性清理或修正腳本
 - 需要在本機或多個 repo/worktree 上批次執行的自動化操作
+
+`scripts/` 底下大多數腳本只操作 repo 內部或本機既有設定（例如 Git config），但也有例外：像 [`setup-cc-desktop-ahk.ps1`](#setup-cc-desktop-ahkps1) 這種一鍵安裝／設定型腳本，即使會寫入使用者家目錄（repo 之外），只要放在 `scripts/` 下就一律在這份文件收錄索引，不因為寫入範圍而排除。
 
 為了避免腳本散落但沒有文件，這份 `README.md` 應該同時扮演兩個角色：
 
@@ -51,6 +54,7 @@ flowchart LR
 | [`install-all.ps1`](./install-all.ps1) | PowerShell | 互動式選單，依選擇呼叫 [`install-cc.ps1`](../cli-agents/claude-code/install-cc.ps1)、[`install-cx.ps1`](../cli-agents/codex/install-cx.ps1)、[`tool/PowerShell/install.ps1`](../tool/PowerShell/install.ps1)、[`install-sys-prompt.ps1`](../cli-agents/install-sys-prompt.ps1) | 不直接修改檔案，但會觸發被呼叫腳本對使用者家目錄的修改 | 任一項失敗即中斷，不繼續安裝其餘項目；檔案含中文字，需要 UTF-8 BOM 才能被 PowerShell 5.1 正確解析 |
 | [`install-all.sh`](./install-all.sh) | Bash | `install-all.ps1` 的 macOS/Linux 對應版本，呼叫 [`install-cc.sh`](../cli-agents/claude-code/install-cc.sh)、[`install-cx.sh`](../cli-agents/codex/install-cx.sh)、[`install-sys-prompt.sh`](../cli-agents/install-sys-prompt.sh) | 不直接修改檔案，但會觸發被呼叫腳本對使用者家目錄的修改 | 選項 3（PowerShell 腳本）在這個版本僅顯示略過訊息，不執行任何動作；任一項失敗即中斷 |
 | [`remove-local-git-user.ps1`](./remove-local-git-user.ps1) | PowerShell | 遞迴掃描指定路徑下的 Git repository / worktree，移除 local git config 中的 `[user]` section | 會，直接覆寫 Git config | 不建立 backup；遇到異常 config 會跳過 |
+| [`setup-cc-desktop-ahk.ps1`](./setup-cc-desktop-ahk.ps1) | PowerShell | 查詢 Claude Desktop 的 AppID，缺 AutoHotkey v2 時用 winget 安裝，寫入切換 Claude Desktop 顯示/隱藏的 hotkey 腳本並設定開機自動執行 | 會，寫入 `$env:LOCALAPPDATA\ClaudeHotkey\` 與 Startup 資料夾（repo 之外） | 找不到唯一的 Claude Desktop AppID 時會直接中止；缺 winget 時需手動安裝 AutoHotkey v2 |
 
 [Back to top](#quick-navigation)
 
@@ -300,6 +304,54 @@ Summary
   Updated : 1
   Unchanged: 1
   Skipped : 1
+```
+
+---
+
+### `setup-cc-desktop-ahk.ps1`
+
+#### 目的
+
+一鍵設定 [`tool/claude_desktop_ahk.md`](../tool/claude_desktop_ahk.md) 描述的 AutoHotkey 快捷鍵：偵測本機 Claude Desktop 的 AppID 與 AutoHotkey v2，寫入可切換 Claude Desktop 顯示/隱藏的 `.ahk` 腳本，並設定開機自動啟動，取代手動照文件一步步操作。
+
+#### 參數
+
+沒有命令列參數，執行後直接依序完成三個步驟。
+
+#### 它實際在做什麼
+
+1. **Step 1 — Claude Desktop**：呼叫 `Get-StartApps` 篩選 `Name -eq 'Claude'`，要求剛好找到一筆有效 AppID，否則直接中止（找不到或找到多筆都視為錯誤，不會用猜的）。
+2. **Step 2 — AutoHotkey v2**：依序檢查 `AutoHotkey64.exe` / `AutoHotkey.exe` 是否在 `PATH` 或 `Program Files\AutoHotkey\v2\` 下；找不到時用 `winget install --exact --id AutoHotkey.AutoHotkey` 安裝。
+3. **Step 3 — Hotkey 與開機啟動**：把 AppID 寫入 `$env:LOCALAPPDATA\ClaudeHotkey\claude-hotkey.ahk`（`Alt+Shift+Space` 切換 Claude Desktop：未啟動則啟動、已啟動未 focus 則叫到前景、已 focus 則關閉），並在 Startup 資料夾建立 `Claude Desktop Hotkey.lnk` 捷徑指向 AutoHotkey 執行檔（帶上腳本路徑當參數）。
+
+腳本可重複執行：`.ahk` 內容與 Startup 捷徑每次都會被覆寫成最新狀態，AutoHotkey 已安裝時會略過 Step 2 的安裝動作。
+
+#### 風險與限制
+
+- **會寫入 repo 之外的使用者目錄**：`$env:LOCALAPPDATA\ClaudeHotkey\` 與 Startup 資料夾，兩者都會被直接覆寫，沒有 backup。
+- 找不到唯一的 Claude Desktop AppID（未安裝、或有多筆同名項目）時會直接拋錯中止，不會嘗試其他猜測方式。
+- 缺 AutoHotkey v2 且系統沒有 `winget` 時會直接報錯，需要手動安裝後再重跑。
+- 僅支援從 Microsoft Store 安裝的 Claude Desktop（AppID 啟動方式）；官網下載版需另外調整 `.ahk` 內容，詳見 [`tool/claude_desktop_ahk.md`](../tool/claude_desktop_ahk.md) 附註。
+
+#### 範例
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\setup-cc-desktop-ahk.ps1
+```
+
+#### 預期輸出
+
+```text
+=== Claude Desktop Hotkey Setup ===
+--- Step 1: Claude Desktop ---
+  [OK] Found exactly one Claude Desktop AppID.
+--- Step 2: AutoHotkey v2 ---
+  [OK] Found AutoHotkey v2: C:\Program Files\AutoHotkey\v2\AutoHotkey64.exe
+--- Step 3: Hotkey and startup ---
+  [OK] Wrote hotkey script: C:\Users\<user>\AppData\Local\ClaudeHotkey\claude-hotkey.ahk
+  [OK] Configured startup shortcut: C:\Users\<user>\...\Startup\Claude Desktop Hotkey.lnk
+
+Done. Alt + Shift + Space now toggles Claude Desktop.
 ```
 
 ---
