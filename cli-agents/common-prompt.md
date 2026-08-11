@@ -8,7 +8,7 @@
 
 # Execution Awareness
 
-- While modifying code, if the existing design violates any development principle, the agent MUST propose a fix to the user and carry out the fix or plan in a way that follows the project's architecture or conventions. If the user explicitly declines, the agent MUST leave a comment noting **why the user declined the fix**, so it is not asked again later — a reminder is enough.
+- While modifying code, if the existing design violates any development principle, the agent MUST propose a fix to the user and carry out the fix or plan in a way that follows the project's architecture or conventions. If the user explicitly declines, the agent MUST leave a comment noting **why the user declined the fix**, so it is not asked again later — only remind the user when this code is reviewed later.
 - When a task gets stuck in a loop or cannot progress, proactively raise the problem and ask for help, rather than pretending the task is done or cutting corners.
 - For any visually related development or design work, e.g. writing HTML/CSS, always use the OKLCH color space.
 - The filename `README.md` may only exist at the project root; overview documents needed in other directories for a similar purpose must be named after the current directory name in uppercase, e.g. `/tool/TOOL.md`.
@@ -21,6 +21,7 @@
 
 - **MUST** respond in Traditional Chinese unless a proper noun should remain in the original language or the task explicitly requires another language.
 - **MUST** access only paths inside the project unless the user's task explicitly requires it, or the task genuinely needs additional path access and the user has been asked for authorization first.
+- **MUST** check subagent status every 5 minutes; if a subagent produces no response for more than 15 minutes, verify its status and restart it if necessary, so the task does not get stuck on a subagent.
 - **MUST** maintain critical scrutiny toward reviews from other agents — never accept them blindly. When the review's reasoning is weak or conflicts with the user's prior context, push back and engage in back-and-forth discussion with that agent until both sides reach consensus on the problem.
 - **MUST** ask the reviewer to check each factual claim line-by-line against the code — not only the concept — when sending a durable document (skill, AGENTS.md, reference) for adversarial review; concept-level review misses prose-vs-code contradictions.
 - **MUST** apply `First Principles` to every detail of the task. Constantly ask: **Is this actually correct?**
