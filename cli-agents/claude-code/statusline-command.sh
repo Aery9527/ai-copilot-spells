@@ -16,29 +16,43 @@ CACHE_TTL=3
 # 增刪行數本來就是慢變量，獨立用較長 TTL 快取，讓冷路徑短到能在下一次刷新抵達前結束
 GIT_DIFF_TTL=30
 CLEANUP_INTERVAL=600
+CLEANUP_MIN_AGE=30   # 秒；只清超過這個年齡的，避免殺到剛 fork、尚未 ResumeThread 的合法子行程
+CLEANUP_SENTINEL='claude-statusline-cleaner-v1'  # 讓下一輪清理也認得清理器自己萬一卡死留下的 powershell.exe
 
 # --- 週期性自清除殘留殭屍（非阻塞，絕大多數呼叫零額外成本）-------------------
 # 被強殺卡在 suspended 的 MSYS2 fork child 從未完成向 msys 行程表註冊，bash 自己的
 # ps/kill 完全看不到它們（只存在於 Win32 層級），純 bash 無法偵測，只能偶爾背景丟一次
-# PowerShell 去查、用跟人工驗證過同一組安全條件（單執行緒 + WaitReason=Suspended）比對
-# 後清除。用時間戳記檔案節流，只有超過 CLEANUP_INTERVAL 才會觸發，其餘呼叫只多一次
-# 檔案讀取比較。背景呼叫不等待其結果：即使被下一次刷新的 taskkill /T /F 連坐殺掉，
-# powershell.exe 是原生行程、被強殺就乾淨死掉（不是 MSYS2 fork），不會產生新的殭屍，
-# 只是這次沒清成功，下一個週期再試。
+# PowerShell 去查、用跟人工驗證過同一組安全條件比對後清除。用時間戳記檔案節流，只有
+# 超過 CLEANUP_INTERVAL 才會觸發，其餘呼叫只多一次檔案讀取比較。背景呼叫不等待其結果：
+# 清理本身要 fork 出 powershell.exe，這一步跟本腳本其他子行程一樣仍走 MSYS2 的
+# CreateProcess(SUSPENDED) 路徑，被下一次刷新連坐強殺時一樣可能留下 suspended
+# powershell.exe（並非「原生行程就不會殘留」），所以掃描條件同時比對這個型態，
+# 靠 CLEANUP_SENTINEL 認出來，讓這個機制對自己造成的殘留也能收斂，而不僅是清別人的。
 _cleanup_marker="${TMPDIR:-/tmp}/claude_sl_cleanup_marker"
 _last_cleanup=0
 [ -r "$_cleanup_marker" ] && IFS= read -r _last_cleanup < "$_cleanup_marker" 2>/dev/null
-[[ $_last_cleanup =~ ^[0-9]+$ ]] || _last_cleanup=0
-if (( EPOCHSECONDS - _last_cleanup >= CLEANUP_INTERVAL )); then
-    printf '%s' "$EPOCHSECONDS" > "$_cleanup_marker"
-    powershell.exe -NoProfile -WindowStyle Hidden -Command '
-        Get-CimInstance Win32_Process | Where-Object { $_.Name -eq "bash.exe" -and $_.CommandLine -like "*statusline-command*" } | ForEach-Object {
-          $p = Get-Process -Id $_.ProcessId -ErrorAction SilentlyContinue
-          if ($p -and $p.Threads.Count -eq 1 -and $p.Threads[0].WaitReason -eq "Suspended") {
-            Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
-          }
+[[ $_last_cleanup =~ ^[0-9]+$ ]] && _last_cleanup=$((10#$_last_cleanup)) 2>/dev/null || _last_cleanup=0
+if (( EPOCHSECONDS - _last_cleanup >= CLEANUP_INTERVAL )) \
+    && printf '%s\n' "$EPOCHSECONDS" > "$_cleanup_marker" 2>/dev/null; then
+    # marker 寫入失敗（例如 TMPDIR 不可寫）就不啟動 PowerShell：否則 _last_cleanup 永遠停在
+    # 0，會變成每次呼叫都多 fork 一次，違背「絕大多數呼叫零額外成本」的設計目標。
+    powershell.exe -NoProfile -WindowStyle Hidden -Command "
+        \$cutoff = (Get-Date).AddSeconds(-${CLEANUP_MIN_AGE})
+        Get-CimInstance Win32_Process | Where-Object {
+            \$_.ProcessId -ne \$PID -and \$_.CreationDate -lt \$cutoff -and (
+                (\$_.Name -eq 'bash.exe' -and \$_.CommandLine -like '*statusline-command*') -or
+                (\$_.Name -eq 'powershell.exe' -and \$_.CommandLine -like '*${CLEANUP_SENTINEL}*')
+            )
+        } | ForEach-Object {
+            # PID 可能在「用舊 CIM 快照認出殭屍」到「這裡重新查」之間被回收給別的行程，
+            # 所以年齡與執行緒條件都要對這裡實際查到的物件重驗一次，並直接砍這個已驗證過的
+            # 物件（-InputObject），不要再用 PID 二次查找，縮小 TOCTOU 窗口。
+            \$p = Get-Process -Id \$_.ProcessId -ErrorAction SilentlyContinue
+            if (\$p -and \$p.StartTime -lt \$cutoff -and \$p.Threads.Count -eq 1 -and \$p.Threads[0].ThreadState -eq 'Wait' -and \$p.Threads[0].WaitReason -eq 'Suspended') {
+                Stop-Process -InputObject \$p -Force -ErrorAction SilentlyContinue
+            }
         }
-    ' >/dev/null 2>&1 &
+    " >/dev/null 2>&1 &
     disown
 fi
 
