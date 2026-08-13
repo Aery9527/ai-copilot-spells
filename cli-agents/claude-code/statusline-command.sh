@@ -18,8 +18,9 @@ GIT_DIFF_TTL=30
 CLEANUP_INTERVAL=600
 CLEANUP_MIN_AGE=30   # 秒；只清超過這個年齡的，避免殺到剛 fork、尚未 ResumeThread 的合法子行程
 CLEANUP_SENTINEL='claude-statusline-cleaner-v1'  # 讓下一輪清理也認得清理器自己萬一卡死留下的 powershell.exe
+CLEANUP_FILE_MAX_AGE_DAYS=30  # per-session 快取/狀態檔的實際有效期只有秒級，此為單純的無界成長防呆
 
-# --- 週期性自清除殘留殭屍（非阻塞，絕大多數呼叫零額外成本）-------------------
+# --- 週期性自清除殘留殭屍與過期 per-session 檔案（非阻塞，絕大多數呼叫零額外成本）---
 # 被強殺卡在 suspended 的 MSYS2 fork child 從未完成向 msys 行程表註冊，bash 自己的
 # ps/kill 完全看不到它們（只存在於 Win32 層級），純 bash 無法偵測，只能偶爾背景丟一次
 # PowerShell 去查、用跟人工驗證過同一組安全條件比對後清除。用時間戳記檔案節流，只有
@@ -28,6 +29,10 @@ CLEANUP_SENTINEL='claude-statusline-cleaner-v1'  # 讓下一輪清理也認得�
 # CreateProcess(SUSPENDED) 路徑，被下一次刷新連坐強殺時一樣可能留下 suspended
 # powershell.exe（並非「原生行程就不會殘留」），所以掃描條件同時比對這個型態，
 # 靠 CLEANUP_SENTINEL 認出來，讓這個機制對自己造成的殘留也能收斂，而不僅是清別人的。
+# 同一次呼叫順手清掉超過 CLEANUP_FILE_MAX_AGE_DAYS 的 per-session 快取/狀態檔——
+# 這些檔案只覆寫從不刪除，會隨 session 數無界累積；搭這班便車是零額外 fork 的做法。
+# claude_* 這個 glob 同時會吃到自己這個節流用的 marker 檔，必須明確排除，
+# 否則哪天門檻調緊，marker 被自己清掉會讓節流失效、變成每次呼叫都 fork 一次。
 _cleanup_marker="${TMPDIR:-/tmp}/claude_sl_cleanup_marker"
 _last_cleanup=0
 [ -r "$_cleanup_marker" ] && IFS= read -r _last_cleanup < "$_cleanup_marker" 2>/dev/null
@@ -52,6 +57,10 @@ if (( EPOCHSECONDS - _last_cleanup >= CLEANUP_INTERVAL )) \
                 Stop-Process -InputObject \$p -Force -ErrorAction SilentlyContinue
             }
         }
+        \$fileCutoff = (Get-Date).AddDays(-${CLEANUP_FILE_MAX_AGE_DAYS})
+        Get-ChildItem -LiteralPath \$env:TEMP -File -Filter 'claude_*' -ErrorAction SilentlyContinue | Where-Object {
+            \$_.Name -ne 'claude_sl_cleanup_marker' -and \$_.LastWriteTime -lt \$fileCutoff
+        } | Remove-Item -Force -ErrorAction SilentlyContinue
     " >/dev/null 2>&1 &
     disown
 fi
@@ -300,17 +309,25 @@ fi
 diff_ins=""
 diff_del=""
 if [ -n "$git_root" ]; then
-    _gc="${TMPDIR:-/tmp}/claude_sl_git_${sid:-default}"
+    # 快取鍵改用 repo 路徑而非 session_id：這個值本質上屬於 repo，同一 repo 開多個
+    # session 不該各自重算。純 bash 字元替換轉檔名（零 fork）；這是多對一的有損映射，
+    # 下面的 git_root 全字串比對因此從「防禦性檢查」升級成「必要的碰撞偵測」，不可拿掉。
+    _grk="${git_root//[^A-Za-z0-9._-]/_}"
+    _gc="${TMPDIR:-/tmp}/claude_sl_git_${_grk:-default}"
     _gcached=()
     [ -r "$_gc" ] && mapfile -t _gcached < "$_gc"
-    # 哨符確認完整性，並記錄當時的 repo root —— 換專案時視同未命中
+    # 哨符確認完整性，並靠 git_root 全字串比對排除檔名碰撞 —— 換專案或碰撞時視同未命中
     if (( ${#_gcached[@]} == 5 )) && [ "${_gcached[4]}" = "END" ] \
        && [ "${_gcached[1]}" = "$git_root" ] \
        && (( EPOCHSECONDS - ${_gcached[0]:-0} < GIT_DIFF_TTL )); then
         diff_ins="${_gcached[2]}"
         diff_del="${_gcached[3]}"
     else
-        _numstat=$(git -C "$git_root" --no-optional-locks diff HEAD --numstat 2>/dev/null)
+        # --ignore-submodules=dirty：全庫 diff 的耗時多數來自逐一掃描每個 submodule
+        # worktree 是否 dirty，但這個資訊對 numstat 加總沒有貢獻；=dirty 只忽略這個，
+        # gitlink 本身的變更（真正該顯示的）仍會照常回報，不可誤用 =all（那會連
+        # gitlink 變更都一併藏起來）。無 submodule 的 repo 上此旗標為 no-op。
+        _numstat=$(git -C "$git_root" --no-optional-locks diff --ignore-submodules=dirty HEAD --numstat 2>/dev/null)
         if [ -n "$_numstat" ]; then
             _ins=0; _del=0
             while read -r _a _b _; do
