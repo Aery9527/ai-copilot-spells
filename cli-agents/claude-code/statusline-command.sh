@@ -17,7 +17,15 @@ CACHE_TTL=3
 GIT_DIFF_TTL=30
 CLEANUP_INTERVAL=600
 CLEANUP_MIN_AGE=30   # 秒；只清超過這個年齡的，避免殺到剛 fork、尚未 ResumeThread 的合法子行程
-CLEANUP_SENTINEL='claude-statusline-cleaner-v1'  # 讓下一輪清理也認得清理器自己萬一卡死留下的 powershell.exe
+# 本腳本每一個 fork 出去的子行程（powershell.exe/node.exe/git.exe）都在命令列帶上這個
+# 字串——它只用來限縮清理範圍、宣告歸屬，不是碰撞免疫（任何行程都能在命令列帶任意文字，
+# 這點已被實測驗證過），真正的安全性來自下面「年齡 + 單執行緒 + Suspended」那組判斷。
+# 用同一個字串取代各自為政的命名，是因為這支腳本每次重構都會換一批 sed/git 子命令/JSON
+# 欄位名，讓清理器的識別條件耦合實作細節，重構一次就會靜默漏掉一種殭屍型態（已實測發現
+# 4 代不同型態的歷史殭屍）；統一成一個跟實作無關的常數，新增子行程型態只需要把
+# executable 名稱加進下面的白名單，不必再開一輪審查。換值需視為長期協定，遷移期間要
+# 同時辨識舊值並做一次性清除，否則就是在製造下一代清理器認不得的殭屍。
+CHILD_SENTINEL='claude-statusline-child-v1'
 CLEANUP_FILE_MAX_AGE_DAYS=30  # per-session 快取/狀態檔的實際有效期只有秒級，此為單純的無界成長防呆
 
 # --- 週期性自清除殘留殭屍與過期 per-session 檔案（非阻塞，絕大多數呼叫零額外成本）---
@@ -28,7 +36,7 @@ CLEANUP_FILE_MAX_AGE_DAYS=30  # per-session 快取/狀態檔的實際有效期�
 # 清理本身要 fork 出 powershell.exe，這一步跟本腳本其他子行程一樣仍走 MSYS2 的
 # CreateProcess(SUSPENDED) 路徑，被下一次刷新連坐強殺時一樣可能留下 suspended
 # powershell.exe（並非「原生行程就不會殘留」），所以掃描條件同時比對這個型態，
-# 靠 CLEANUP_SENTINEL 認出來，讓這個機制對自己造成的殘留也能收斂，而不僅是清別人的。
+# 靠 CHILD_SENTINEL 認出來，讓這個機制對自己造成的殘留也能收斂，而不僅是清別人的。
 # 同一次呼叫順手清掉超過 CLEANUP_FILE_MAX_AGE_DAYS 的 per-session 快取/狀態檔——
 # 這些檔案只覆寫從不刪除，會隨 session 數無界累積；搭這班便車是零額外 fork 的做法。
 # claude_* 這個 glob 同時會吃到自己這個節流用的 marker 檔，必須明確排除，
@@ -46,7 +54,7 @@ if (( EPOCHSECONDS - _last_cleanup >= CLEANUP_INTERVAL )) \
         Get-CimInstance Win32_Process | Where-Object {
             \$_.ProcessId -ne \$PID -and \$_.CreationDate -lt \$cutoff -and (
                 (\$_.Name -eq 'bash.exe' -and \$_.CommandLine -like '*statusline-command*') -or
-                (\$_.Name -eq 'powershell.exe' -and \$_.CommandLine -like '*${CLEANUP_SENTINEL}*')
+                (\$_.Name -in @('powershell.exe','node.exe','git.exe') -and \$_.CommandLine -like '*${CHILD_SENTINEL}*')
             )
         } | ForEach-Object {
             # PID 可能在「用舊 CIM 快照認出殭屍」到「這裡重新查」之間被回收給別的行程，
@@ -173,7 +181,7 @@ push(norm(lastUser));
 push(norm(lastAsst));
 out.push("END");
 process.stdout.write(out.join("\n"));
-' <<< "$input")
+' "$CHILD_SENTINEL" <<< "$input")
 _node_rc=$?
 
 mapfile -t F <<< "$_raw"
@@ -287,7 +295,7 @@ git_branch=""
 git_root=""
 git_display_path=""
 if [ -n "$cwd_path" ] && command -v git >/dev/null 2>&1; then
-    _git_info=$(git -C "$cwd_path" --no-optional-locks rev-parse --abbrev-ref HEAD --show-toplevel 2>/dev/null)
+    _git_info=$(git -c "statusline.marker=$CHILD_SENTINEL" -C "$cwd_path" --no-optional-locks rev-parse --abbrev-ref HEAD --show-toplevel 2>/dev/null)
     if [ -n "$_git_info" ]; then
         mapfile -t _gi <<< "$_git_info"
         git_branch="${_gi[0]}"
@@ -327,7 +335,7 @@ if [ -n "$git_root" ]; then
         # worktree 是否 dirty，但這個資訊對 numstat 加總沒有貢獻；=dirty 只忽略這個，
         # gitlink 本身的變更（真正該顯示的）仍會照常回報，不可誤用 =all（那會連
         # gitlink 變更都一併藏起來）。無 submodule 的 repo 上此旗標為 no-op。
-        _numstat=$(git -C "$git_root" --no-optional-locks diff --ignore-submodules=dirty HEAD --numstat 2>/dev/null)
+        _numstat=$(git -c "statusline.marker=$CHILD_SENTINEL" -C "$git_root" --no-optional-locks diff --ignore-submodules=dirty HEAD --numstat 2>/dev/null)
         if [ -n "$_numstat" ]; then
             _ins=0; _del=0
             while read -r _a _b _; do
