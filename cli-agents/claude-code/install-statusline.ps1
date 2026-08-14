@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
 .SYNOPSIS
     Install the statusLine configuration and state-tracking hooks to ~/.claude.
@@ -7,7 +7,12 @@
     1. Copies statusline-command.sh (next to this script) to ~/.claude/statusline-command.sh
     2. Copies hooks/*.sh (next to this script) to ~/.claude/hooks/
     3. Injects the statusLine key into ~/.claude/settings.json
-    4. Injects UserPromptSubmit / PreToolUse / Stop hooks for real-time state tracking
+    4. Injects UserPromptSubmit / PreToolUse / Stop hooks for real-time state tracking,
+       registered in exec form (bash.exe + args, no shell wrapper) so the hook process
+       is spawned directly by Claude Code rather than nested inside another bash.exe —
+       MSYS2's CreateProcess(SUSPENDED) fork emulation can leave a permanent zombie if
+       the outer process is torn down mid-suspend, and one fewer nesting layer is one
+       fewer place that can happen.
 
     After running, the status line shows accurate execution state (執行中 / 等待指示)
     powered by lifecycle hooks, for all Claude Code sessions on this machine.
@@ -43,6 +48,48 @@ if (-not (Test-Path $shSrc)) {
     Write-Error "Source not found: $shSrc"
     exit 1
 }
+
+# --- Locate a real Git-for-Windows bash.exe ---
+# Exec-form hands `command` straight to CreateProcess with no shell involved, so it must
+# resolve to one specific real bash.exe, not just "something on PATH named bash.exe":
+#   - WSL ships C:\Windows\System32\bash.exe as a distro launcher; it can't run a Windows
+#     path like this script's absolute hook path, so silently picking it breaks the hook.
+#   - Package-manager shims (scoop/choco) can put a wrapper on PATH whose directory has
+#     no sibling git.exe, so it isn't a real Git-for-Windows install.
+# A trustworthy candidate has a git.exe next to it and lives outside the WSL launcher dir.
+function Find-GitBash {
+    $candidates = [System.Collections.Generic.List[string]]::new()
+
+    $gitCmd = Get-Command git.exe -ErrorAction SilentlyContinue
+    if ($gitCmd) {
+        $gitDir = Split-Path -Parent $gitCmd.Source
+        $candidates.Add((Join-Path $gitDir 'bash.exe'))       # Git\bin\git.exe layout
+        $candidates.Add((Join-Path $gitDir '..\bin\bash.exe')) # Git\cmd\git.exe layout
+    }
+
+    $bashCmd = Get-Command bash.exe -ErrorAction SilentlyContinue
+    if ($bashCmd) { $candidates.Add($bashCmd.Source) }
+
+    foreach ($base in @($env:ProgramFiles, ${env:ProgramFiles(x86)}, (Join-Path $env:LOCALAPPDATA 'Programs'))) {
+        if ($base) { $candidates.Add((Join-Path $base 'Git\bin\bash.exe')) }
+    }
+
+    foreach ($c in $candidates) {
+        $resolved = $null
+        try { $resolved = (Resolve-Path -LiteralPath $c -ErrorAction Stop).Path } catch { continue }
+        if ($resolved.StartsWith($env:SystemRoot, [StringComparison]::OrdinalIgnoreCase)) { continue }
+        $siblingGit = Join-Path (Split-Path -Parent $resolved) 'git.exe'
+        if (Test-Path -LiteralPath $siblingGit) { return $resolved }
+    }
+    return $null
+}
+
+$gitBash = Find-GitBash
+if (-not $gitBash) {
+    Write-Error 'Git for Windows (bash.exe) not found. Install it from https://git-scm.com/download/win, then re-run this script.'
+    exit 1
+}
+Write-Host "Using  : $gitBash"
 
 # --- Ensure ~/.claude exists ---
 if (-not (Test-Path $claudeDir)) {
@@ -81,10 +128,14 @@ if (Test-Path $hooksSrcDir) {
         Write-Host "Created: $hooksDstDir"
     }
     Get-ChildItem -Path $hooksSrcDir -Filter '*.sh' | ForEach-Object {
-        $dst    = Join-Path $hooksDstDir $_.Name
-        $result = Copy-ShFile -Src $_.FullName -Dst $dst -Force:$Force
+        # $switchSrc captures $_.FullName before the switch: `switch ($result)` rebinds
+        # $_ to $result (a plain string) inside its own script blocks, so reading
+        # $_.FullName there would silently resolve to empty instead of the source path.
+        $switchSrc = $_.FullName
+        $dst       = Join-Path $hooksDstDir $_.Name
+        $result    = Copy-ShFile -Src $switchSrc -Dst $dst -Force:$Force
         switch ($result) {
-            'Copied'  { Write-Host "Copied : $($_.FullName) -> $dst" }
+            'Copied'  { Write-Host "Copied : $switchSrc -> $dst" }
             'Updated' { Write-Host "Updated: $dst" }
             'Skipped' { Write-Host "Skipped: $dst (already up-to-date)" }
         }
@@ -122,61 +173,90 @@ if ($settings.PSObject.Properties['statusLine']) {
     Write-Host "Added  : statusLine in $settingsPath"
 }
 
-# --- Inject state-tracking hooks ---
-# Format: @(event, command)
-$stateHooks = @(
-    @('UserPromptSubmit', 'bash ~/.claude/hooks/state-running.sh'),
-    @('PreToolUse',       'bash ~/.claude/hooks/state-running.sh'),
-    @('Stop',             'bash ~/.claude/hooks/state-idle.sh')
+# --- Inject state-tracking hooks (exec form: command=bash.exe, args=[absolute script path]) ---
+$hookScripts = @(
+    @{ Event = 'UserPromptSubmit'; File = 'state-running.sh' },
+    @{ Event = 'PreToolUse';       File = 'state-running.sh' },
+    @{ Event = 'Stop';             File = 'state-idle.sh' }
 )
 
 if (-not $settings.PSObject.Properties['hooks']) {
     $settings | Add-Member -MemberType NoteProperty -Name 'hooks' -Value ([PSCustomObject]@{})
 }
 
-$hooksChanged = $false
-foreach ($pair in $stateHooks) {
-    $eventName = $pair[0]
-    $cmd       = $pair[1]
-    $newEntry  = [PSCustomObject]@{
-        hooks = @([PSCustomObject]@{ type = 'command'; command = $cmd })
+$hooksBefore = $settings.hooks | ConvertTo-Json -Depth 100 -Compress
+
+foreach ($item in $hookScripts) {
+    $eventName  = $item.Event
+    $scriptPath = Join-Path $hooksDstDir $item.File
+
+    if (-not (Test-Path -LiteralPath $scriptPath)) {
+        Write-Error "$scriptPath not found - hooks/ was not copied, refusing to register a dangling hook."
+        exit 1
     }
 
     if ($null -eq $settings.hooks.PSObject.Properties[$eventName]) {
-        # Event not present — add fresh
-        $settings.hooks | Add-Member -MemberType NoteProperty -Name $eventName -Value @($newEntry)
-        $hooksChanged = $true
-    } else {
-        # Event exists — check if our command is already registered
-        $alreadyPresent = $false
-        foreach ($entry in @($settings.hooks.($eventName))) {
-            if ($null -ne $entry.hooks) {
-                foreach ($h in @($entry.hooks)) {
-                    if ($h.command -eq $cmd) { $alreadyPresent = $true; break }
-                }
-            }
-            if ($alreadyPresent) { break }
+        $settings.hooks | Add-Member -MemberType NoteProperty -Name $eventName -Value @()
+    }
+
+    $entries = [System.Collections.Generic.List[object]]::new()
+    foreach ($e in @($settings.hooks.($eventName))) { $entries.Add($e) }
+
+    # Exact-match identity, not a basename wildcard: a wildcard on just the filename would
+    # also match an unrelated third-party hook that happens to reference a same-named
+    # script somewhere else, and silently delete it. $legacyCmd is the one literal string
+    # this installer has ever written for shell-form; $scriptPath is this exact machine's
+    # canonical destination path for exec-form.
+    $legacyCmd = "bash ~/.claude/hooks/$($item.File)"
+    $isOurs = {
+        param($h)
+        if ($h.command -eq $legacyCmd) { return $true }
+        if ($h.args -and @($h.args).Count -ge 1 -and @($h.args)[0] -eq $scriptPath) { return $true }
+        return $false
+    }
+
+    # Always rebuild rather than "add if not already correct": drop every handler this
+    # installer owns for this script, then re-add exactly one fresh, correct entry. This
+    # is what keeps re-running safe as "correct" changes over time (e.g. bash.exe moves
+    # after a Git for Windows update) — there's no separate "is it already right" check
+    # that can itself go stale or under-match and leave a duplicate behind.
+    $rebuilt = [System.Collections.Generic.List[object]]::new()
+    foreach ($entry in $entries) {
+        if ($null -eq $entry.hooks) { $rebuilt.Add($entry); continue }
+        $kept = [System.Collections.Generic.List[object]]::new()
+        foreach ($h in @($entry.hooks)) {
+            if (-not (& $isOurs $h)) { $kept.Add($h) }
         }
-        if (-not $alreadyPresent) {
-            # Append without disturbing existing entries
-            $list = [System.Collections.Generic.List[object]]::new()
-            foreach ($e in @($settings.hooks.($eventName))) { $list.Add($e) }
-            $list.Add($newEntry)
-            $settings.hooks | Add-Member -MemberType NoteProperty -Name $eventName `
-                -Value $list.ToArray() -Force
-            $hooksChanged = $true
+        if ($kept.Count -gt 0) {
+            $entry.hooks = $kept.ToArray()
+            $rebuilt.Add($entry)
         }
     }
+
+    $newEntry = [PSCustomObject]@{
+        hooks = @(
+            [PSCustomObject]@{
+                type    = 'command'
+                command = $gitBash
+                args    = @($scriptPath)
+                timeout = 5
+            }
+        )
+    }
+    $rebuilt.Add($newEntry)
+
+    $settings.hooks | Add-Member -MemberType NoteProperty -Name $eventName -Value $rebuilt.ToArray() -Force
 }
 
-if ($hooksChanged) {
+$hooksAfter = $settings.hooks | ConvertTo-Json -Depth 100 -Compress
+if ($hooksBefore -ne $hooksAfter) {
     Write-Host "Updated: hooks in $settingsPath"
 } else {
     Write-Host "Skipped: hooks already configured in $settingsPath"
 }
 
 # --- Save settings.json ---
-$settings | ConvertTo-Json -Depth 10 | Set-Content -Path $settingsPath -Encoding UTF8
+$settings | ConvertTo-Json -Depth 100 | Set-Content -Path $settingsPath -Encoding UTF8
 
 Write-Host ''
 Write-Host 'Done. Status line and state-tracking hooks are now active for all Claude Code sessions.'

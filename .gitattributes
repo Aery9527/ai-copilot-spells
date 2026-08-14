@@ -1,0 +1,5 @@
+# install-statusline.ps1/.sh copy these byte-for-byte into ~/.claude/ on the target
+# machine; a CRLF checkout (this repo has core.autocrlf=true) would ship a `\r` into
+# scripts Bash has to parse, breaking them on the exact fresh-machine installs this
+# directory exists for.
+cli-agents/claude-code/**/*.sh text eol=lf
