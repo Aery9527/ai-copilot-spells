@@ -239,7 +239,7 @@ foreach ($item in $hookScripts) {
                 type    = 'command'
                 command = $gitBash
                 args    = @($scriptPath)
-                timeout = 5
+                timeout = 20
             }
         )
     }

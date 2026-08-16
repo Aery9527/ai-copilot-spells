@@ -136,7 +136,7 @@ add_hook() {
             ((.hooks[$event] // [])
                 | map(.hooks = ((.hooks // []) | map(select(.command != $cmd and .command != $legacy))))
                 | map(select((.hooks | length) > 0))
-            ) + [{"hooks": [{"type": "command", "command": $cmd}]}]
+            ) + [{"hooks": [{"type": "command", "command": $cmd, "timeout": 20}]}]
         )
     ' "$settings_path" > "$tmp" && mv "$tmp" "$settings_path"
 }
