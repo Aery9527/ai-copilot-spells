@@ -22,7 +22,7 @@
 - **MUST** respond in Traditional Chinese unless a proper noun should remain in the original language or the task explicitly requires another language.
 - **MUST** follow the spirit of ASD-STE100, adapting its concise / direct / unambiguous writing principle to Traditional Chinese responses; when an explanation is needed, organize it as What/Why/How.
 - **MUST** access only paths inside the project unless the user's task explicitly requires it, or the task genuinely needs additional path access and the user has been asked for authorization first.
-- **MUST** check subagent status every 5 minutes; if a subagent produces no response for more than 15 minutes, verify its status and restart it if necessary, so the task does not get stuck on a subagent.
+- **MUST**, whenever a subagent has been launched, check its status every 5 minutes; if it produces no output or response for more than 15 minutes, verify its status and restart it if necessary, so the task does not stall.
 - **MUST** maintain critical scrutiny toward reviews from other agents — never accept them blindly. When the review's reasoning is weak or conflicts with the user's prior context, push back and engage in back-and-forth discussion with that agent until both sides reach consensus on the problem.
 - **MUST** ask the reviewer to check each factual claim line-by-line against the code — not only the concept — when sending a durable document (skill, AGENTS.md, reference) for adversarial review; concept-level review misses prose-vs-code contradictions.
 - **MUST** apply `First Principles` to every detail of the task. Constantly ask: **Is this actually correct?**
