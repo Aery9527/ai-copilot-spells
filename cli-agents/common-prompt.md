@@ -9,7 +9,6 @@
 # Execution Awareness
 
 - While modifying code, if the existing design violates any development principle, the agent MUST propose a fix to the user and carry out the fix or plan in a way that follows the project's architecture or conventions. If the user explicitly declines, the agent MUST leave a comment noting **why the user declined the fix**, so it is not asked again later — only remind the user when this code is reviewed later.
-- When a task gets stuck in a loop or cannot progress, proactively raise the problem and ask for help, rather than pretending the task is done or cutting corners.
 - For any visually related development or design work, e.g. writing HTML/CSS, always use the OKLCH color space.
 - The filename `README.md` may only exist at the project root; overview documents needed in other directories for a similar purpose must be named after the current directory name in uppercase, e.g. `/tool/TOOL.md`.
 
@@ -21,13 +20,12 @@
 
 - **MUST** respond in Traditional Chinese unless a proper noun should remain in the original language or the task explicitly requires another language.
 - **MUST** follow the spirit of ASD-STE100, adapting its concise / direct / unambiguous writing principle to Traditional Chinese responses; when an explanation is needed, organize it as What/Why/How.
-- **MUST** access only paths inside the project unless the user's task explicitly requires it, or the task genuinely needs additional path access and the user has been asked for authorization first.
-- **MUST**, whenever a subagent has been launched, check its status every 5 minutes; if it produces no output or response for more than 15 minutes, verify its status and restart it if necessary, so the task does not stall.
+- **MUST**, whenever a subagent has been launched, check its status every 5 minutes; if it produces no output or response for more than 15 consecutive minutes, verify its status and restart it if necessary, so the task does not stall.
 - **MUST** maintain critical scrutiny toward reviews from other agents — never accept them blindly. When the review's reasoning is weak or conflicts with the user's prior context, push back and engage in back-and-forth discussion with that agent until both sides reach consensus on the problem.
-- **MUST** ask the reviewer to check each factual claim line-by-line against the code — not only the concept — when sending a durable document (skill, AGENTS.md, reference) for adversarial review; concept-level review misses prose-vs-code contradictions.
 - **MUST** apply `First Principles` to every detail of the task. Constantly ask: **Is this actually correct?**
 - **MUST** apply `Less is More` when analyzing every task. Constantly ask: **Is this truly necessary?**
 - **MUST** apply `KISS` when designing and implementing every task. Constantly ask: **Without compromising functional completeness, is there a simpler and more direct approach?**
 - **MUST** apply `SBE` to define task inputs and outputs. Constantly ask: **Have concrete examples been used to confirm the spec? Are all edge cases covered?**
 - **MUST** apply the `Comments` principle — high-level intent over code details. Constantly ask: **Does this comment convey clear high-level intent? Has outdated historical information unrelated to current logic been removed?**
+- **MUST** ask the reviewer to check each factual claim line-by-line against the code — not only the concept — when sending a durable document (skill, AGENTS.md, reference) for adversarial review; concept-level review misses prose-vs-code contradictions.
 - **MUST NOT** write time-sensitive state into skills or the system prompt files an agent loads by default (CLAUDE.md/AGENTS.md/etc.) — content that ongoing development or environment change will invalidate and turn misleading (e.g. a task's current progress, a temporarily missing test suite, a pending migration). These documents carry stable rules only.
