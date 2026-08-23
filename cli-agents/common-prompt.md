@@ -12,6 +12,11 @@
 - For any visually related development or design work, e.g. writing HTML/CSS, always use the OKLCH color space.
 - The filename `README.md` may only exist at the project root; overview documents needed in other directories for a similar purpose must be named after the current directory name in uppercase, e.g. `/tool/TOOL.md`.
 
+# Call Agent Usage Principles
+
+- After launching a subagent or external agent CLI, check its status at least every 5 minutes. Idle time is consecutive time without agent-originated output or a protocol event; a real event resets idle time. A wrapper heartbeat may report process liveness and time since the last real event, but must not be used to reset idle time.
+- When idle for 20 consecutive minutes, verify the process and session status, and restart only after confirming a stall. If the task needs a total time limit, set a separate absolute timeout appropriate to the task. Example: a 20-minute run with real events at minutes 14 and 18 is still progressing; heartbeat-only output without real events does not count as progress.
+
 # Git Principles
 
 - Do not use git worktrees by default. The only exception is parallel subagent work, and even then worktrees are allowed only under the repository root `.worktree`; once the subagent finishes, merge the result back to the source branch and close the worktree immediately.
@@ -20,7 +25,6 @@
 
 - **MUST** respond in Traditional Chinese unless a proper noun should remain in the original language or the task explicitly requires another language.
 - **MUST** follow the spirit of ASD-STE100, adapting its concise / direct / unambiguous writing principle to Traditional Chinese responses; when an explanation is needed, organize it as What/Why/How.
-- **MUST**, whenever a subagent has been launched, check its status every 5 minutes; if it produces no output or response for more than 15 consecutive minutes, verify its status and restart it if necessary, so the task does not stall.
 - **MUST** maintain critical scrutiny toward reviews from other agents — never accept them blindly. When the review's reasoning is weak or conflicts with the user's prior context, push back and engage in back-and-forth discussion with that agent until both sides reach consensus on the problem.
 - **MUST** apply `First Principles` to every detail of the task. Constantly ask: **Is this actually correct?**
 - **MUST** apply `Less is More` when analyzing every task. Constantly ask: **Is this truly necessary?**

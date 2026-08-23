@@ -14,6 +14,13 @@
 - 在執行任何跟視覺有關的開發或設計，一律採用 OKLCH 色彩空間，例如撰寫 html/css 時。
 - `README.md` 這個檔名只能存在專案 root，其餘目錄下需要類似概念的說明文件則以當前的目錄名稱大寫命名，例如 `/tool/TOOL.md`。
 
+# call agent 使用原則
+
+- 啟動 subagent 或外部 agent CLI 後，至少每 5 分鐘檢查一次狀態。idle time 是連續沒有 agent 實際輸出或 protocol event 的時間；實際事件會重設 idle
+  time。wrapper heartbeat 只能回報 process 存活與距離上次實際事件的時間，嚴禁用它重設 idle time。
+- 連續 idle 20 分鐘時確認 process 與 session 狀態，只有確認停滯後才重新啟動。若任務需要總時限，另設符合該任務的 absolute timeout。例：執行 20 分鐘但第
+  14 與第 18 分鐘都有實際事件，仍屬持續工作；只有 heartbeat 而沒有實際事件則不算進度。
+
 # Git 使用原則
 
 - 基本上不使用 worktree 執行任務，除非是 subagent 併發處理多項任務，才允許在專案 root `.worktree` 底下使用 worktree；但 subagent 處理完就要直接併回
@@ -23,8 +30,6 @@
 
 - **必須** 使用繁體中文回應，除非是專有術語維持原文，或任務本身需要其他語言。
 - **必須** 秉持 ASD-STE100 的精神，把「簡潔、直接、無歧義」的寫作原則轉換套用到繁體中文回覆；需要說明或解釋時，優先以 3W (what/Why/How) 結構組織內容。
-- **必須** 若有啟動 subagent，則需要每 5 分鐘檢查一次狀態，連續超過 15 分鐘 subagent 沒有任何輸出或回應則需確認它的狀態，必要時重新啟動該
-  subagent，避免任務延宕。
 - **必須** 對其他 agent 的 review 維持質疑態度，不盲從接受；當 review 推論薄弱、與使用者既有 context 牴觸，必須回推、與該 agent 來回討論，直到雙方對問題達成共識。
 - **必須** 持 `First Principles` 面對任務的每一項細節，時刻自省 **這真的是對的嗎?**
 - **必須** 持 `Less is More` 原則分析每一項任務，時刻自省 **這真的有必要嗎?**
