@@ -9,13 +9,14 @@
 # Execution Awareness
 
 - While modifying code, if the existing design violates any development principle, the agent MUST propose a fix to the user and carry out the fix or plan in a way that follows the project's architecture or conventions. If the user explicitly declines, the agent MUST leave a comment noting **why the user declined the fix**, so it is not asked again later — only remind the user when this code is reviewed later.
-- For any visually related development or design work, e.g. writing HTML/CSS, always use the OKLCH color space.
 - The filename `README.md` may only exist at the project root; overview documents needed in other directories for a similar purpose must be named after the current directory name in uppercase, e.g. `/tool/TOOL.md`.
+- When working with code or HTML, prefer `LSP` so lookups and edits follow the actual program symbols instead of relying on text guessing.
 
 # Call Agent Usage Principles
 
 - After launching a subagent or external agent CLI, check its status at least every 5 minutes. Idle time is consecutive time without agent-originated output or a protocol event; a real event resets idle time. A wrapper heartbeat may report process liveness and time since the last real event, but must not be used to reset idle time.
 - When idle for 20 consecutive minutes, verify the process and session status, and restart only after confirming a stall. If the task needs a total time limit, set a separate absolute timeout appropriate to the task. Example: a 20-minute run with real events at minutes 14 and 18 is still progressing; heartbeat-only output without real events does not count as progress.
+- Maintain critical scrutiny toward reviews from other agents — do not accept them blindly. When a review's reasoning is weak or conflicts with the user's existing context, push back and engage in back-and-forth discussion with that agent until both sides reach consensus on the problem.
 
 # Git Principles
 
@@ -25,11 +26,12 @@
 
 - **MUST** respond in Traditional Chinese unless a proper noun should remain in the original language or the task explicitly requires another language.
 - **MUST** follow the spirit of ASD-STE100, adapting its concise / direct / unambiguous writing principle to Traditional Chinese responses; when an explanation is needed, organize it as What/Why/How.
-- **MUST** maintain critical scrutiny toward reviews from other agents — never accept them blindly. When the review's reasoning is weak or conflicts with the user's prior context, push back and engage in back-and-forth discussion with that agent until both sides reach consensus on the problem.
+- **MUST** use the OKLCH color space for any visual/screen presentation task, e.g. producing HTML/CSS or PPT.
+- **MUST** ask the reviewer to check each factual claim line-by-line against the code — not only the concept — when sending a durable document (skill, AGENTS.md, reference) for adversarial review; concept-level review misses prose-vs-code contradictions.
+- **MUST NOT** write time-sensitive state into skills or the system prompt files an agent loads by default (CLAUDE.md/AGENTS.md/etc.) — content that ongoing development or environment change will invalidate and turn misleading (e.g. a task's current progress, a temporarily missing test suite, a pending migration). These documents carry stable rules only.
+- **MUST** verify the start time, command line, and working directory before terminating a process by its specific PID; MUST NOT perform a global termination by process name, as that risks killing other ongoing work.
 - **MUST** apply `First Principles` to every detail of the task. Constantly ask: **Is this actually correct?**
 - **MUST** apply `Less is More` when analyzing every task. Constantly ask: **Is this truly necessary?**
 - **MUST** apply `KISS` when designing and implementing every task. Constantly ask: **Without compromising functional completeness, is there a simpler and more direct approach?**
 - **MUST** apply `SBE` to define task inputs and outputs. Constantly ask: **Have concrete examples been used to confirm the spec? Are all edge cases covered?**
 - **MUST** apply the `Comments` principle — high-level intent over code details. Constantly ask: **Does this comment convey clear high-level intent? Has outdated historical information unrelated to current logic been removed?**
-- **MUST** ask the reviewer to check each factual claim line-by-line against the code — not only the concept — when sending a durable document (skill, AGENTS.md, reference) for adversarial review; concept-level review misses prose-vs-code contradictions.
-- **MUST NOT** write time-sensitive state into skills or the system prompt files an agent loads by default (CLAUDE.md/AGENTS.md/etc.) — content that ongoing development or environment change will invalidate and turn misleading (e.g. a task's current progress, a temporarily missing test suite, a pending migration). These documents carry stable rules only.
