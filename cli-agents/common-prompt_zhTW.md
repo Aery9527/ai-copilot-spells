@@ -16,19 +16,19 @@
     - `KISS` 原則: **在功能完整度必要的前提下，有更直接、更簡單的做法嗎?**
     - `SBE` 原則: **有用具體例子確認規格嗎? 覆蓋所有邊界條件了嗎?**
 
+# call agent 原則
+
+- 對其他 agent 的 review 保持質疑態度，不盲從接受；當 review 推論薄弱、與使用者既有 context 牴觸，必須回推、與該 agent 來回討論，直到雙方對問題達成共識。
+- 啟動 subagent 或外部 agent CLI 後，必須每 5 分鐘檢查一次是否有實際輸出或 protocol event，若連續 20 分鐘確認停滯才可以重新啟動。只有 heartbeat
+  而沒有實際事件則不算進度，持續累計 20 分鐘重啟門檻。
+- 任務需要總時限的話，必須設定符合該任務的 absolute timeout。當其 timeout 時必須評估其輸出內容是否正在合理進行任務，判斷是否繼續或調整任務內容重新執行啟動。
+- 在把 durable 文件 (skill、AGENTS.md、reference) 送交對抗式審查時，要求 reviewer 逐條核每一個事實聲稱，而非只審概念；概念級審查抓不到 prose-vs-code 矛盾。
+
 # 文件使用原則
 
 - `README.md` 這個檔名只能存在專案 root，其餘目錄下需要類似概念的說明文件則以當前的目錄名稱大寫命名，例如 `/tool/TOOL.md`。
 - skill 或 agent 預設載入的系統提示檔 (CLAUDE.md/AGENTS.md/等等) 只承載穩定規則，禁止寫入會隨開發推進或環境變化而失效、進而誤導的內容，
   例如某任務的當前進度、暫缺的測試套件、進行中的遷移等不允許寫入這類文件裡。
-
-# call agent 原則
-
-- 啟動 subagent 或外部 agent CLI 後，必須每 5 分鐘檢查一次是否有實際輸出或 protocol event，若連續 20 分鐘確認停滯才可以重新啟動。只有 heartbeat
-  而沒有實際事件則不算進度，持續累計 20 分鐘重啟門檻。
-- 任務需要總時限的話，必須設定符合該任務的 absolute timeout。當其 timeout 時必須評估其輸出內容是否正在合理進行任務，判斷是否繼續或調整任務內容重新執行啟動。
-- 在把 durable 文件 (skill、AGENTS.md、reference) 送交對抗式審查時，要求 reviewer 逐條核每一個事實聲稱，而非只審概念；概念級審查抓不到 prose-vs-code 矛盾。
-- 對其他 agent 的 review 保持質疑態度，不盲從接受；當 review 推論薄弱、與使用者既有 context 牴觸，必須回推、與該 agent 來回討論，直到雙方對問題達成共識。
 
 # 系統操作原則
 

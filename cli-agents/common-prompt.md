@@ -16,17 +16,17 @@
     - `KISS` principle: **Given the necessary functional completeness, is there a more direct, simpler approach?**
     - `SBE` principle: **Has the spec been confirmed with concrete examples? Are all edge cases covered?**
 
+# Call Agent Principles
+
+- Maintain critical scrutiny toward reviews from other agents — do not accept them blindly. When a review's reasoning is weak or conflicts with the user's existing context, push back and engage in back-and-forth discussion with that agent until both sides reach consensus on the problem.
+- After launching a subagent or external agent CLI, check at least every 5 minutes whether there has been actual output or a protocol event; only restart after confirming a stall over 20 consecutive minutes. Heartbeat-only output without actual events does not count as progress, and keeps accumulating toward the 20-minute restart threshold.
+- If a task needs a total time limit, set an absolute timeout appropriate to the task. When it times out, assess whether its output content is reasonably progressing the task, and decide whether to continue or adjust the task content and restart.
+- When sending a durable document (skill, AGENTS.md, reference) for adversarial review, require the reviewer to check each factual claim line-by-line against the code, not just the concept; concept-level review misses prose-vs-code contradictions.
+
 # Document Usage Principles
 
 - The filename `README.md` may only exist at the project root; overview documents needed in other directories for a similar purpose must be named after the current directory name in uppercase, e.g. `/tool/TOOL.md`.
 - System prompt files loaded by default for a skill or agent (CLAUDE.md/AGENTS.md/etc.) carry only stable rules; it is forbidden to write content that will become invalid and misleading as development progresses or the environment changes — e.g. a task's current progress, a temporarily missing test suite, an ongoing migration, etc. must not be written into these documents.
-
-# Call Agent Principles
-
-- After launching a subagent or external agent CLI, check at least every 5 minutes whether there has been actual output or a protocol event; only restart after confirming a stall over 20 consecutive minutes. Heartbeat-only output without actual events does not count as progress, and keeps accumulating toward the 20-minute restart threshold.
-- If a task needs a total time limit, set an absolute timeout appropriate to the task. When it times out, assess whether its output content is reasonably progressing the task, and decide whether to continue or adjust the task content and restart.
-- When sending a durable document (skill, AGENTS.md, reference) for adversarial review, require the reviewer to check each factual claim line-by-line against the code, not just the concept; concept-level review misses prose-vs-code contradictions.
-- Maintain critical scrutiny toward reviews from other agents — do not accept them blindly. When a review's reasoning is weak or conflicts with the user's existing context, push back and engage in back-and-forth discussion with that agent until both sides reach consensus on the problem.
 
 # System Operation Principles
 
