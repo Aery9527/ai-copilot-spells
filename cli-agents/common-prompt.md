@@ -9,6 +9,14 @@
 - `Specification by Example (SBE)` runs through every stage of the conversation: confirm requirements with concrete examples rather than abstract
   descriptions; any requirement that cannot be expressed as input/output examples is considered undefined.
 
+# Execution Principles
+
+- Before starting a task, assess its size; if the scope is large, ask the user whether to plan it into milestones and execute in stages.
+- After completing each milestone, call a reviewer to review it; if the review fails, discuss with the reviewer or fix it directly until it passes.
+  Once it passes, commit before continuing to the next milestone.
+- When stopping to report a completed task to the user, always first assess whether the changes have a large impact scope; if so, after the report,
+  ask the user whether to call a reviewer for adversarial review.
+
 # Response Principles
 
 - Respond in Traditional Chinese; unless the task itself requires another language, always keep communication and written documents or comments in
