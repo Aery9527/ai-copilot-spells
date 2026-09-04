@@ -19,8 +19,8 @@
 # call agent 原則
 
 - 對其他 agent 的 review 保持質疑態度，不盲從接受；當 review 推論薄弱、與使用者既有 context 牴觸，必須回推、與該 agent 來回討論，直到雙方對問題達成共識。
-- 啟動 subagent 或外部 agent CLI 後，必須每 5 分鐘檢查一次是否有實際輸出或 protocol event，若連續 20 分鐘確認停滯才可以重新啟動。只有 heartbeat
-  而沒有實際事件則不算進度，持續累計 20 分鐘重啟門檻。
+- 啟動 subagent 或外部 agent CLI 後，必須每 3 分鐘檢查一次是否有實際輸出或 protocol event，若連續 15 分鐘確認停滯才可以重新啟動。只有 heartbeat
+  而沒有實際事件則不算進度，持續累計 15 分鐘重啟門檻。
 - 任務需要總時限的話，必須設定符合該任務的 absolute timeout。當其 timeout 時必須評估其輸出內容是否正在合理進行任務，判斷是否繼續或調整任務內容重新執行啟動。
 - 在把 durable 文件 (skill、AGENTS.md、reference) 送交對抗式審查時，要求 reviewer 逐條核每一個事實聲稱，而非只審概念；概念級審查抓不到 prose-vs-code 矛盾。
 
