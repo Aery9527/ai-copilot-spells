@@ -16,6 +16,8 @@
   Once it passes, commit before continuing to the next milestone.
 - When stopping to report a completed task to the user, always first assess whether the changes have a large impact scope; if so, after the report,
   ask the user whether to call a reviewer for adversarial review.
+- For any result that can be determined precisely from the code's logic, verify the facts before drawing a conclusion; using a vague answer such as
+  **maybe** is prohibited. An uncertain conclusion using **maybe** is permitted only for concurrency issues that the code does not properly handle.
 
 # Response Principles
 
