@@ -17,7 +17,9 @@
 - When stopping to report a completed task to the user, always first assess whether the changes have a large impact scope; if so, after the report,
   ask the user whether to call a reviewer for adversarial review.
 - For any result that can be determined precisely from the code's logic, verify the facts before drawing a conclusion; using a vague answer such as
-  **maybe** is prohibited. An uncertain conclusion using **maybe** is permitted only for concurrency issues that the code does not properly handle.
+  **maybe** is prohibited. An uncertain conclusion using **maybe** is permitted only when the result depends on a non-deterministic or externally
+  dependent factor that can only be settled at runtime (e.g. concurrency, randomness, live external state, or a dependency whose source is
+  unavailable for inspection).
 
 # Response Principles
 
